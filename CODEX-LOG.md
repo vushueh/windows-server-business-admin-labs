@@ -22,7 +22,55 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
-## Session — 2026-06-05 (Claude)
+## Session — 2026-06-05 (Claude — restructure + corrections)
+### What I did
+- Applied all 9 Codex corrections from review
+- Split flat 37KB skill file into lean SKILL.md (~5KB) + 6 phase reference files
+- Added GUI/screenshot track (Track A) to every phase alongside PowerShell (Track B)
+- Phase structure: Goal → GUI Steps (Track A) → Screenshots to Capture → PowerShell Verification (Track B) → Rollback → Documentation Checklist
+- Fixed Restore-GPO rollback syntax: `Restore-GPO -Name "Default Domain Policy" -Path $BackupPath`
+- Fixed RDP firewall restriction: use `Get-NetFirewallAddressFilter | Set-NetFirewallAddressFilter` (not `Set-NetFirewallRule -RemoteAddress`)
+- Fixed OU naming: `_Admin` (sorts to top) with Tier0-DomainAdmins/Tier1-ServerAdmins/Tier2-WorkstationAdmins/ServiceAccounts
+- Fixed srv-leonel groups: GG-ServerAdmins ONLY — removed Server Operators reference entirely
+- Added UDP listener check (Get-NetUDPEndpoint) for ports 53, 88, 389, 464, 1812, 1813
+- Added NPS export security warning: XML contains RADIUS shared secrets — DO NOT commit to GitHub
+- Added __vmware__ investigation commands — keep as-is until VMware product identified
+- Updated README.md: WIN-PRQD8TJG04M IS the live PDC (removed false WIN-DC01 as future VM)
+- Updated docs/topology.md: reflects actual discovered state
+- All CLAUDE-REVIEW.md items marked 🟢 RESOLVED
+
+### Files created/modified
+- `skills/project-01-server-baseline-hardening.md` — lean SKILL.md (replaces 37KB flat file)
+- `skills/p01-references/phase-2-password-policy.md` — NEW reference file
+- `skills/p01-references/phase-3-tiered-admin.md` — NEW reference file
+- `skills/p01-references/phase-4-rds-iis-risk.md` — NEW reference file
+- `skills/p01-references/phase-5-firewall-baseline.md` — NEW reference file
+- `skills/p01-references/phase-6-lockout-breakfix.md` — NEW reference file
+- `skills/p01-references/phase-7-document-push.md` — NEW reference file
+- `README.md` — environment table corrected, P01 status = 🔄 In Progress
+- `docs/topology.md` — rewritten to reflect actual server state
+- `CLAUDE-REVIEW.md` — all items resolved
+- Local: `.agents/skills/winserver-p01/` — 7 files (SKILL.md + 6 references)
+- Local: `.codex/skills/winserver-p01/` — synced
+
+### Architecture decisions made
+- Lean SKILL.md is the session entrypoint — Claude reads SKILL.md first, then the relevant phase reference file
+- Track A (GUI) is the primary path for all phases — Leonel does the clicking and takes screenshots
+- Track B (PowerShell) is verification/automation alternative — not the only path
+- NPS XML export: read-only at C:\Audit\ only — never committed to GitHub
+- srv-leonel: GG-ServerAdmins only — built-in Server Operators on a DC = DC-level power = Tier 0 equivalent
+- __vmware__: defer investigation to Project 02 (AD Architecture review)
+
+### Cross-family impacts
+- Same as previous session — no new cross-family changes in this restructure
+
+### Open questions for Claude
+- Phase 2 is the next live work. All corrections applied. Skill is ready.
+- When Leonel runs Phase 2: GUI steps in phase-2-password-policy.md Track A
+
+---
+
+## Session — 2026-06-05 (Claude — initial audit + skill)
 ### What I did
 - SSH'd to WIN-PRQD8TJG04M via Tailscale (100.81.197.116) using claude_winserver_2022_ed25519 key
 - Ran full live audit: roles, AD users, OUs, groups, GPOs, password policy, firewall, DHCP, DNS
@@ -32,39 +80,25 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - Wrote complete P01 skill covering all 7 phases with exact PowerShell commands
 - Applied 15 self-review corrections to the skill before deploying
 - Deployed skill to 4 locations: .agents/skills/, .codex/skills/, .claude/commands/, GitHub
-- Updated projects/project-01-server-baseline-hardening/README.md with actual phases and audit findings
-- Updated skills/README.md to mark P01 skill as ready
 
 ### Files created/modified
-- `skills/project-01-server-baseline-hardening.md` — NEW: full 7-phase P01 skill
-- `skills/README.md` — P01 marked ✅ Ready
-- `projects/project-01-server-baseline-hardening/README.md` — updated with actual server state
-- Local: `.agents/skills/winserver-p01/SKILL.md`, `.codex/skills/winserver-p01/SKILL.md`
-- Local: `.claude/commands/winserver-p01.md`
+- `skills/project-01-server-baseline-hardening.md` — initial 37KB flat skill
+- `projects/project-01-server-baseline-hardening/README.md` — updated with actual phases
 
 ### Architecture decisions made
-- Project 01 is "Audit, Harden, Formalize" NOT "Install AD" — server already has everything
-- Password policy hardened via Default Domain Policy (not PSO) first because it covers ALL users
-- PSO-Tier0-Admins (Precedence 10, min 20 chars, lockout 3) layered on top for adm-leonel only
-- RDS/IIS on DC: document risk only, migrate in Project 08 (Hyper-V Operations)
-- DefaultInboundAction: document gap only, fix in Project 05 (GPO Security Baselines)
-  because setting Block without AD port allowlist GPO would break domain auth for all 13 VMs
-- testuser: use for lockout exercise then disable+quarantine — per family safety rules: never delete
-- Groups OU verification added before PSO group creation — prevents silent failure on wrong path
+- Project 01 is "Audit, Harden, Formalize" NOT "Install AD"
+- Password policy hardened via Default Domain Policy first (covers ALL users)
+- PSO-Tier0-Admins (Precedence 10) layered on top for adm-leonel only
+- RDS/IIS on DC: document risk only, migrate in Project 08
+- DefaultInboundAction: document gap only, fix in Project 05
+- testuser: lockout exercise then disable+quarantine — never delete
 - GPO rollback order: set LockoutThreshold=0 FIRST before reverting observation window
-  (partial revert with threshold=5 + window=0 causes permanent bad-attempt accumulation)
 
 ### Cross-family impacts
-- NPS is already installed + radius-service account exists — investigate purpose before Project 13
-  NPS uses machine account (WIN-PRQD8TJG04M$) for AD lookups, NOT radius-service
-- UDP 1812/1813 must be verified open in Phase 5 firewall baseline (needed for Project 13 RADIUS)
+- NPS is already installed + radius-service account exists — investigate before Project 13
+- UDP 1812/1813 must be verified open in Phase 5 (needed for Project 13 RADIUS)
 - RADIUS01 computer account already joined to domain — review in Project 13 context
-- __vmware__ group (Domain Local) exists with unknown purpose — review before removing
-
-### What Codex should review next
-- See CLAUDE-REVIEW.md for 5 open items before Phase 2 work begins
-- Phase 2 commands are ready in the skill — Codex should verify the password policy commands
-  against the actual domain DN before Leonel runs them
+- __vmware__ group (Domain Local) exists — review before removing
 
 ---
 
