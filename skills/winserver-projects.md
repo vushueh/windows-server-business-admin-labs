@@ -145,7 +145,7 @@ Install-ADDSDomainController `
 repadmin /replsummary
 repadmin /showrepl
 Get-ADReplicationPartnerMetadata -Target WIN-DC02
-netdom query fsmo   ! All FSMO roles still on WIN-PRQD8TJG04M
+netdom query fsmo   # All FSMO roles still on WIN-PRQD8TJG04M
 ```
 
 ### Phase 8 — Functional Level Upgrade
@@ -183,6 +183,10 @@ NEVER set DC NIC DNS to 8.8.8.8 — breaks AD authentication
 ### Phase 3 — Forwarders
 
 ```powershell
+# WARNING: Set-DnsServerForwarder REPLACES the entire forwarder list — it does not append.
+# Audit existing forwarders first:
+Get-DnsServerForwarder
+# Then set (replaces all):
 Set-DnsServerForwarder -IPAddress "8.8.8.8","1.1.1.1"
 # VERIFY: Resolve-DnsName google.com -Server 192.168.20.11 → resolves
 ```
@@ -241,8 +245,10 @@ Add-DhcpServerv4Reservation -ScopeId 192.168.20.0 -IPAddress 192.168.20.11 `
 ### Phase 4 — DHCP Failover
 
 ```powershell
+# HotStandby: WIN-PRQD8TJG04M = active, WIN-DC02 = standby
+# -ServerRole Active is the default in HotStandby mode — omit to keep command cleaner
 Add-DhcpServerv4Failover -Name "LAN-Failover" -PartnerServer WIN-DC02 `
-  -ScopeId 192.168.20.0 -Mode HotStandby -ServerRole Active `
+  -ScopeId 192.168.20.0 -Mode HotStandby `
   -ReservePercent 5 -AutoStateTransition $true -StateSwitchInterval 00:01:00
 # VERIFY: Get-DhcpServerv4Failover
 ```
@@ -272,15 +278,17 @@ New-GPO -Name "Domain-PasswordPolicy" | New-GPLink -Target "DC=Chongong,DC=local
 
 # Test in staged OU first
 New-GPLink -Name "Workstations-LocalAdminRestriction" -Target "OU=TestOU,DC=Chongong,DC=local"
-gpresult /H C:\Audit\gpo-rsop.html   ! Verify RSoP before production link
+gpresult /H C:\Audit\gpo-rsop.html   # Verify RSoP before production link
 ```
 
 ### GPO Audit Policy Path
 
 ```
 Computer Configuration → Policies → Windows Settings → Security Settings →
-Advanced Audit Policy Configuration → Audit Policies
-Categories: Logon/Logoff, Account Mgmt, Privilege Use, Object Access → Success + Failure
+Advanced Audit Policy Configuration → System Audit Policies
+Categories: Logon/Logoff, Account Mgmt, Privilege Use, Object Access, Policy Change
+Setting: Success + Failure on all categories
+WHY: Use Advanced Audit Policy Configuration (not legacy Audit Policy) — gives per-subcategory control
 ```
 
 ---
@@ -307,12 +315,22 @@ foreach ($dept in @("Finance","IT","Operations","Shared","Archives")) {
 }
 
 # Apply NTFS AGDLP — remove inheritance, assign DL-* groups
+# SAFETY: SetAccessRuleProtection($true, $false) blocks inheritance AND removes inherited ACEs.
+# Add SYSTEM, Domain Admins, and DL-* group BEFORE calling Set-Acl or access will be locked out.
+# Test on a lab folder first.
 $path = "D:\Shares\Finance"
 $acl = Get-Acl $path
-$acl.SetAccessRuleProtection($true, $false)   # disable inheritance, remove inherited
-$rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+$acl.SetAccessRuleProtection($true, $false)   # disable inheritance, remove inherited ACEs
+
+$system = New-Object System.Security.AccessControl.FileSystemAccessRule(
+    "NT AUTHORITY\SYSTEM","FullControl","ContainerInherit,ObjectInherit","None","Allow")
+$admins = New-Object System.Security.AccessControl.FileSystemAccessRule(
+    "CHONGONG\Domain Admins","FullControl","ContainerInherit,ObjectInherit","None","Allow")
+$deptRW = New-Object System.Security.AccessControl.FileSystemAccessRule(
     "CHONGONG\DL-Finance-Share-RW","Modify","ContainerInherit,ObjectInherit","None","Allow")
-$acl.AddAccessRule($rule)
+$acl.AddAccessRule($system)
+$acl.AddAccessRule($admins)
+$acl.AddAccessRule($deptRW)
 Set-Acl -Path $path -AclObject $acl
 ```
 
@@ -396,6 +414,12 @@ Get-ADUser leonel -Properties MemberOf | Select-Object -ExpandProperty MemberOf 
 **Requires:** P06 and P07 complete (new VMs created)
 **Slash command:** `/winserver-p08`
 
+> **Capacity gate:** WIN-PRQD8TJG04M already runs 13+ VMs. Before creating any new VM
+> (WIN-RDS01, WIN-RDWEB01), verify available RAM and disk:
+> `Get-VMHost | Select-Object -ExpandProperty MemoryCapacity`
+> `Get-Volume | Where-Object DriveLetter -ne $null | Select-Object DriveLetter,SizeRemaining`
+> Only proceed if sufficient headroom exists. Consult Claude before adding VMs to a near-capacity host.
+
 ### Phase 1 — VM Inventory
 
 ```powershell
@@ -445,11 +469,15 @@ Remove-WindowsFeature Remote-Desktop-Services, RDS-RD-Server, RDS-Connection-Bro
 ### Phase 1 — Windows Admin Center
 
 ```powershell
-# Silent install — gateway mode
-msiexec /i WindowsAdminCenter.msi /qn /L*v wac-install.log SME_PORT=443 SSL_CERTIFICATE_OPTION=generate
+# Download WAC installer from Microsoft (current release is an .exe, not .msi)
+# Silent install — gateway mode (current syntax as of WAC 2311+):
+.\WindowsAdminCenter.exe /VERYSILENT /HTTPSPortNumber:443
+# Optional: /CertificateThumbprint:<thumbprint> to use an existing cert
+# If no thumbprint provided, WAC generates a self-signed certificate
+
 # Access: https://WIN-PRQD8TJG04M (from Tailscale or LAN)
 # Add managed servers: WIN-DC02, WIN-FS01, WIN-RDS01, WIN-WS01
-# Restrict access: WAC Settings → Access → GG-ServerAdmins only
+# Restrict access: WAC Settings → Access → Gateway access → GG-ServerAdmins
 ```
 
 ### Phase 2 — PowerShell Remoting

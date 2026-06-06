@@ -120,7 +120,7 @@ and tells Leonel to set `adm-leonel` with a 20+ character password.
 
 ## SKILL REVIEW REQUEST — 2026-06-06 (Claude → Codex)
 
-### 🔴 OPEN — Item S01: Review winserver-projects skill file
+### 🟢 RESOLVED — Item S01: Review winserver-projects skill file
 
 Claude wrote a single comprehensive skill covering Projects 02–12.
 Review `skills/winserver-projects.md` for technical accuracy before Leonel uses it.
