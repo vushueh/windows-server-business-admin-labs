@@ -1,45 +1,80 @@
 # Network Topology — Windows Server Lab
 
-## Hyper-V Host
+## Actual Server State (Discovered 2026-06-05)
+
+WIN-PRQD8TJG04M is a single physical/bare-metal host that currently runs EVERYTHING.
+It is not just a Hyper-V host — it IS the Domain Controller.
 
 | Component | Value |
 |-----------|-------|
 | Hostname | WIN-PRQD8TJG04M |
-| IP | 192.168.20.11 |
-| Role | Hyper-V host for all Windows Server VMs |
-| OS | Windows (hosts Hyper-V) |
+| LAN IP | 192.168.20.11 |
+| Tailscale IP | 100.81.197.116 |
+| OS | Windows Server 2022 Datacenter |
+| Domain role | Primary Domain Controller (DomainRole=5) |
+| Domain | Chongong.local / CHONGONG / Windows2016Domain |
 
-## Virtual Switch Design (Target — Project 08)
+## Roles Running on WIN-PRQD8TJG04M (All Active)
 
-```
-vSwitch-External   → bridged to physical NIC → internet/LAN access
-vSwitch-Internal   → host-only → VM-to-VM + host communication
-vSwitch-VLAN10     → trunk to Proxmox side (optional — Project 13 integration)
-```
+| Role | Service | Notes |
+|------|---------|-------|
+| AD-Domain-Services | AD DS (PDC) | Chongong.local domain |
+| DNS | AD-integrated | Zone: Chongong.local |
+| DHCP | Active scope | Lan-Network: 192.168.20.0/24, range .1–.254 |
+| NPAS | NPS / RADIUS | radius-service account exists; purpose under investigation |
+| FS-FileServer | File Server | Active |
+| Hyper-V | 13 VMs running | This host IS the Hyper-V server |
+| RDS (full farm) | Connection Broker, Gateway, Licensing, Session Host, Web Access | ⚠️ On DC — risk documented in P01 |
+| IIS | Full install, ASP.NET, Windows Auth | ⚠️ On DC — likely serving RDS Web Access |
 
-## VM Inventory (Target State)
+## Computers Joined to Chongong.local
 
-| VM | Hostname | IP | Role | Project |
-|----|----------|----|------|--------|
-| VM 01 | WIN-DC01 | TBD | Primary DC, AD DS, DNS, NPS | 01–03, 13 |
-| VM 02 | WIN-FS01 | TBD | File Server | 06 |
-| VM 03 | WIN-WS01 | TBD | Test workstation (Win 11) | 07 |
+| Computer account | Type | Notes |
+|-----------------|------|-------|
+| WIN-PRQD8TJG04M | DC | The server itself |
+| RADIUS01 | Server/VM | Unknown VM — investigate in P13 |
+| GITEA | Server/VM | Gitea instance |
+| DESKTOP-QVM6OQN | Workstation | Domain-joined client |
+| DESKTOP-576LPTN | Workstation | Domain-joined client |
+| DESKTOP-PGMHP9F | Workstation | Domain-joined client |
+| DESKTOP-VHPSR2K | Workstation | Domain-joined client |
+| DESKTOP-5ISQOPR | Workstation | Domain-joined client |
+
+## Hyper-V VM Inventory (13 VMs — details TBD)
+
+Inventory to be documented in Project 08 (Hyper-V Operations).
+Known from AD computer accounts: RADIUS01, GITEA are domain-joined VMs.
+
+## Planned Migration VMs (Future Projects)
+
+| VM | Project | Purpose |
+|----|---------|--------|
+| WIN-RDS01 | Project 08 | RD Session Host (migrate from DC) |
+| WIN-RDWEB01 | Project 08 | RD Gateway + Web Access + Broker + Licensing (optional) |
+| WIN-FS01 | Project 06 | Dedicated File Server |
+| WIN-WS01 | Project 07 | Test Workstation (Win 11) |
 
 ## Network Segments
 
 | Segment | Subnet | Gateway | Notes |
 |---------|--------|---------|-------|
-| Management | 192.168.20.0/24 | 192.168.20.11 | Hyper-V management |
-| AD domain | TBD | TBD | Defined in Project 01 |
+| Management / LAN | 192.168.20.0/24 | TBD | DHCP scope active |
 
-## DNS Design (Target — Project 03)
+## DNS Design (Current)
 
 ```
-WIN-DC01 DNS server — AD-integrated zone: chongong.local
-  ├── Forwarders: 8.8.8.8, 1.1.1.1 (public DNS fallback)
-  ├── Conditional forwarder: proxmox.local → 192.168.10.35
-  └── A records: all lab servers and key infrastructure
+WIN-PRQD8TJG04M = DNS server (AD-integrated)
+  Zone: Chongong.local (Primary, AD-integrated)
+  Zone: _msdcs.Chongong.local (Primary, AD-integrated)
+  Standard reverse lookup zones
 
-All domain members: DNS = WIN-DC01 IP
-WIN-DC01 itself: DNS = 127.0.0.1 (loopback — critical)
+DO NOT: set DC DNS to 8.8.8.8
+Correct: DC DNS = 127.0.0.1 (loopback) + forwarders to 8.8.8.8 / 1.1.1.1 for public resolution
+```
+
+## Virtual Switch Design (Target — Project 08)
+
+```
+vSwitch-External   → bridged to physical NIC → internet/LAN access
+vSwitch-Internal   → host-only → VM-to-VM + host communication  
 ```

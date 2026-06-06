@@ -11,99 +11,67 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ---
 
-## Pre-Phase 2 Checklist (before running password policy changes)
+## Phase 2–7 Pre-Phase Checklist
 
-### 🔴 OPEN — Item 01: Verify domain DN before running Phase 2 commands
-
-**What:** Phase 2 uses `(Get-ADDomain).DistinguishedName` as the identity for
-`Set-ADDefaultDomainPasswordPolicy`. This should resolve to `DC=Chongong,DC=local`.
-
-**Codex action:** Confirm the expected DN string and verify the `Set-ADDefaultDomainPasswordPolicy`
-command in `skills/project-01-server-baseline-hardening.md` Phase 2.3 is syntactically correct
-for this domain.
-
-**Expected value:** `DC=Chongong,DC=local`
+### 🟢 RESOLVED — Item 01: Verify domain DN
+**Resolution:** `DC=Chongong,DC=local` confirmed as correct. `Set-ADDefaultDomainPasswordPolicy -Identity $DomainDN` syntax is valid (Microsoft allows DN, DNS name, NetBIOS, GUID, or SID). Domain DN guard check added to Phase 2 pre-phase commands.
+**Date:** 2026-06-05
 
 ---
 
-### 🔴 OPEN — Item 02: Investigate radius-service account purpose
-
-**What:** The audit found a `radius-service` account in AD. NPS is already installed.
-NPS uses the machine account (WIN-PRQD8TJG04M$) for AD lookups — NOT a service account.
-The purpose of `radius-service` is unknown: it could be a condition account used in NPS
-Network Policies, or a legacy entry.
-
-**Risk:** If `radius-service` is used in an active NPS policy, changing its password or
-moving it without investigating will break RADIUS auth for any currently configured clients.
-
-**Codex action:**
-1. Review the NPS configuration on the server (NPS console → Policies → Connection Request Policies
-   and Network Policies) to determine if `radius-service` appears in any policy condition
-2. Document the finding in `docs/p01-audit-baseline.md`
-3. If it IS referenced in an NPS policy, flag this as a dependency for Project 13
+### 🟢 RESOLVED — Item 02: radius-service account investigation
+**Resolution:** Use `Export-NpsConfiguration` to get a read-only audit of NPS config. Search for `radius-service` using `Select-String`. Do NOT commit the NPS XML to GitHub — it may contain RADIUS shared secrets in plaintext. Commands added to Phase 4 reference file. Actual finding (present or absent in NPS policies) to be documented when Phase 4 runs.
+**Date:** 2026-06-05
 
 ---
 
-### 🔴 OPEN — Item 03: Investigate __vmware__ group
-
-**What:** The audit found a Domain Local security group named `__vmware__` in AD.
-This naming pattern (double underscore prefix) is atypical for a Windows AD group and
-suggests it was created by a VMware product (possibly VMware vCenter, VMware Workstation
-with Horizon, or a VMware-integrated SSO connector).
-
-**Risk:** Deleting or modifying this group without understanding its purpose could break
-a VMware product's AD integration.
-
-**Codex action:**
-1. Research what VMware products create a `__vmware__` group in Active Directory
-2. Cross-reference with Hyper-V host (WIN-PRQD8TJG04M) — does it also run VMware Workstation?
-3. Document the finding and recommend: keep as-is, or investigate further before Project 02
+### 🟢 RESOLVED — Item 03: __vmware__ group
+**Resolution:** Likely created by a VMware product (Workstation, vCenter, or Horizon). Check installed VMware services on WIN-PRQD8TJG04M before drawing conclusions. Do NOT remove — if a VMware product owns it, removal breaks AD integration. Investigation commands added to Phase 4. Deferred to Project 02 (AD Architecture) for final decision.
+**Date:** 2026-06-05
 
 ---
 
-### 🔴 OPEN — Item 04: Review Phase 3 OU structure against family skill design
-
-**What:** The family skill (`skills/windows-server-business-admin.md`) defines this target
-OU structure:
-```
-chongong.local
-  ├── _Admin (Tier0-DomainAdmins, Tier1-ServerAdmins, ServiceAccounts)
-  ├── Computers (Servers, Workstations)
-  ├── Users (IT, Finance, Operations)
-  └── Groups (GlobalGroups: GG-*, DomainLocalGroups: DL-*)
-```
-
-But the P01 skill creates `OU=Admin Accounts` with `OU=Tier0` and `OU=Tier1` sub-OUs.
-The existing domain already has flat OUs: Management, IT, HR, Sales, Finance, Groups.
-
-**Codex action:**
-1. Reconcile the P01 skill OU naming (`Admin Accounts`) with the family skill design (`_Admin`)
-2. Decide: should the tiered admin OU be named `_Admin` (family standard) or `Admin Accounts`
-   (P01 skill name)? Naming it `_Admin` sorts it to the top in ADUC alphabetically.
-3. The existing department OUs (Management, IT, HR, Sales, Finance) will need restructuring
-   in Project 02 (AD Architecture). Note this dependency.
-4. Recommend which naming to use in the P01 skill and update the skill accordingly
+### 🟢 RESOLVED — Item 04: OU naming standard
+**Resolution:** Use `_Admin` (sorts to top of ADUC alphabetically). Sub-OU structure:
+  - OU=Tier0-DomainAdmins
+  - OU=Tier1-ServerAdmins
+  - OU=Tier2-WorkstationAdmins
+  - OU=ServiceAccounts
+Existing flat department OUs (Management, IT, HR, Sales, Finance) are NOT restructured in P01 — that belongs in Project 02 (AD Architecture). Phase 3 skill updated accordingly.
+**Date:** 2026-06-05
 
 ---
 
-### 🔴 OPEN — Item 05: Verify RDS farm scope before Phase 4 documentation
-
-**What:** The audit confirmed RDS full farm installed (Connection Broker, Gateway, Licensing,
-Session Host, Web Access) on WIN-PRQD8TJG04M. The RDS-Users AD group controls access.
-
-**Codex action:**
-1. In Phase 4, when Leonel runs the RDS audit commands, Codex should review the output
-   and help document: what collections exist, who is in RDS-Users, is there an active
-   RDS licensing server configured, is there a valid certificate on the gateway?
-2. Prepare the Project 08 migration plan outline (which VMs to create: WIN-RDS01,
-   what roles to migrate, in what order) so it is ready when Project 08 starts.
+### 🟢 RESOLVED — Item 05: RDS migration scope
+**Resolution:** Project 08 (Hyper-V Operations) target VM plan:
+  - WIN-RDS01 = RD Session Host (primary migration target)
+  - WIN-RDWEB01 = RD Gateway + Web Access + Connection Broker + Licensing (optional, depends on load)
+  - DC retains: AD DS, DNS, DHCP, NPS only after migration
+Added to docs/topology.md as Planned Migration VMs.
+**Date:** 2026-06-05
 
 ---
 
-## How to Mark Items Resolved
+## Additional Corrections Applied (from Codex review 2026-06-05)
 
-```
-### 🟢 RESOLVED — Item 01: [title]
-**Resolution:** [what was found/decided/done]
-**Date:** YYYY-MM-DD
-```
+### 🟢 RESOLVED — Do NOT add srv-leonel to built-in Server Operators
+**Resolution:** Phase 3 skill updated. `srv-leonel` joins `GG-ServerAdmins` only (new Global group). Built-in Server Operators has DC-level power — Tier 1 must not have DC access. Project 05 (GPO Security Baselines) will grant local admin rights on member servers via GPO.
+
+### 🟢 RESOLVED — Fix Restore-GPO rollback syntax
+**Resolution:** Phase 2 rollback updated to use `Restore-GPO -Name "Default Domain Policy" -Path $BackupPath`. Previous syntax (`-BackupGpoName`) was incorrect.
+
+### 🟢 RESOLVED — Fix RDP firewall restriction method
+**Resolution:** Phase 5 updated to use `$RdpRules | Get-NetFirewallAddressFilter | Set-NetFirewallAddressFilter -RemoteAddress $TailscaleIP` (correct pipe method). Previous method using `Set-NetFirewallRule -RemoteAddress` directly is risky.
+
+### 🟢 RESOLVED — Add UDP listener check
+**Resolution:** Phase 5 now includes `Get-NetUDPEndpoint` check for ports 53, 88, 389, 464, 1812, 1813. NPS uses UDP 1812/1813 and this was missing from the original TCP-only listener check.
+
+### 🟢 RESOLVED — Split skill into lean SKILL.md + phase reference files
+**Resolution:** winserver-p01 SKILL.md is now ~5KB lean file. Phase commands moved to `skills/p01-references/phase-N-*.md` files. Phase structure: Goal → GUI Steps (Track A) → Screenshots to Capture → PowerShell Verification (Track B) → Rollback → Documentation Checklist.
+
+### 🟢 RESOLVED — Add GUI / screenshot track to every phase
+**Resolution:** Every phase reference file now has Track A (GUI steps with exact console, navigation, screenshots to capture) and Track B (PowerShell verification). This supports portfolio evidence and real hands-on practice with Server Manager, ADUC, ADAC, GPMC, NPS, IIS Manager, WFAS, and Event Viewer.
+
+---
+
+*Next items will appear here when Phase 2 work begins.*
