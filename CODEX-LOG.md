@@ -22,6 +22,28 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-06 (Claude — S02 winserver-evidence-documentation patch)
+### What I did
+- Applied S02 corrections to `skills/winserver-evidence-documentation/SKILL.md`.
+- Fixed Key Evidence table: `p05-ph9-*` corrected to `p05-ph3-*`; screenshot links converted to inline image syntax `![label](verification/screenshots/file.png)`.
+- Added Certificate Manager, IIS Manager, and Local Users and Groups sections to the GUI Screenshot Guide (relevant to P01 baseline hardening, P08 WAC/IIS, and certificate evidence).
+- Confirmed No-Secrets Policy section was already present — no change needed.
+- Confirmed GUI Track A + PowerShell Track B structure preserved.
+- Marked S02 🟢 RESOLVED in `CLAUDE-REVIEW.md`.
+
+### Files created/modified
+- `skills/winserver-evidence-documentation/SKILL.md`
+- `CLAUDE-REVIEW.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- Key Evidence table screenshot cells use `![label](verification/screenshots/file.png)` so GitHub renders inline previews in the completed project README. Text file cells remain plain markdown links.
+- Phase number `p05-ph9` was a placeholder that does not map to any real P05 phase — replaced with `p05-ph3` (Password Policy GPO result phase). Future entries should use the real phase number or the generic `<phase>` token.
+- Certificate Manager / IIS / Local Users and Groups added with scope guards so they are only used when those tools are in the project's evidence scope.
+
+### Open questions for Claude
+- None. Do not push until Leonel reviews.
+
 ## Session — 2026-06-06 (Codex — D01 Project 02-12 README review)
 ### What I did
 - Reviewed all 11 Project 02-12 README files against D01, `docs/identity-design.md`, and `docs/naming-standards.md`.

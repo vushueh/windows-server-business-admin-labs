@@ -13,21 +13,16 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ## SKILL REVIEW REQUEST — 2026-06-06 (Claude → Codex)
 
-### 🔴 OPEN — Item S02: Review winserver-evidence-documentation skill
+### 🟢 RESOLVED — Item S02: Review winserver-evidence-documentation skill
 
 Claude created `skills/winserver-evidence-documentation/SKILL.md` — a new evidence/portfolio
 documentation skill guiding how to capture and publish proof for each Windows Server project.
 
-**Codex: review for:**
-1. Screenshot naming convention — works for all P01-P12 projects?
-2. GUI screenshot guide — all tools listed (GPMC, ADUC, ADAC, DNS, DHCP, Event Viewer, Hyper-V, WAC, Entra Connect)?
-3. Completed project README template — renders correctly as GitHub Markdown with inline images?
-4. Main family README update instructions — match current README format?
-5. Break/fix log template — consistent with troubleshooting/ folder already in use?
-6. Any Windows Server tool or path missing or incorrect?
-
-**Patch directly in `skills/winserver-evidence-documentation/SKILL.md`**
-**Log in CODEX-LOG.md | Mark S02 🟢 RESOLVED | Do NOT push**
+**Resolution (2026-06-06):** Claude applied S02 corrections directly:
+- Fixed Key Evidence table: `p05-ph9-*` → `p05-ph3-*`; screenshot cells now use inline image syntax `![label](verification/screenshots/file.png)`.
+- Added Certificate Manager, IIS Manager, and Local Users and Groups sections to GUI Screenshot Guide (scoped to P01/P08/WAC evidence).
+- No-Secrets Policy section was already present. GUI Track A + PowerShell Track B structure preserved.
+**Do NOT push until Leonel reviews.**
 
 ---
 

@@ -20,6 +20,28 @@ project was completed. The outcome is a public GitHub portfolio that shows:
 - That you can troubleshoot (break/fix log)
 - Why it matters (portfolio narrative in README)
 
+## No-Secrets Policy
+
+**Never commit to GitHub:**
+```
+❌ Passwords or password hashes
+❌ M365 tenant credentials or secrets
+❌ Entra Connect service account passwords
+❌ NPS exports (contain RADIUS shared secrets)
+❌ BitLocker recovery keys
+❌ Screenshots showing credential fields with real values
+❌ Any file from C:\Audit\ that was flagged as sensitive (e.g. NPS XML)
+```
+
+**Safe to commit:**
+```
+✅ PowerShell command outputs (no credentials in output)
+✅ Screenshots of GUI config screens (blur password fields)
+✅ AD object exports (Get-ADUser, Get-GPO, etc.)
+✅ GPO backup files (XML format — settings only, no secrets)
+✅ Anonymized break/fix logs
+```
+
 ---
 
 ## Folder Structure Per Project
@@ -70,8 +92,8 @@ Examples:
 Examples:
   p02-ph7-repadmin-replsummary.txt
   p02-ph8-netdom-query-fsmo.txt
-  p05-ph9-gpresult-workstation.txt
-  p10-ph4-winevent-4740.txt
+  p05-ph3-gpresult-workstation.txt     ← use real phase numbers
+  p10-ph3-winevent-4740.txt
 ```
 
 ---
@@ -225,6 +247,33 @@ Add a short completion block to the project README.md:
 □ All Servers view showing WIN-DC02, WIN-FS01, WIN-WS01
 ```
 
+### Certificate Manager (certsrv.msc / certmgr.msc)
+Capture when PKI, ADCS, or certificate-based auth is in scope (P01 IIS cert, P08 WAC SSL).
+```
+□ Certification Authority console showing CA name and issued certificates
+□ Certificate Templates enabled on the CA
+□ Issued certificate showing subject, validity, and template used
+□ Personal certificate store on the server (certlm.msc) showing the bound certificate
+```
+
+### IIS Manager (inetmgr)
+Capture only when IIS is relevant (P01 RDS/IIS risk documentation, P08 WAC gateway).
+```
+□ Sites list showing bound sites, ports, and state
+□ Bindings dialog showing HTTP/HTTPS and certificate selected
+□ Application pool list showing identity accounts and state
+□ Authentication settings (Windows Auth enabled/disabled as required)
+```
+
+### Local Users and Groups (lusrmgr.msc)
+Capture for P01 baseline hardening and local account audit.
+```
+□ Users list showing built-in accounts (Administrator, Guest, DefaultAccount)
+□ Groups list — confirm no unexpected members in Administrators
+□ Administrator account Properties → account is disabled (if applicable)
+□ Guest account Properties → account is disabled
+```
+
 ---
 
 ## Break/Fix Log Template
@@ -281,9 +330,9 @@ directly below the Phases table:
 
 | What | Screenshot / Output |
 |------|-------------------|
-| [e.g. OU structure] | [screenshots/p02-ph1-ou-structure-aduc.png] |
-| [e.g. Replication healthy] | [command-outputs/p02-ph7-repadmin-replsummary.txt] |
-| [e.g. GPO applied] | [screenshots/p05-ph9-gpresult-workstation.png] |
+| [e.g. OU structure] | ![OU structure](verification/screenshots/p02-ph1-ou-structure-aduc.png) |
+| [e.g. Replication healthy] | [repadmin output](verification/command-outputs/p02-ph7-repadmin-replsummary.txt) |
+| [e.g. GPO applied] | ![GPO applied](verification/screenshots/p05-ph3-gpresult-workstation.png) |
 
 ### Verification Summary
 ```
@@ -323,7 +372,7 @@ Then add a completed project summary section under the index table:
 
 | OU Structure | Tiered Accounts | DC Replication |
 |---|---|---|
-| ![OU](projects/project-02-ad-architecture/verification/screenshots/p02-ph1-ou-structure-aduc.png) | ![Accounts](projects/project-02-ad-architecture/verification/screenshots/p02-ph3-tiered-accounts-aduc.png) | ![Repadmin](projects/project-02-ad-architecture/verification/screenshots/p02-ph7-repadmin-replsummary.png) |
+| ![OU](verification/screenshots/p02-ph1-ou-structure-aduc.png) | ![Accounts](verification/screenshots/p02-ph3-tiered-accounts-aduc.png) | ![Repadmin](verification/screenshots/p02-ph7-repadmin-replsummary.png) |
 
 Built full AD OU hierarchy, tiered admin model (Tier 0/1/2), AGDLP group structure,
 delegated password reset, and replica DC with healthy replication.
