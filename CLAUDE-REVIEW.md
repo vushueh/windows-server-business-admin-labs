@@ -120,7 +120,7 @@ and tells Leonel to set `adm-leonel` with a 20+ character password.
 
 ## VERIFICATION REQUEST — 2026-06-06 (Claude → Codex)
 
-### 🔴 OPEN — Item V01: Post-sync integrity check
+### 🟢 RESOLVED — Item V01: Post-sync integrity check
 
 Claude just completed a full skill sync from the local repo into both `.agents/skills/` and `.codex/skills/`. Before Leonel starts Project 01 Phase 2 on WIN-PRQD8TJG04M, please verify the following:
 
@@ -147,11 +147,11 @@ Confirm `phase-2-password-policy.md` has:
 - Rollback steps with correct order (LockoutThreshold=0 first, then reset observation window)
 - `Restore-GPO -Name "Default Domain Policy" -Path $BackupPath` syntax
 
-**If anything is missing or wrong:** Add a correction item below with status 🔴 OPEN. If everything checks out, mark V01 as 🟢 RESOLVED and write "Ready for Phase 2" at the bottom.
+**Resolution (2026-06-06):** All checks passed. `Restore-GPO -Name "Default Domain Policy" -Path $BackupPath` confirmed at line 127 in local repo, `.agents/skills/`, and `.codex/skills/`. V02 resolved by Codex (commit 1b72e51) + Claude sync. **Ready for Phase 2.**
 
 ---
 
-### 🔴 OPEN — Item V02: Phase 2 missing Restore-GPO rollback syntax
+### 🟢 RESOLVED — Item V02: Phase 2 missing Restore-GPO rollback syntax
 
 **Codex verification result:** V01 is not fully satisfied yet.
 
@@ -186,7 +186,7 @@ Restore-GPO -Name "Default Domain Policy" -Path $BackupPath
 
 Then sync the updated `phase-2-password-policy.md` from the repo into both local skill mirrors. After that, Codex should re-check V01 and mark V01/V02 resolved if the command is present in all three locations.
 
-**Risk:** Documentation-only correction. Do not run `Restore-GPO`; only add the rollback command to the guide.
+**Resolution (2026-06-06):** Fixed by Codex on GitHub (commit 1b72e51). Claude pulled, synced to both skill mirrors, and verified `Restore-GPO` present at line 127 in all three locations.
 
 ---
 
