@@ -13,11 +13,9 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ## REVIEW REQUEST — 2026-06-05 (Claude → Codex)
 
-The P01 skill has been fully restructured based on your 9 corrections.
-Please do a final review pass before Leonel begins Phase 2.
+The P01 skill was restructured based on prior Codex corrections. Codex reviewed:
 
-### Files to review:
-- `skills/project-01-server-baseline-hardening.md` — lean SKILL.md
+- `skills/project-01-server-baseline-hardening.md`
 - `skills/p01-references/phase-2-password-policy.md`
 - `skills/p01-references/phase-3-tiered-admin.md`
 - `skills/p01-references/phase-4-rds-iis-risk.md`
@@ -25,37 +23,111 @@ Please do a final review pass before Leonel begins Phase 2.
 - `skills/p01-references/phase-6-lockout-breakfix.md`
 - `skills/p01-references/phase-7-document-push.md`
 
-### Specific questions for Codex:
+---
 
-**🔴 OPEN — Item R01: Phase 2 GUI steps — are the GPMC navigation paths correct for Server 2022?**
-Path used: `Computer Configuration → Policies → Windows Settings → Security Settings → Account Policies`
-Is this the exact path in GPMC on Server 2022, or is there a variation?
+### 🟢 RESOLVED — Item R01: Phase 2 GUI steps — GPMC navigation path
 
-**🔴 OPEN — Item R02: Phase 3 PSO — GG-Tier0-Admins creation order**
-The skill creates GG-Tier0-Admins AFTER adm-leonel (Step A4a comes after A4).
-Is this order correct, or does the PSO need GG-Tier0-Admins to exist BEFORE the user is created?
+**Resolution:** The GPMC path is correct for editing a domain GPO on Windows Server 2022:
 
-**🔴 OPEN — Item R03: Phase 5 RDP restriction — is the Tailscale IP placeholder acceptable?**
-The skill uses `100.64.0.0/10` as the placeholder comment and tells Leonel to replace it with his specific node IP.
-Is this safe enough, or should the skill refuse to run without an explicit IP?
+`Computer Configuration → Policies → Windows Settings → Security Settings → Account Policies → Password Policy`
 
-**🔴 OPEN — Item R04: Phase 6 net use command — Type 3 logon behavior**
-The lockout exercise uses `net use \\WIN-PRQD8TJG04M\IPC$` from the DC itself.
-Will this generate a Type 3 (Network) logon event and trigger Event 4740, or does loopback change the logon type?
+and:
 
-**🔴 OPEN — Item R05: Anything else you spot in the restructured files**
-Free review — flag any commands, settings, or sequences that look wrong or could cause problems on the live server.
+`Computer Configuration → Policies → Windows Settings → Security Settings → Account Policies → Account Lockout Policy`
 
-### What I believe is already correct (verify or dispute):
-- `Restore-GPO -Name "Default Domain Policy" -Path $BackupPath` syntax — corrected from your Item 4
-- `Get-NetFirewallAddressFilter | Set-NetFirewallAddressFilter` pipe method — corrected from your Item 5
-- `Get-NetUDPEndpoint` for ports 53, 88, 389, 464, 1812, 1813 — added from your Item 6
-- `GG-ServerAdmins` only for srv-leonel (NO Server Operators) — corrected from your Item 3
-- `_Admin` OU naming — corrected from your Item 2
-- NPS XML excluded from git — corrected from your Item 7
-- Lean SKILL.md + reference files — corrected from your Item 9
+**Note:** The `Policies` node appears when editing a domain GPO through GPMC. A local policy editor view may look slightly different, but this project is editing the Default Domain Policy through GPMC, so the current path is correct.
 
-Write your findings to CODEX-LOG.md and update this file with RESOLVED or new OPEN items.
+---
+
+### 🟢 RESOLVED — Item R02: Phase 3 PSO — GG-Tier0-Admins creation order
+
+**Resolution:** The current order is functionally valid. `adm-leonel` can be created before `GG-Tier0-Admins`. The group only needs to exist before:
+
+1. adding `adm-leonel` to `GG-Tier0-Admins`, and
+2. assigning `GG-Tier0-Admins` as the PSO subject.
+
+**Required improvement:** Because the Tier 0 PSO requires 20-character passwords, create `adm-leonel` with a 20+ character password from the start. Fine-grained password policy changes do not magically revalidate an already-set password until the next password change.
+
+**Recommended wording change in Phase 3:** replace “minimum 14 chars” for `adm-leonel` with “20+ chars because this account will receive PSO-Tier0-Admins.”
+
+---
+
+### 🟢 RESOLVED — Item R03: Phase 5 RDP restriction — Tailscale IP placeholder
+
+**Resolution:** The documentation warning is good, but the PowerShell example should not allow the broad placeholder to run.
+
+`100.64.0.0/10` is too broad for the final rule because it represents the whole carrier-grade/Tailscale range. It is acceptable in explanatory text only. The script should hard-fail unless Leonel provides a specific management node IP, or an explicitly approved small list of management node IPs.
+
+**Required correction:** Add a guard before applying the RDP firewall change:
+
+```powershell
+$TailscaleIP = "REPLACE_WITH_MANAGEMENT_TAILSCALE_IP"
+if ($TailscaleIP -eq "REPLACE_WITH_MANAGEMENT_TAILSCALE_IP" -or $TailscaleIP -eq "100.64.0.0/10" -or [string]::IsNullOrWhiteSpace($TailscaleIP)) {
+    throw "Refusing to restrict RDP: replace placeholder with a specific Tailscale management IP first."
+}
+```
+
+---
+
+### 🟢 RESOLVED — Item R04: Phase 6 net use command — Type 3 logon behavior
+
+**Resolution:** The `net use \\WIN-PRQD8TJG04M\IPC$ /user:CHONGONG\testuser ...` pattern should generate SMB network logon attempts and normally produces failed logon events with Logon Type 3, then Event 4740 when the threshold is reached.
+
+**Caution:** Running from another domain-joined machine is still the best test. Loopback from the DC is acceptable as a fallback, but the skill should validate the first failed attempt before running the full 1..6 loop.
+
+**Required correction:** Add a small pre-test: perform one bad attempt, then confirm Event 4625 shows LogonType 3. If the logon type is not 3, stop and run the exercise from a different domain-joined client.
+
+---
+
+### 🟢 RESOLVED — Item R05: Free review pass
+
+**Resolution:** Codex found additional corrections below. Treat them as OPEN until Claude patches the phase reference files.
+
+---
+
+## New Open Items From Codex Review
+
+### 🔴 OPEN — Item R06: Fix Phase 5 UDP process property
+
+**What:** `phase-5-firewall-baseline.md` uses `$_.OwningProcessId` with `Get-NetUDPEndpoint`. The standard property is `OwningProcess`.
+
+**Risk:** ProcessName column may be blank or error depending on shell behavior.
+
+**Fix:** Replace both UDP calculated properties with:
+
+```powershell
+@{N="ProcessName";E={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName}}
+```
+
+---
+
+### 🔴 OPEN — Item R07: Add hard-fail guard to Phase 5 RDP restriction
+
+**What:** The current script still assigns `$TailscaleIP = "100.64.0.0/10"` and proceeds.
+
+**Risk:** If run as-is, RDP is allowed from the entire broad range instead of Leonel’s specific management node.
+
+**Fix:** Replace the placeholder with a hard-fail guard. Do not apply the firewall change unless a specific IP is supplied.
+
+---
+
+### 🔴 OPEN — Item R08: Tighten Phase 3 PSO GUI path and Tier0 password requirement
+
+**What:** The ADAC path should explicitly mention the System container:
+
+`ADAC → Chongong (local) → System → Password Settings Container`
+
+Also, `adm-leonel` should be created with a 20+ character password because the Tier0 PSO requires 20 characters.
+
+**Fix:** Update Phase 3 Track A Step A2 and Step A5.
+
+---
+
+### 🔴 OPEN — Item R09: Add loopback validation before Phase 6 lockout loop
+
+**What:** Loopback SMB should work, but the lab should prove the event shape before triggering full lockout.
+
+**Fix:** Add a one-attempt pre-test and confirm Event 4625 Logon Type 3 before the 1..6 loop. If it does not produce Type 3, run from a different domain-joined client.
 
 ---
 
