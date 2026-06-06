@@ -46,9 +46,7 @@ and:
 1. adding `adm-leonel` to `GG-Tier0-Admins`, and
 2. assigning `GG-Tier0-Admins` as the PSO subject.
 
-**Required improvement:** Because the Tier 0 PSO requires 20-character passwords, create `adm-leonel` with a 20+ character password from the start. Fine-grained password policy changes do not magically revalidate an already-set password until the next password change.
-
-**Recommended wording change in Phase 3:** replace “minimum 14 chars” for `adm-leonel` with “20+ chars because this account will receive PSO-Tier0-Admins.”
+**Applied fix:** Phase 3 now tells Leonel to create `adm-leonel` with a 20+ character password from the start because the Tier 0 PSO requires 20 characters. Fine-grained password policy changes do not revalidate an already-set password until the next password change.
 
 ---
 
@@ -56,16 +54,9 @@ and:
 
 **Resolution:** The documentation warning is good, but the PowerShell example should not allow the broad placeholder to run.
 
-`100.64.0.0/10` is too broad for the final rule because it represents the whole carrier-grade/Tailscale range. It is acceptable in explanatory text only. The script should hard-fail unless Leonel provides a specific management node IP, or an explicitly approved small list of management node IPs.
+`100.64.0.0/10` is too broad for the final rule because it represents the whole carrier-grade/Tailscale range. It is acceptable in explanatory text only.
 
-**Required correction:** Add a guard before applying the RDP firewall change:
-
-```powershell
-$TailscaleIP = "REPLACE_WITH_MANAGEMENT_TAILSCALE_IP"
-if ($TailscaleIP -eq "REPLACE_WITH_MANAGEMENT_TAILSCALE_IP" -or $TailscaleIP -eq "100.64.0.0/10" -or [string]::IsNullOrWhiteSpace($TailscaleIP)) {
-    throw "Refusing to restrict RDP: replace placeholder with a specific Tailscale management IP first."
-}
-```
+**Applied fix:** Phase 5 now hard-fails unless Leonel replaces the placeholder with one specific management Tailscale IP.
 
 ---
 
@@ -73,27 +64,23 @@ if ($TailscaleIP -eq "REPLACE_WITH_MANAGEMENT_TAILSCALE_IP" -or $TailscaleIP -eq
 
 **Resolution:** The `net use \\WIN-PRQD8TJG04M\IPC$ /user:CHONGONG\testuser ...` pattern should generate SMB network logon attempts and normally produces failed logon events with Logon Type 3, then Event 4740 when the threshold is reached.
 
-**Caution:** Running from another domain-joined machine is still the best test. Loopback from the DC is acceptable as a fallback, but the skill should validate the first failed attempt before running the full 1..6 loop.
-
-**Required correction:** Add a small pre-test: perform one bad attempt, then confirm Event 4625 shows LogonType 3. If the logon type is not 3, stop and run the exercise from a different domain-joined client.
+**Applied fix:** Phase 6 now runs a one-attempt validation and confirms Event 4625 with Logon Type 3 before starting the full lockout loop. If the event shape is not confirmed, the guide tells Leonel to run the exercise from another domain-joined client.
 
 ---
 
 ### 🟢 RESOLVED — Item R05: Free review pass
 
-**Resolution:** Codex found additional corrections below. Treat them as OPEN until Claude patches the phase reference files.
+**Resolution:** Codex found four additional corrections (R06-R09). All are now patched in the phase reference files.
 
 ---
 
-## New Open Items From Codex Review
+## Codex Review Corrections
 
-### 🔴 OPEN — Item R06: Fix Phase 5 UDP process property
+### 🟢 RESOLVED — Item R06: Fix Phase 5 UDP process property
 
-**What:** `phase-5-firewall-baseline.md` uses `$_.OwningProcessId` with `Get-NetUDPEndpoint`. The standard property is `OwningProcess`.
+**What:** `phase-5-firewall-baseline.md` used `$_.OwningProcessId` with `Get-NetUDPEndpoint`. The standard property is `OwningProcess`.
 
-**Risk:** ProcessName column may be blank or error depending on shell behavior.
-
-**Fix:** Replace both UDP calculated properties with:
+**Applied fix:** Both UDP calculated properties now use:
 
 ```powershell
 @{N="ProcessName";E={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName}}
@@ -101,33 +88,31 @@ if ($TailscaleIP -eq "REPLACE_WITH_MANAGEMENT_TAILSCALE_IP" -or $TailscaleIP -eq
 
 ---
 
-### 🔴 OPEN — Item R07: Add hard-fail guard to Phase 5 RDP restriction
+### 🟢 RESOLVED — Item R07: Add hard-fail guard to Phase 5 RDP restriction
 
-**What:** The current script still assigns `$TailscaleIP = "100.64.0.0/10"` and proceeds.
+**What:** The old script assigned `$TailscaleIP = "100.64.0.0/10"` and proceeded.
 
-**Risk:** If run as-is, RDP is allowed from the entire broad range instead of Leonel’s specific management node.
-
-**Fix:** Replace the placeholder with a hard-fail guard. Do not apply the firewall change unless a specific IP is supplied.
+**Applied fix:** The script now uses `REPLACE_WITH_MANAGEMENT_TAILSCALE_IP` and throws if the placeholder, blank value, or `100.64.0.0/10` is left in place.
 
 ---
 
-### 🔴 OPEN — Item R08: Tighten Phase 3 PSO GUI path and Tier0 password requirement
+### 🟢 RESOLVED — Item R08: Tighten Phase 3 PSO GUI path and Tier0 password requirement
 
-**What:** The ADAC path should explicitly mention the System container:
+**What:** The ADAC path needed to explicitly mention the System container, and `adm-leonel` needed a 20+ character password requirement.
+
+**Applied fix:** Phase 3 now uses:
 
 `ADAC → Chongong (local) → System → Password Settings Container`
 
-Also, `adm-leonel` should be created with a 20+ character password because the Tier0 PSO requires 20 characters.
-
-**Fix:** Update Phase 3 Track A Step A2 and Step A5.
+and tells Leonel to set `adm-leonel` with a 20+ character password.
 
 ---
 
-### 🔴 OPEN — Item R09: Add loopback validation before Phase 6 lockout loop
+### 🟢 RESOLVED — Item R09: Add loopback validation before Phase 6 lockout loop
 
 **What:** Loopback SMB should work, but the lab should prove the event shape before triggering full lockout.
 
-**Fix:** Add a one-attempt pre-test and confirm Event 4625 Logon Type 3 before the 1..6 loop. If it does not produce Type 3, run from a different domain-joined client.
+**Applied fix:** Phase 6 now has Step A2a: one bad attempt, confirm Event 4625 with Logon Type 3, then Step A2b runs the full loop.
 
 ---
 
@@ -148,5 +133,5 @@ Keep as-is. Investigation commands in Phase 4. Deferred to Project 02.
 ### 🟢 RESOLVED — Item 05: RDS migration scope
 Project 08 targets: WIN-RDS01 (Session Host), WIN-RDWEB01 (optional Gateway/Web). Added to topology.md.
 
-### 🟢 RESOLVED — All 9 Codex corrections applied
-See CODEX-LOG.md session 2026-06-05 (restructure) for details.
+### 🟢 RESOLVED — All Codex corrections applied
+See CODEX-LOG.md for session details.
