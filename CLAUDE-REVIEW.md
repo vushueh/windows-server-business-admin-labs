@@ -151,6 +151,45 @@ Confirm `phase-2-password-policy.md` has:
 
 ---
 
+### 🔴 OPEN — Item V02: Phase 2 missing Restore-GPO rollback syntax
+
+**Codex verification result:** V01 is not fully satisfied yet.
+
+**What passed:**
+- All seven P01 skill/reference files exist in the local repo and appear complete.
+- The `.agents/skills/winserver-p01/` and `.codex/skills/winserver-p01/` mirrors contain the matching Project 01 skill and phase reference files. The local mirror folder name is `references/`; the repo folder name is `p01-references/`, but the file contents match the repo copies checked.
+- R06-R09 corrections are present in the repo copy and both local skill mirrors:
+  - UDP uses `$_.OwningProcess`, not `OwningProcessId`.
+  - RDP restriction hard-fails on `REPLACE_WITH_MANAGEMENT_TAILSCALE_IP` or `100.64.0.0/10`.
+  - Phase 3 includes the 20+ character Tier 0 password requirement and `System → Password Settings Container` path.
+  - Phase 6 validates Event 4625 and Logon Type 3 before running the full lockout loop.
+- Phase 2 includes the domain DN guard, GPMC GUI steps, and safe rollback order with `LockoutThreshold` set to 0 first.
+
+**What failed:**
+`skills/p01-references/phase-2-password-policy.md` does not include the exact PowerShell restore command required by V01:
+
+```powershell
+Restore-GPO -Name "Default Domain Policy" -Path $BackupPath
+```
+
+The same missing command is also absent from both local skill mirrors:
+- `.agents/skills/winserver-p01/references/phase-2-password-policy.md`
+- `.codex/skills/winserver-p01/references/phase-2-password-policy.md`
+
+**Required fix before Phase 2:**
+Add a PowerShell restore option under the Phase 2 rollback section, after the GUI restore path and before/manual rollback commands. Suggested block:
+
+```powershell
+$BackupPath = "C:\GPO-Backups\<date-folder>"
+Restore-GPO -Name "Default Domain Policy" -Path $BackupPath
+```
+
+Then sync the updated `phase-2-password-policy.md` from the repo into both local skill mirrors. After that, Codex should re-check V01 and mark V01/V02 resolved if the command is present in all three locations.
+
+**Risk:** Documentation-only correction. Do not run `Restore-GPO`; only add the rollback command to the guide.
+
+---
+
 ## Previously Resolved Items (2026-06-05)
 
 ### 🟢 RESOLVED — Item 01: Verify domain DN
