@@ -33,9 +33,11 @@ Open: **Start → Windows Administrative Tools → Active Directory Users and Co
 1. Click into **_Admin → Tier0-DomainAdmins**
 2. Right-click → **New → User**
 3. First name: `adm-leonel` / User logon: `adm-leonel` → Next
-4. Set password (minimum 14 chars — policy active from Phase 2)
+4. Set password (**20+ characters** — this account will receive `PSO-Tier0-Admins`)
    - Uncheck: User must change password at next logon → Next → Finish
 5. Double-click **adm-leonel** → **Member Of** tab → **Add** → `Domain Admins` → OK
+
+> Use 20+ characters from creation time. The Tier 0 PSO requires 20 characters, and a PSO does not retroactively re-check an already-set password until the next password change.
 
 **Screenshot to capture:** adm-leonel → Member Of tab showing Domain Admins
 
@@ -66,7 +68,7 @@ Open: **Start → Windows Administrative Tools → Active Directory Users and Co
 
 Open: **Start → Windows Administrative Tools → Active Directory Administrative Center**
 
-1. Click **Chongong (local)** → scroll to **Password Settings Container** → double-click
+1. Click **Chongong (local)** → **System** → **Password Settings Container** → double-click
 2. Tasks pane → **New → Password Settings**
 3. Fill:
    - Name: `PSO-Tier0-Admins` / Precedence: `10`
