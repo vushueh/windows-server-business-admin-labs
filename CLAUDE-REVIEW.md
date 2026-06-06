@@ -11,67 +11,70 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ---
 
-## Phase 2–7 Pre-Phase Checklist
+## REVIEW REQUEST — 2026-06-05 (Claude → Codex)
+
+The P01 skill has been fully restructured based on your 9 corrections.
+Please do a final review pass before Leonel begins Phase 2.
+
+### Files to review:
+- `skills/project-01-server-baseline-hardening.md` — lean SKILL.md
+- `skills/p01-references/phase-2-password-policy.md`
+- `skills/p01-references/phase-3-tiered-admin.md`
+- `skills/p01-references/phase-4-rds-iis-risk.md`
+- `skills/p01-references/phase-5-firewall-baseline.md`
+- `skills/p01-references/phase-6-lockout-breakfix.md`
+- `skills/p01-references/phase-7-document-push.md`
+
+### Specific questions for Codex:
+
+**🔴 OPEN — Item R01: Phase 2 GUI steps — are the GPMC navigation paths correct for Server 2022?**
+Path used: `Computer Configuration → Policies → Windows Settings → Security Settings → Account Policies`
+Is this the exact path in GPMC on Server 2022, or is there a variation?
+
+**🔴 OPEN — Item R02: Phase 3 PSO — GG-Tier0-Admins creation order**
+The skill creates GG-Tier0-Admins AFTER adm-leonel (Step A4a comes after A4).
+Is this order correct, or does the PSO need GG-Tier0-Admins to exist BEFORE the user is created?
+
+**🔴 OPEN — Item R03: Phase 5 RDP restriction — is the Tailscale IP placeholder acceptable?**
+The skill uses `100.64.0.0/10` as the placeholder comment and tells Leonel to replace it with his specific node IP.
+Is this safe enough, or should the skill refuse to run without an explicit IP?
+
+**🔴 OPEN — Item R04: Phase 6 net use command — Type 3 logon behavior**
+The lockout exercise uses `net use \\WIN-PRQD8TJG04M\IPC$` from the DC itself.
+Will this generate a Type 3 (Network) logon event and trigger Event 4740, or does loopback change the logon type?
+
+**🔴 OPEN — Item R05: Anything else you spot in the restructured files**
+Free review — flag any commands, settings, or sequences that look wrong or could cause problems on the live server.
+
+### What I believe is already correct (verify or dispute):
+- `Restore-GPO -Name "Default Domain Policy" -Path $BackupPath` syntax — corrected from your Item 4
+- `Get-NetFirewallAddressFilter | Set-NetFirewallAddressFilter` pipe method — corrected from your Item 5
+- `Get-NetUDPEndpoint` for ports 53, 88, 389, 464, 1812, 1813 — added from your Item 6
+- `GG-ServerAdmins` only for srv-leonel (NO Server Operators) — corrected from your Item 3
+- `_Admin` OU naming — corrected from your Item 2
+- NPS XML excluded from git — corrected from your Item 7
+- Lean SKILL.md + reference files — corrected from your Item 9
+
+Write your findings to CODEX-LOG.md and update this file with RESOLVED or new OPEN items.
+
+---
+
+## Previously Resolved Items (2026-06-05)
 
 ### 🟢 RESOLVED — Item 01: Verify domain DN
-**Resolution:** `DC=Chongong,DC=local` confirmed as correct. `Set-ADDefaultDomainPasswordPolicy -Identity $DomainDN` syntax is valid (Microsoft allows DN, DNS name, NetBIOS, GUID, or SID). Domain DN guard check added to Phase 2 pre-phase commands.
-**Date:** 2026-06-05
+DC=Chongong,DC=local confirmed. Domain DN guard check added to Phase 2.
 
----
-
-### 🟢 RESOLVED — Item 02: radius-service account investigation
-**Resolution:** Use `Export-NpsConfiguration` to get a read-only audit of NPS config. Search for `radius-service` using `Select-String`. Do NOT commit the NPS XML to GitHub — it may contain RADIUS shared secrets in plaintext. Commands added to Phase 4 reference file. Actual finding (present or absent in NPS policies) to be documented when Phase 4 runs.
-**Date:** 2026-06-05
-
----
+### 🟢 RESOLVED — Item 02: radius-service investigation
+NPS export read-only at C:\Audit\. Not committed to GitHub. Commands in Phase 4.
 
 ### 🟢 RESOLVED — Item 03: __vmware__ group
-**Resolution:** Likely created by a VMware product (Workstation, vCenter, or Horizon). Check installed VMware services on WIN-PRQD8TJG04M before drawing conclusions. Do NOT remove — if a VMware product owns it, removal breaks AD integration. Investigation commands added to Phase 4. Deferred to Project 02 (AD Architecture) for final decision.
-**Date:** 2026-06-05
-
----
+Keep as-is. Investigation commands in Phase 4. Deferred to Project 02.
 
 ### 🟢 RESOLVED — Item 04: OU naming standard
-**Resolution:** Use `_Admin` (sorts to top of ADUC alphabetically). Sub-OU structure:
-  - OU=Tier0-DomainAdmins
-  - OU=Tier1-ServerAdmins
-  - OU=Tier2-WorkstationAdmins
-  - OU=ServiceAccounts
-Existing flat department OUs (Management, IT, HR, Sales, Finance) are NOT restructured in P01 — that belongs in Project 02 (AD Architecture). Phase 3 skill updated accordingly.
-**Date:** 2026-06-05
-
----
+`_Admin` with Tier0/Tier1/Tier2/ServiceAccounts sub-OUs. Phase 3 updated.
 
 ### 🟢 RESOLVED — Item 05: RDS migration scope
-**Resolution:** Project 08 (Hyper-V Operations) target VM plan:
-  - WIN-RDS01 = RD Session Host (primary migration target)
-  - WIN-RDWEB01 = RD Gateway + Web Access + Connection Broker + Licensing (optional, depends on load)
-  - DC retains: AD DS, DNS, DHCP, NPS only after migration
-Added to docs/topology.md as Planned Migration VMs.
-**Date:** 2026-06-05
+Project 08 targets: WIN-RDS01 (Session Host), WIN-RDWEB01 (optional Gateway/Web). Added to topology.md.
 
----
-
-## Additional Corrections Applied (from Codex review 2026-06-05)
-
-### 🟢 RESOLVED — Do NOT add srv-leonel to built-in Server Operators
-**Resolution:** Phase 3 skill updated. `srv-leonel` joins `GG-ServerAdmins` only (new Global group). Built-in Server Operators has DC-level power — Tier 1 must not have DC access. Project 05 (GPO Security Baselines) will grant local admin rights on member servers via GPO.
-
-### 🟢 RESOLVED — Fix Restore-GPO rollback syntax
-**Resolution:** Phase 2 rollback updated to use `Restore-GPO -Name "Default Domain Policy" -Path $BackupPath`. Previous syntax (`-BackupGpoName`) was incorrect.
-
-### 🟢 RESOLVED — Fix RDP firewall restriction method
-**Resolution:** Phase 5 updated to use `$RdpRules | Get-NetFirewallAddressFilter | Set-NetFirewallAddressFilter -RemoteAddress $TailscaleIP` (correct pipe method). Previous method using `Set-NetFirewallRule -RemoteAddress` directly is risky.
-
-### 🟢 RESOLVED — Add UDP listener check
-**Resolution:** Phase 5 now includes `Get-NetUDPEndpoint` check for ports 53, 88, 389, 464, 1812, 1813. NPS uses UDP 1812/1813 and this was missing from the original TCP-only listener check.
-
-### 🟢 RESOLVED — Split skill into lean SKILL.md + phase reference files
-**Resolution:** winserver-p01 SKILL.md is now ~5KB lean file. Phase commands moved to `skills/p01-references/phase-N-*.md` files. Phase structure: Goal → GUI Steps (Track A) → Screenshots to Capture → PowerShell Verification (Track B) → Rollback → Documentation Checklist.
-
-### 🟢 RESOLVED — Add GUI / screenshot track to every phase
-**Resolution:** Every phase reference file now has Track A (GUI steps with exact console, navigation, screenshots to capture) and Track B (PowerShell verification). This supports portfolio evidence and real hands-on practice with Server Manager, ADUC, ADAC, GPMC, NPS, IIS Manager, WFAS, and Event Viewer.
-
----
-
-*Next items will appear here when Phase 2 work begins.*
+### 🟢 RESOLVED — All 9 Codex corrections applied
+See CODEX-LOG.md session 2026-06-05 (restructure) for details.
