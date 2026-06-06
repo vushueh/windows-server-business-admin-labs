@@ -26,9 +26,35 @@ Get-ADUser -Identity "testuser" -Properties Enabled, LockedOut, BadLogonCount |
 
 **Screenshot to capture:** Reset Password dialog
 
-### Step A2 — Trigger the lockout (5 bad attempts)
+### Step A2a — Validate that the test method creates a network logon failure
 
-Run from a different domain-joined machine, or use `\\127.0.0.1` from the DC:
+Preferred method: run the bad-login test from another domain-joined Windows machine.
+Fallback method: run it from the DC against `\\WIN-PRQD8TJG04M\IPC$`, but validate one failed attempt first.
+
+```powershell
+$Start = Get-Date
+
+net use \\WIN-PRQD8TJG04M\IPC$ /user:CHONGONG\testuser "WrongPassword123!" 2>&1
+net use \\WIN-PRQD8TJG04M\IPC$ /delete 2>&1 | Out-Null
+Start-Sleep -Seconds 3
+
+$Event = Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4625; StartTime=$Start} |
+    Where-Object {$_.Message -match 'testuser'} |
+    Select-Object -First 1
+
+if (-not $Event -or $Event.Message -notmatch 'Logon Type:\s+3') {
+    throw "Expected Event 4625 with Logon Type 3 was not confirmed. Run this exercise from a different domain-joined client."
+}
+
+$Event | Select-Object TimeCreated, Id,
+    @{N="Summary";E={$_.Message.Split("`n")[0..8] -join " | "}}
+```
+
+**Screenshot to capture:** Event Viewer → Security → Event 4625 showing `testuser` and `Logon Type: 3`
+
+### Step A2b — Trigger the lockout (5 bad attempts)
+
+After Step A2a confirms Event 4625 / Logon Type 3, run the full lockout loop:
 
 ```powershell
 1..6 | ForEach-Object {
@@ -88,6 +114,12 @@ Get-ADUser -Identity "testuser" -Properties LockedOut, BadLogonCount, LastBadPas
 Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4740} -MaxEvents 5 |
     Select-Object TimeCreated, @{N="Info";E={$_.Message.Split("`n")[0..2] -join " | "}}
 
+# Failed logon evidence: 4625 / Logon Type 3
+Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4625} -MaxEvents 20 |
+    Where-Object {$_.Message -match 'testuser' -and $_.Message -match 'Logon Type:\s+3'} |
+    Select-Object TimeCreated, Id,
+        @{N="Info";E={$_.Message.Split("`n")[0..8] -join " | "}}
+
 # Unlock
 Unlock-ADAccount -Identity "testuser"
 Get-ADUser -Identity "testuser" -Properties LockedOut | Select-Object SamAccountName, LockedOut
@@ -114,6 +146,7 @@ Get-ADUser -Identity "testuser" -Properties Enabled, DistinguishedName |
 
 ## Documentation Checklist — Phase 6
 
+- [ ] Screenshot: validation Event 4625 showing testuser and Logon Type 3 before full loop
 - [ ] Screenshot: testuser locked padlock icon in ADUC
 - [ ] Screenshot: Event Viewer → Event 4740 details (testuser locked out)
 - [ ] Screenshot: Event 4625 (failed logons before lockout)
