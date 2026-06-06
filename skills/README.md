@@ -15,6 +15,6 @@ Both Claude and Codex reference these before providing any commands.
 | Skill | Project | Slash command | Status |
 |-------|---------|--------------|--------|
 | [windows-server-business-admin](windows-server-business-admin.md) | Full family overview | `/winserver` | ✅ Ready |
-| project-01-server-hardening | Server Baseline + Hardening | `/winserver-p01` | ⬜ Written when P01 starts |
+| [project-01-server-hardening](project-01-server-baseline-hardening.md) | Server Baseline + Hardening | `/winserver-p01` | ✅ Ready |
 | project-12-m365-hybrid-identity | Microsoft 365 + Entra | `/winserver-p12` | ⬜ Written when P12 starts |
 | project-13-identity-integration | Enterprise Identity Capstone | `/winserver-p13` | ⬜ Written when P13 starts |
