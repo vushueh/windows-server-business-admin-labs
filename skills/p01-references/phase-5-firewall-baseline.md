@@ -28,14 +28,14 @@ Open: **Start → Windows Administrative Tools → Windows Firewall with Advance
 ### Step A3 — Restrict RDP to Tailscale
 1. Find all rules with "Remote Desktop" in the name
 2. For each enabled RDP rule: double-click → **Scope** tab
-3. Under "Remote IP address" → **These IP addresses:** → Add your Tailscale node IP
+3. Under "Remote IP address" → **These IP addresses:** → Add your exact management Tailscale IP
    *(Run `tailscale ip -4` on your management machine to get the exact IP)*
 4. OK → Apply
 
-**Screenshot to capture:** RDP rule → Scope tab showing specific Tailscale IP as Remote IP address
+**Screenshot to capture:** RDP rule → Scope tab showing the specific management Tailscale IP as Remote IP address
 
 > **Use your specific Tailscale node IP, not 100.64.0.0/10.**
-> The /10 covers all Tailscale nodes globally. Your node IP is tighter.
+> The /10 covers the whole Tailscale carrier-grade NAT range. Your node IP is tighter and safer.
 
 ---
 
@@ -55,7 +55,7 @@ Get-NetTCPConnection -State Listen |
 Get-NetUDPEndpoint |
     Where-Object {$_.LocalPort -in @(53, 88, 389, 464, 1812, 1813)} |
     Select-Object LocalAddress, LocalPort,
-        @{N="ProcessName";E={(Get-Process -Id $_.OwningProcessId -ErrorAction SilentlyContinue).ProcessName}} |
+        @{N="ProcessName";E={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName}} |
     Sort-Object LocalPort | Format-Table -AutoSize
 ```
 
@@ -79,10 +79,19 @@ $RdpRules = Get-NetFirewallRule -DisplayName "*Remote Desktop*" -ErrorAction Sil
 if (-not $RdpRules) {
     Write-Warning "No enabled inbound Remote Desktop rules found — check manually"
 } else {
-    # Use your specific Tailscale node IP — replace 100.64.0.0/10 with e.g. 100.81.197.x
-    $TailscaleIP = "100.64.0.0/10"
+    # Replace this with the exact management Tailscale IP that should be allowed to RDP.
+    # Do not use 100.64.0.0/10 here.
+    $TailscaleIP = "REPLACE_WITH_MANAGEMENT_TAILSCALE_IP"
+
+    if ($TailscaleIP -eq "REPLACE_WITH_MANAGEMENT_TAILSCALE_IP" -or
+        $TailscaleIP -eq "100.64.0.0/10" -or
+        [string]::IsNullOrWhiteSpace($TailscaleIP)) {
+        throw "Refusing to restrict RDP: replace the placeholder with one specific management Tailscale IP first."
+    }
+
     $RdpRules | Get-NetFirewallAddressFilter |
         Set-NetFirewallAddressFilter -RemoteAddress $TailscaleIP
+
     Write-Host "RDP restricted to: $TailscaleIP"
     $RdpRules | Get-NetFirewallAddressFilter | Select-Object RemoteAddress
 }
@@ -100,7 +109,7 @@ Get-NetTCPConnection -State Listen |
 
 Get-NetUDPEndpoint |
     Select-Object LocalAddress, LocalPort,
-        @{N="ProcessName";E={(Get-Process -Id $_.OwningProcessId -ErrorAction SilentlyContinue).ProcessName}} |
+        @{N="ProcessName";E={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName}} |
     Sort-Object LocalPort |
     Export-Csv "C:\Audit\udp-endpoints-$(Get-Date -Format 'yyyy-MM-dd').csv" -NoTypeInformation
 
@@ -123,7 +132,7 @@ Deferred to Project 05 (GPO Security Baselines).
 ## Documentation Checklist — Phase 5
 
 - [ ] Screenshot: WFAS overview — all three profiles and inbound default
-- [ ] Screenshot: RDP rule → Scope tab with Tailscale IP
+- [ ] Screenshot: RDP rule → Scope tab with exact management Tailscale IP
 - [ ] TCP listeners CSV in docs/
 - [ ] UDP endpoints CSV — confirm 1812/1813 present
 - [ ] Firewall inbound rules CSV in docs/
