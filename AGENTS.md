@@ -39,6 +39,28 @@ and do NOT execute live server commands (Leonel or Claude does that).
 4. Read `docs/naming-standards.md` for naming conventions
 5. Read `skills/project-01-server-baseline-hardening.md` for P01 current phase details
 
+## Edit Tier Rules
+
+All three parties (Claude, Codex, Leonel) must follow this model.
+
+### Tier 1 — Local repo (default for all content work)
+Use for: phase files, project READMEs, scripts, skill files, docs.
+Local path (Windows): `E:\Homelab-Repos\family-projects\windows-server-business-admin-labs\`
+Local path (WSL):      `/mnt/e/Homelab-Repos/family-projects/windows-server-business-admin-labs/`
+- Codex writes here directly (open this folder as the Codex workspace/project).
+- Claude reads and edits files here directly.
+- Session start: `git pull` — session end: `git add -A && git commit && git push`.
+
+### Tier 2 — GitHub API (exception only)
+Use for: bridge file quick patches (CLAUDE-REVIEW.md, CODEX-LOG.md) between sessions when no local checkout is open.
+Never: phase content, skill files, configs, or any file over ~5KB.
+Who pushes: Claude by default. Codex may push bridge files only when Leonel explicitly asks.
+
+### Tier 3 — Live infrastructure (approval required)
+Use for: SSH to WIN-PRQD8TJG04M, AD/GPO changes, DHCP/DNS edits, NPS config.
+Who: Leonel executes all commands on the server. Claude coordinates via SSH with explicit per-action approval.
+Never: Codex does not execute live server commands.
+
 ## Critical Safety Rules
 
 - **NEVER modify Default Domain Policy or Default Domain Controllers Policy** without explicit approval
