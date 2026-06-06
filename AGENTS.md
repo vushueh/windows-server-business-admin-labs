@@ -9,8 +9,11 @@
 
 Advanced Windows Server 2022 lab. Goal: build a real small-business Microsoft environment
 and integrate it as the identity backbone for all other homelab families.
-Platform: Hyper-V host (WIN-PRQD8TJG04M / 192.168.20.11).
-Domain Controller VM: WIN-DC01 (IP assigned in Project 01).
+
+**Platform:** Hyper-V host WIN-PRQD8TJG04M (192.168.20.11, Tailscale 100.81.197.116).
+**Important:** This machine IS already the Primary Domain Controller for Chongong.local.
+It is not a fresh server — see `projects/project-01-server-baseline-hardening/README.md`
+for the complete live audit findings.
 
 ## Your Role (Codex)
 
@@ -31,9 +34,10 @@ and do NOT execute live server commands (Leonel or Claude does that).
 ## Before Starting Any Task
 
 1. Read `CLAUDE-REVIEW.md` — resolve all OPEN items before new work
-2. Read the relevant project README.md and current phase file
+2. Read the relevant project README.md and current phase skill file
 3. Read `docs/identity-design.md` for AD architecture reference
 4. Read `docs/naming-standards.md` for naming conventions
+5. Read `skills/project-01-server-baseline-hardening.md` for P01 current phase details
 
 ## Critical Safety Rules
 
@@ -45,15 +49,24 @@ and do NOT execute live server commands (Leonel or Claude does that).
 - **NEVER push to GitHub** — write files locally, Claude pushes
 - All scripts must be reviewed by Claude before running in production AD
 
-## Environment Reference
+## Actual Environment (Discovered 2026-06-05)
 
 | Component | IP / Location | Notes |
 |-----------|--------------|-------|
-| Hyper-V Host | 192.168.20.11 | WIN-PRQD8TJG04M |
-| WIN-DC01 | TBD (Project 01) | Primary DC, DNS, NPS |
-| WIN-FS01 | TBD (Project 06) | File Server |
-| WIN-WS01 | TBD (Project 07) | Test workstation |
+| WIN-PRQD8TJG04M | 192.168.20.11 / Tailscale 100.81.197.116 | PDC for Chongong.local, also Hyper-V host for 13 VMs |
+| SSH access | `ssh -i claude_winserver_2022_ed25519 Administrator@100.81.197.116` | Ed25519 key |
+| Domain | Chongong.local / CHONGONG | Windows2016Domain functional level |
+| Joined computers | RADIUS01, GITEA, 5× DESKTOP machines | Already domain-joined |
+| WIN-FS01 | TBD (Project 06) | Hyper-V VM to be created |
+| WIN-WS01 | TBD (Project 07) | Hyper-V VM to be created |
 | OPNsense | Hyper-V VM | Will authenticate to NPS (Project 13) |
+
+## Current Project Status
+
+| Project | Status | Notes |
+|---------|--------|-------|
+| 01 — Server Baseline + Hardening | 🔄 In Progress | Phase 1 (audit) complete; Phase 2+ pending |
+| 02–13 | ⬜ Planned | Blocked on P01 completion |
 
 ## Cross-Family Integration Awareness
 
