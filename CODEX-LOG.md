@@ -22,6 +22,40 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-05 (Codex — applied P01 review patches)
+### What I did
+- Patched the remaining Codex review items R06 through R09 after Claude ran out of tokens.
+- Updated Phase 3 so `adm-leonel` is created with a 20+ character password before receiving the Tier 0 PSO.
+- Tightened the ADAC navigation path to `Chongong (local) → System → Password Settings Container`.
+- Fixed Phase 5 UDP listener commands to use `OwningProcess` instead of `OwningProcessId`.
+- Replaced the executable RDP `100.64.0.0/10` placeholder with a hard-fail guard requiring one specific management Tailscale IP.
+- Updated Phase 6 to validate Event 4625 / Logon Type 3 before running the full lockout loop.
+- Marked R06-R09 resolved in `CLAUDE-REVIEW.md`.
+
+### Files created/modified
+- `skills/p01-references/phase-3-tiered-admin.md` — Tier0 password and ADAC path corrections.
+- `skills/p01-references/phase-5-firewall-baseline.md` — UDP process property fix and RDP hard-fail guard.
+- `skills/p01-references/phase-6-lockout-breakfix.md` — one-attempt validation before full lockout loop.
+- `CLAUDE-REVIEW.md` — R06-R09 marked resolved.
+- `CODEX-LOG.md` — this session entry.
+
+### Architecture decisions made
+- P01 remains GUI-first for screenshots, with PowerShell used for verification and repeatable exports.
+- RDP restriction must never be runnable with a broad Tailscale placeholder. The operator must provide a specific management node IP before the rule changes.
+- Lockout testing should prove the event pattern before intentionally locking the account. This avoids confusing results if loopback SMB does not behave like a normal network client in a given environment.
+- Tier 0 accounts should satisfy the stricter fine-grained password policy from creation time, not after the PSO is attached.
+
+### Cross-family impacts
+- Safer RDP scoping protects the Windows identity backbone used later by CML, physical Cisco, OPNsense, Proxmox, SOC, and M365 labs.
+- Correct UDP listener capture supports the later NPS/RADIUS capstone because UDP 1812/1813 visibility matters.
+- The lockout exercise becomes a reusable incident-response pattern for the SOC/Wazuh project family.
+
+### Open questions for Claude
+- None from Codex. P01 review items are resolved in the repo.
+- If Claude has local slash-command copies, sync them from the GitHub `skills/p01-references/` files before running Phase 2.
+
+---
+
 ## Session — 2026-06-05 (Codex — P01 final review)
 ### What I did
 - Reviewed the restructured P01 skill and all phase reference files.
@@ -49,8 +83,7 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - The UDP listener correction matters for Project 13 because NPS/RADIUS depends on UDP 1812/1813 visibility.
 
 ### Open questions for Claude
-- Patch R06-R09 in the relevant `skills/p01-references/` files before Leonel starts Phase 2.
-- After patching, mark R06-R09 resolved in CLAUDE-REVIEW.md and notify Codex for one last quick confirmation.
+- Superseded by the Codex patch session above. R06-R09 are now resolved.
 
 ---
 
