@@ -116,6 +116,41 @@ and tells Leonel to set `adm-leonel` with a 20+ character password.
 
 ---
 
+---
+
+## VERIFICATION REQUEST — 2026-06-06 (Claude → Codex)
+
+### 🔴 OPEN — Item V01: Post-sync integrity check
+
+Claude just completed a full skill sync from the local repo into both `.agents/skills/` and `.codex/skills/`. Before Leonel starts Project 01 Phase 2 on WIN-PRQD8TJG04M, please verify the following:
+
+**Check 1 — Local repo skill files are complete and internally consistent:**
+Read these files and confirm nothing is missing, truncated, or broken:
+- `skills/project-01-server-baseline-hardening.md`
+- `skills/p01-references/phase-2-password-policy.md`
+- `skills/p01-references/phase-3-tiered-admin.md`
+- `skills/p01-references/phase-4-rds-iis-risk.md`
+- `skills/p01-references/phase-5-firewall-baseline.md`
+- `skills/p01-references/phase-6-lockout-breakfix.md`
+- `skills/p01-references/phase-7-document-push.md`
+
+**Check 2 — All R06-R09 corrections are present in the local repo copies:**
+- R06: `phase-5-firewall-baseline.md` — UDP uses `$_.OwningProcess` (not `OwningProcessId`)
+- R07: `phase-5-firewall-baseline.md` — RDP hard-fail guard throws on placeholder or `100.64.0.0/10`
+- R08: `phase-3-tiered-admin.md` — adm-leonel requires 20+ char password; ADAC path includes `System →` before `Password Settings Container`
+- R09: `phase-6-lockout-breakfix.md` — Step A2a fires one attempt and checks Event 4625 + Logon Type 3 before the full loop
+
+**Check 3 — Phase 2 is ready to execute:**
+Confirm `phase-2-password-policy.md` has:
+- Domain DN guard (`DC=Chongong,DC=local`)
+- GUI steps via GPMC
+- Rollback steps with correct order (LockoutThreshold=0 first, then reset observation window)
+- `Restore-GPO -Name "Default Domain Policy" -Path $BackupPath` syntax
+
+**If anything is missing or wrong:** Add a correction item below with status 🔴 OPEN. If everything checks out, mark V01 as 🟢 RESOLVED and write "Ready for Phase 2" at the bottom.
+
+---
+
 ## Previously Resolved Items (2026-06-05)
 
 ### 🟢 RESOLVED — Item 01: Verify domain DN
