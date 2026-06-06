@@ -22,6 +22,55 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-06 (Codex — D01 Project 02-12 README review)
+### What I did
+- Reviewed all 11 Project 02-12 README files against D01, `docs/identity-design.md`, and `docs/naming-standards.md`.
+- Patched unsafe or inaccurate runbook items directly in the project README files.
+- Confirmed the D01-specific checks and corrected the items that needed guardrails:
+  - P02 replica DC promotion now has a safe `Install-ADDSDomainController` command; removed fake Server 2022 functional-level upgrade and live FSMO seizure practice.
+  - P03 reverse zone creation keeps valid `Add-DnsServerPrimaryZone -NetworkID` syntax and clarifies AD DNS-only NIC settings.
+  - P04 DHCP failover now installs/authorizes DHCP on WIN-DC02 before `Add-DhcpServerv4Failover`.
+  - P05 Advanced Audit Policy GPMC path remains correct; account policy GPO behavior now warns that OU staging does not test domain password/lockout policy.
+  - P06 confirms `SetAccessRuleProtection($true, $false)` disables inheritance without copying and adds explicit Administrators/SYSTEM ACLs.
+  - P08 RDS removal now drains sessions, requires backup/maintenance approval, and uses a parse-safe `Remove-WindowsFeature` command.
+  - P09 WAC install updated for current `WindowsAdminCenter.exe` silent install syntax, with legacy MSI syntax kept as a comment.
+  - P10 WEF now states `wecutil cs` expects an XML file path and splits Security/System event IDs correctly.
+  - P11 tombstone guidance no longer assumes 60 days; it now requires querying the live tombstoneLifetime value.
+  - P12 Entra Connect now uses Custom install / Domain and OU filtering / staging mode before export.
+- Updated `CLAUDE-REVIEW.md` D01 to 🟢 RESOLVED.
+
+### Files created/modified
+- `projects/project-02-ad-architecture/README.md`
+- `projects/project-03-dns-engineering/README.md`
+- `projects/project-04-dhcp-ipam/README.md`
+- `projects/project-05-gpo-security-baselines/README.md`
+- `projects/project-06-file-server-access-governance/README.md`
+- `projects/project-07-windows-client-lifecycle/README.md`
+- `projects/project-08-hyperv-operations/README.md`
+- `projects/project-09-powershell-admin-platform/README.md`
+- `projects/project-10-security-monitoring-ir/README.md`
+- `projects/project-11-backup-disaster-recovery/README.md`
+- `projects/project-12-m365-entra-hybrid-identity/README.md`
+- `docs/identity-design.md` — corrected AD DS functional-level labels and added Tier2-WorkstationAdmins to the OU reference.
+- `CLAUDE-REVIEW.md` — D01 marked resolved.
+- `CODEX-LOG.md` — this session entry.
+
+### Architecture decisions made
+- Keep FSMO roles on WIN-PRQD8TJG04M during normal P02 work; FSMO seizure belongs only in DR testing with backups and approval.
+- Treat password/lockout policy as a domain-root account policy; do not imply OU-linked staging validates domain account policy.
+- Prefer disposable test objects for restore/offboarding/lockout drills instead of using Leonel's real user, P01 `testuser`, production GPOs, or working VMs.
+- Require P11 backup/DR completion before P12 hybrid identity because Entra sync can create broad cloud-side impact.
+
+### Cross-family impacts
+- P10 WEF/Wazuh wording now separates Security and System event sources, improving Blue Team/SOC integration accuracy.
+- P12 OU filtering/staging reduces the chance of accidentally syncing admin/service identities into Entra before Project 13 cross-family auth.
+- P04 DHCP failover sequencing protects downstream CML/CCNA, Proxmox, OPNsense, and SOC systems that depend on stable DHCP/DNS.
+
+### Open questions for Claude
+- None. D01 is resolved locally; Claude can review and push when ready.
+
+---
+
 ## Session — 2026-06-05 (Codex — applied P01 review patches)
 ### What I did
 - Patched the remaining Codex review items R06 through R09 after Claude ran out of tokens.

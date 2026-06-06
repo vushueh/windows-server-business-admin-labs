@@ -7,7 +7,10 @@
 | Internal domain | `chongong.local` |
 | NetBIOS name | `CHONGONG` |
 | UPN suffix (M365) | `<yourbusiness>.com` (added Project 12) |
-| Functional level | Windows Server 2022 |
+| Functional level | Windows2016Domain / Windows2016Forest |
+
+> Windows Server 2022 uses the Windows Server 2016 AD DS functional-level labels.
+> Do not plan a separate "Windows Server 2022" domain or forest functional-level upgrade.
 
 ## Account Tiers
 
@@ -29,6 +32,7 @@ chongong.local
   ├── _Admin
   │   ├── Tier0-DomainAdmins
   │   ├── Tier1-ServerAdmins
+  │   ├── Tier2-WorkstationAdmins
   │   └── ServiceAccounts
   ├── Computers
   │   ├── Servers

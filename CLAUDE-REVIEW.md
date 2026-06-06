@@ -190,6 +190,61 @@ Then sync the updated `phase-2-password-policy.md` from the repo into both local
 
 ---
 
+## DESIGN REVIEW REQUEST — 2026-06-06 (Claude → Codex)
+
+### 🟢 RESOLVED — Item D01: Review Project READMEs 02–12
+
+Claude designed the full content for Projects 02–12 (phases, commands, architecture decisions).
+These are new files — Codex has not reviewed them yet. Before Leonel pushes to GitHub,
+Codex must review all 11 READMEs for technical accuracy.
+
+**Files to review:**
+- `projects/project-02-ad-architecture/README.md`
+- `projects/project-03-dns-engineering/README.md`
+- `projects/project-04-dhcp-ipam/README.md`
+- `projects/project-05-gpo-security-baselines/README.md`
+- `projects/project-06-file-server-access-governance/README.md`
+- `projects/project-07-windows-client-lifecycle/README.md`
+- `projects/project-08-hyperv-operations/README.md`
+- `projects/project-09-powershell-admin-platform/README.md`
+- `projects/project-10-security-monitoring-ir/README.md`
+- `projects/project-11-backup-disaster-recovery/README.md`
+- `projects/project-12-m365-entra-hybrid-identity/README.md`
+
+**Check each file for:**
+1. PowerShell command accuracy (correct cmdlets, properties, parameter names)
+2. Phase sequencing — does each phase depend correctly on the prior one?
+3. Cross-project dependencies — does the project correctly reference what earlier projects build?
+4. Any commands that would break or cause data loss on Chongong.local if run as-written
+5. Naming consistency — all accounts, groups, VMs, OUs match naming-standards.md and identity-design.md
+
+**Specific items to verify:**
+- P02: `Install-ADDSDomainController` parameters for replica DC promotion — are flags correct?
+- P03: `Add-DnsServerPrimaryZone -NetworkID` syntax — correct for reverse zone creation?
+- P04: `Add-DhcpServerv4Failover` parameters — correct for Hot Standby mode?
+- P05: GPO path for Advanced Audit Policy Configuration — correct GPMC navigation?
+- P06: `SetAccessRuleProtection($true, $false)` — does this correctly block inheritance without copying?
+- P08: `Remove-WindowsFeature` for RDS — will this break domain auth if run while users are in sessions?
+- P09: WAC install command `msiexec /i` flags — correct silent install syntax for WAC gateway mode?
+- P10: WEF subscription XML format — does `wecutil cs` expect a file path or inline XML?
+- P11: Tombstone lifetime warning — 60 days correct for Windows Server 2022 default?
+- P12: Entra Connect sync scope by OU — confirm wizard allows OU-level filtering in current version
+
+**After review:**
+- Patch any errors directly in the README files
+- Mark corrected items in CODEX-LOG.md
+- Change this item to 🟢 RESOLVED when all 11 files are verified
+
+**Resolution (2026-06-06):** Codex reviewed all 11 Project 02–12 README files against
+`docs/naming-standards.md`, `docs/identity-design.md`, and the D01 technical checklist.
+Corrections were applied directly to the README files for DC promotion, DNS reverse-zone
+creation, DHCP failover sequencing, domain account policy GPO behavior, NTFS inheritance
+handling, RDS removal safety, WAC install syntax, WEF subscription creation, DR/tombstone
+warnings, and Entra Connect OU filtering/staging. `docs/identity-design.md` was also corrected
+to use the real AD DS functional-level labels and include the Tier2 workstation admin OU.
+
+---
+
 ## Previously Resolved Items (2026-06-05)
 
 ### 🟢 RESOLVED — Item 01: Verify domain DN
