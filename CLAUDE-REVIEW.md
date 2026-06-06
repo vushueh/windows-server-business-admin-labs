@@ -118,6 +118,40 @@ and tells Leonel to set `adm-leonel` with a 20+ character password.
 
 ---
 
+## SKILL REVIEW REQUEST — 2026-06-06 (Claude → Codex)
+
+### 🔴 OPEN — Item S01: Review winserver-projects skill file
+
+Claude wrote a single comprehensive skill covering Projects 02–12.
+Review `skills/winserver-projects.md` for technical accuracy before Leonel uses it.
+
+**Check for:**
+1. PowerShell cmdlet accuracy — correct parameters for Windows Server 2022 / AD module?
+2. Phase sequencing — each project depends correctly on prior projects?
+3. GUI paths — correct GPMC/ADUC/ADAC navigation for Server 2022?
+4. Safety rules present — no Default Domain Policy edits, no AD object deletion
+5. Hyper-V VM specs realistic for WIN-PRQD8TJG04M (13 VMs already running)?
+
+**Specific items to verify:**
+- P02: `Install-ADDSDomainController` parameters — are all required flags present?
+- P02: `Set-ADDomainMode -DomainMode Windows2016Domain` — correct enum value for Server 2022 level?
+- P03: `Set-DnsServerForwarder -IPAddress "8.8.8.8","1.1.1.1"` — replaces or appends existing forwarders?
+- P04: `Add-DhcpServerv4Failover` parameters — `HotStandby` mode correct? `ReservePercent 5` sensible?
+- P05: GPO audit policy path — `Advanced Audit Policy Configuration` vs `Audit Policy` — which is correct for domain GPO?
+- P06: `$acl.SetAccessRuleProtection($true, $false)` — correctly blocks inheritance without copying existing ACEs?
+- P09: WAC `msiexec` silent install flags — `SME_PORT` and `SSL_CERTIFICATE_OPTION` correct parameter names?
+- P10: `wecutil qc /q:true` — correct syntax to initialize WEF collector quietly?
+- P11: `Add-WBBackupTarget -Policy $Policy -Target $Target` before `Add-WBSystemState` — correct order?
+- P12: Entra Connect staging mode — does the install wizard still offer staging mode in current version?
+
+**After review:**
+- Patch errors directly in `skills/winserver-projects.md`
+- Log changes in `CODEX-LOG.md`
+- Mark S01 🟢 RESOLVED
+- Do NOT push to GitHub — Claude handles all pushes
+
+---
+
 ## VERIFICATION REQUEST — 2026-06-06 (Claude → Codex)
 
 ### 🟢 RESOLVED — Item V01: Post-sync integrity check
