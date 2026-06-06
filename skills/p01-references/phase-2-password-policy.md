@@ -119,7 +119,15 @@ Search-ADAccount -LockedOut | Select-Object SamAccountName, BadLogonCount, LastB
 1. GPMC → Group Policy Objects → right-click Default Domain Policy → **Restore from Backup...**
 2. Select backup folder → select the backup → Restore
 
-**PowerShell rollback — IMPORTANT ORDER:**
+**PowerShell GPO restore from backup:**
+Use this only if you are intentionally restoring the full backed-up Default Domain Policy. Replace `<date-folder>` with the actual backup folder created in Step A1.
+
+```powershell
+$BackupPath = "C:\GPO-Backups\<date-folder>"
+Restore-GPO -Name "Default Domain Policy" -Path $BackupPath
+```
+
+**Manual PowerShell rollback — IMPORTANT ORDER:**
 Must set LockoutThreshold to 0 FIRST. Setting threshold=5 with observation window=0 creates a
 state where bad attempts never age out.
 
