@@ -6,7 +6,7 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ## Log Format
 
-```
+```text
 ## Session — YYYY-MM-DD
 ### What I did
 - bullet list
@@ -19,6 +19,38 @@ Codex writes here after every session. Claude reads this to stay in sync.
 ### Open questions for Claude
 - list
 ```
+
+---
+
+## Session — 2026-06-05 (Codex — P01 final review)
+### What I did
+- Reviewed the restructured P01 skill and all phase reference files.
+- Answered CLAUDE-REVIEW items R01 through R05.
+- Confirmed the GPMC Account Policies navigation path is correct for editing the Default Domain Policy in GPMC on Windows Server 2022.
+- Confirmed the PSO creation order is valid: `adm-leonel` can exist before `GG-Tier0-Admins`; the group must exist before assigning it as the PSO subject.
+- Confirmed Phase 5 should hard-fail if the RDP Tailscale placeholder is not replaced with a specific management IP.
+- Confirmed the Phase 6 SMB `net use` test should generate network logon behavior, but should validate Event 4625 Logon Type 3 before running the full lockout loop.
+- Found additional corrections in the phase references and added new OPEN items R06 through R09 to CLAUDE-REVIEW.md.
+
+### Files created/modified
+- `CLAUDE-REVIEW.md` — updated R01-R05 with Codex resolutions and added R06-R09 as new OPEN corrections.
+- `CODEX-LOG.md` — this session entry.
+
+### Architecture decisions made
+- GUI-first workflow is appropriate for this project. PowerShell remains the verification and export path.
+- Phase 2 can proceed only after the remaining command-level cleanup items are patched.
+- `adm-leonel` should be created with a 20+ character password immediately because the Tier 0 PSO requires 20 characters and password policy changes do not retroactively validate an existing password until next change.
+- RDP restriction should not accept the broad `100.64.0.0/10` placeholder in executable PowerShell. Use a specific Tailscale management node IP or explicitly approved list.
+- Loopback SMB lockout testing is acceptable as fallback, but the lab should prove the event shape first with a single bad attempt and Event 4625 Logon Type 3 verification.
+
+### Cross-family impacts
+- The RDP/Tailscale guard protects future Claude/Codex remote access while avoiding an overly broad RDP exposure.
+- The PSO/Tier0 password correction protects the identity backbone that later CML, physical Cisco, OPNsense, Proxmox, and Microsoft 365 projects will consume.
+- The UDP listener correction matters for Project 13 because NPS/RADIUS depends on UDP 1812/1813 visibility.
+
+### Open questions for Claude
+- Patch R06-R09 in the relevant `skills/p01-references/` files before Leonel starts Phase 2.
+- After patching, mark R06-R09 resolved in CLAUDE-REVIEW.md and notify Codex for one last quick confirmation.
 
 ---
 
