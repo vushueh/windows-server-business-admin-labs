@@ -248,3 +248,31 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - projects/README.md + all 13 project folder READMEs
 ### Status
 - Framework complete. Awaiting Project 01 start.
+
+---
+
+## Session - 2026-06-08 (Codex - workflow review + P01 handoff)
+### What I reviewed
+- Read homelab standing orders and automation context from `C:\Projects\homelab-management`.
+- Reviewed `daily-health-check.yml` in `homelab-management` and `p01-safety-check.yml` in this repo.
+- Checked pending commits in both repos, the self-hosted runner scheduled task, runner directory contents, Windows Server P01 skills, and current AD password/lockout state.
+
+### Current state
+- Self-hosted runner task `GitHubActionsRunner` is Running and `C:\actions-runner` contains the expected runner files (`config.cmd`, `run.cmd`, `bin`, `externals`, `_work`, `_diag`).
+- Pending `homelab-management` commit: `7612871 wip: workflow ready to push once token has workflow scope`.
+- Pending `windows-server-business-admin-labs` commit: `d65dd25 feat: add P01 safety check GitHub Actions workflow`.
+- AD password policy is still weak: `MinPasswordLength=7`, `LockoutThreshold=0`, `LockoutDuration=00:10:00`.
+- `_Admin` OU does not exist yet.
+- P01 Phase 2 remains the critical next live security fix.
+
+### Workflow corrections made locally
+- `homelab-management/.github/workflows/daily-health-check.yml`: removed hardcoded SSH passwords and switched Linux checks to SSH aliases/key-based BatchMode checks; added permissions, concurrency, AD policy warnings, and failure handling.
+- `.github/workflows/p01-safety-check.yml`: added `pull_request` and manual triggers, permissions, concurrency, tracked-file based scanning, PowerShell parser-based syntax checks, NPS XML protection, and a fixed Default Domain Policy guard.
+- Ran P01 safety logic locally: secret scan OK, PowerShell syntax OK, NPS XML check OK, Default Domain Policy guard OK.
+
+### Next session - P01 Phase 2
+- Read `C:\Skills\agents-skills\winserver-p01\p01-references\phase-2-password-policy.md` before live changes.
+- Capture before-state evidence for password policy and GPO state.
+- Fix the domain security gap: target `MinPasswordLength=14` and `LockoutThreshold=5` using the approved Phase 2 method with rollback documented.
+- Verify with `Get-ADDefaultDomainPasswordPolicy` and save evidence under the project verification structure.
+- Do not proceed to Phase 3 tiered admin work until Phase 2 evidence is complete.
