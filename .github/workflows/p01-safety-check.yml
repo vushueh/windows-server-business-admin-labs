@@ -1,0 +1,71 @@
+name: P01 Safety Check
+
+on:
+  push:
+    paths:
+      - 'projects/project-01**/**'
+      - 'scripts/**'
+
+jobs:
+  safety-check:
+    name: Validate Before Live DC
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for hardcoded secrets
+        shell: powershell
+        run: |
+          Write-Host "=== Scanning for secrets ===" -ForegroundColor Cyan
+          $patterns = @("password\s*=", "secret\s*=", "nps-config.*\.xml")
+          $files = Get-ChildItem -Recurse -Include "*.ps1","*.md","*.yaml","*.yml"
+          $found = $false
+          foreach ($file in $files) {
+            foreach ($pattern in $patterns) {
+              if (Select-String -Path $file.FullName -Pattern $pattern -CaseSensitive -ErrorAction SilentlyContinue) {
+                Write-Warning "Possible secret in: $($file.FullName)"
+                $found = $true
+              }
+            }
+          }
+          if ($found) { exit 1 }
+          Write-Host "✅ No secrets found" -ForegroundColor Green
+
+      - name: Validate PowerShell syntax
+        shell: powershell
+        run: |
+          Write-Host "=== Validating PS syntax ===" -ForegroundColor Cyan
+          $errors = 0
+          Get-ChildItem -Recurse -Filter "*.ps1" | ForEach-Object {
+            $null = [System.Management.Automation.PSParser]::Tokenize(
+              (Get-Content $_.FullName -Raw), [ref]$null)
+            if ($?) {
+              Write-Host "✅ $($_.Name)"
+            } else {
+              Write-Warning "❌ Syntax error: $($_.FullName)"
+              $errors++
+            }
+          }
+          if ($errors -gt 0) { exit 1 }
+
+      - name: Check NPS XML not committed
+        shell: powershell
+        run: |
+          $npsFiles = Get-ChildItem -Recurse -Filter "nps-config*.xml" -ErrorAction SilentlyContinue
+          if ($npsFiles) {
+            Write-Error "NPS XML found - contains RADIUS secrets! Remove immediately."
+            exit 1
+          }
+          Write-Host "✅ No NPS XML files" -ForegroundColor Green
+
+      - name: Check Default Domain Policy not modified
+        shell: powershell
+        run: |
+          $ddp = Select-String -Recurse -Pattern "Default Domain Policy" -Include "*.ps1" |
+            Where-Object { $_ -match "Set-GPRegistryValue|Set-GPLink" }
+          if ($ddp) {
+            Write-Error "Script modifies Default Domain Policy directly - use custom GPOs instead!"
+            exit 1
+          }
+          Write-Host "✅ Default Domain Policy not touched" -ForegroundColor Green
