@@ -24,3 +24,6 @@ Project 13 (capstone) requires all previous projects complete.
 > **Project 13** is the capstone that proves the whole homelab is one connected enterprise environment.
 > It integrates Windows AD identity across CML routers, physical Cisco gear, Proxmox Linux VMs,
 > OPNsense firewall, Wazuh SIEM, and Microsoft 365.
+> It also now holds the imported AD/SSSD Linux integration reference from the
+> former `homelab-projects` repo, because that work belongs with the Windows
+> identity backbone.

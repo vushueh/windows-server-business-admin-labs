@@ -10,6 +10,16 @@ servers, cloud accounts, and security monitoring across ALL homelab families.
 
 **This proves the entire homelab is one connected enterprise environment.**
 
+## Imported Reference
+
+The former `homelab-projects` repo had a full AD/SSSD Linux VM integration
+plan. I moved that plan here because it is part of this capstone, not a separate
+project family.
+
+| Reference | Why it belongs here |
+|-----------|---------------------|
+| [AD UNIX Attributes + SSSD Linux VM Integration](references/ad-sssd-linux-integration-full-spec.md) | Shows how Linux VMs can authenticate against Active Directory with SSSD, Kerberos/LDAP, AD-controlled sudo groups, and centralized account management. |
+
 ## What Gets Integrated
 
 | Service | Integration | Protocol |

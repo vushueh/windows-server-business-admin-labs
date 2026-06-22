@@ -4,6 +4,29 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-22 (Imported AD/SSSD project into Project 13)
+### What I did
+- Imported the full AD UNIX Attributes + SSSD Linux VM Integration plan from the former `homelab-projects` repo.
+- Placed it under Project 13 references because Linux SSSD domain join belongs to the enterprise identity capstone.
+- Updated the Project 13 README and project index so the imported reference is discoverable.
+
+### Files created/modified
+- `projects/project-13-enterprise-identity-integration/references/ad-sssd-linux-integration-full-spec.md`
+- `projects/project-13-enterprise-identity-integration/README.md`
+- `projects/README.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- `homelab-projects` should not remain a separate repo for this item. The work is part of the Windows Server identity family and should be maintained with AD/NPS/RADIUS planning.
+
+### Cross-family impacts
+- Project 13 now explicitly covers Linux VM authentication through SSSD in addition to network-device RADIUS, OPNsense admin auth, Wazuh telemetry, and Microsoft 365 identity.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Log Format
 
 ```text
