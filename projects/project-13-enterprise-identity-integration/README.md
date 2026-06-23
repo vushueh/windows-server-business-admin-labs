@@ -81,7 +81,7 @@ User `leonel` signs in with one AD identity and can:
 5. Expand NPS/RADIUS to physical Cisco gear after fallback is verified
 6. Deploy SSSD on Proxmox Linux VMs
 7. Configure OPNsense RADIUS admin auth
-8. Deploy Wazuh agent on WIN-DC01 for event forwarding
+8. Deploy Wazuh agent on WIN-PRQD8TJG04M for event forwarding
 9. Verify Entra sync includes NPS/RADIUS groups
 10. End-to-end test: one user, all systems
 11. Break/fix: take AD/NPS offline — verify fallback on every system
