@@ -1,15 +1,35 @@
-# P01 Phase 2 — Password Policy + Account Lockout — Evidence
+# P01 Phase 2 — Password Policy + Account Lockout
 
 **Date:** 2026-06-22
-**Executed by:** Leonel (PowerShell, on WIN-PRQD8TJG04M)
-**Reviewed by:** Claude (per-step approval, AGENTS.md Tier 3)
+**Who ran it:** Leonel, on `WIN-PRQD8TJG04M`, in PowerShell
+**Script:** [`../scripts/p01-phase2-password-policy.ps1`](../scripts/p01-phase2-password-policy.ps1)
 
-## Pre-phase guard
+## Step 1 — Confirm the domain before touching anything
+
+**Command:**
+```powershell
+$Domain = Get-ADDomain
+if ($Domain.DistinguishedName -ne "DC=Chongong,DC=local") {
+    throw "Unexpected domain DN: $($Domain.DistinguishedName) — stop and verify before continuing"
+}
+Write-Host "Domain confirmed: $($Domain.DistinguishedName)"
+```
+
+**Output:**
 ```
 Domain confirmed: DC=Chongong,DC=local
 ```
 
-## Backup (before any edit)
+## Step 2 — Back up Default Domain Policy
+
+**Command:**
+```powershell
+$BackupFolder = "C:\GPO-Backups\$(Get-Date -Format 'yyyy-MM-dd')"
+New-Item -ItemType Directory -Path $BackupFolder -Force | Out-Null
+Backup-GPO -Name "Default Domain Policy" -Path $BackupFolder
+```
+
+**Output:**
 ```
 DisplayName     : Default Domain Policy
 GpoId           : 31b2f340-016d-11d2-945f-00c04fb984f9
@@ -18,46 +38,75 @@ BackupDirectory : C:\GPO-Backups\2026-06-22
 CreationTime    : 6/22/2026 8:29:34 PM
 DomainName      : Chongong.local
 ```
-Rollback point: `Restore-GPO -Name "Default Domain Policy" -Path "C:\GPO-Backups\2026-06-22"`
 
-## Change applied
-```
+Rollback point if anything goes wrong: `Restore-GPO -Name "Default Domain Policy" -Path "C:\GPO-Backups\2026-06-22"`.
+
+## Step 3 — Set password and lockout policy
+
+**Command:**
+```powershell
+$DomainDN = (Get-ADDomain).DistinguishedName
 Set-ADDefaultDomainPasswordPolicy -Identity $DomainDN `
-    -MinPasswordLength 14 -MaxPasswordAge (New-TimeSpan -Days 90) `
-    -LockoutThreshold 5 -LockoutDuration (New-TimeSpan -Minutes 30) `
+    -MinPasswordLength 14 `
+    -MaxPasswordAge (New-TimeSpan -Days 90) `
+    -LockoutThreshold 5 `
+    -LockoutDuration (New-TimeSpan -Minutes 30) `
     -LockoutObservationWindow (New-TimeSpan -Minutes 30)
-gpupdate /force   # Computer + User policy update completed successfully
+gpupdate /force
 ```
 
-## Verification — before vs after
+**Output:**
+```
+Computer Policy update has completed successfully.
+User Policy update has completed successfully.
+```
 
-| Setting | Before | After | Target met |
-|---|---|---|---|
-| MinPasswordLength | 7 | 14 | ✅ |
-| LockoutThreshold | 0 (disabled) | 5 | ✅ |
-| LockoutDuration | 00:10:00 | 00:30:00 | ✅ |
-| LockoutObservationWindow | 0 | 00:30:00 | ✅ |
-| MaxPasswordAge | 42 days | 90.00:00:00 | ✅ |
-| PasswordHistoryCount | 24 | 24 (unchanged) | ✅ |
-| ComplexityEnabled | True | True (unchanged) | ✅ |
+## Step 4 — Verify
 
-## radius-service review
+**Command:**
+```powershell
+Get-ADDefaultDomainPasswordPolicy | Select-Object MinPasswordLength, LockoutThreshold, LockoutDuration, LockoutObservationWindow, MaxPasswordAge, PasswordHistoryCount, ComplexityEnabled
 ```
-SamAccountName : radius-service
-PasswordNeverExpires : True
-PasswordLastSet : 8/9/2025 5:22:01 PM
-```
-`PasswordNeverExpires=True` → exempt from the new `MaxPasswordAge=90d`. No action taken;
-account purpose review deferred to Phase 4 (document-only).
 
-## Locked accounts check
+**Output:**
 ```
-Search-ADAccount -LockedOut
+MinPasswordLength        : 14
+LockoutThreshold         : 5
+LockoutDuration          : 00:30:00
+LockoutObservationWindow : 00:30:00
+MaxPasswordAge           : 90.00:00:00
+PasswordHistoryCount     : 24
+ComplexityEnabled        : True
 ```
-Empty result — expected, since `LockoutThreshold` was previously 0 and no bad-attempt
-counters could have accumulated before this change.
+
+Before this change: `MinPasswordLength=7`, `LockoutThreshold=0` (no lockout at all),
+`LockoutDuration=00:10:00`, `MaxPasswordAge=42 days`. Both critical gaps from the
+Phase 1 audit are closed.
+
+**Command:**
+```powershell
+Get-ADUser -Identity "radius-service" -Properties PasswordNeverExpires, PasswordLastSet | Select-Object SamAccountName, PasswordNeverExpires, PasswordLastSet
+```
+
+**Output:**
+```
+SamAccountName PasswordNeverExpires PasswordLastSet
+-------------- -------------------- ---------------
+radius-service                 True 8/9/2025 5:22:01 PM
+```
+
+`radius-service` has `PasswordNeverExpires=True`, so the new 90-day `MaxPasswordAge`
+does not apply to it. No action taken — account purpose review is Phase 4.
+
+**Command:**
+```powershell
+Search-ADAccount -LockedOut | Select-Object SamAccountName, BadLogonCount, LastBadPasswordAttempt
+```
+
+**Output:** empty — no accounts locked out. Expected, since lockout was previously
+disabled and no bad-attempt counters could have accumulated.
 
 ## Result
-Phase 2 complete. Both critical gaps from the Phase 1 audit (no lockout, weak minimum
-password length) are closed. No accounts locked out by the change. `radius-service`
-exemption noted, not modified. GPO backup preserved for rollback.
+
+Phase 2 is done. No screenshots were taken — this phase was run entirely in
+PowerShell, and the command output above is the verification record.
