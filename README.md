@@ -30,6 +30,21 @@ Windows Server 2022 — AD DS / DNS / NPS (RADIUS) / Entra Connect
 
 ---
 
+## How To Work This Family
+
+This family should not be completed in isolation. I use Windows Server as the
+identity backbone, then rotate through NetOps, SOC, OPNsense, FreePBX,
+ServiceNow/Microsoft 365, and case-study work as each Windows milestone becomes
+useful to another family.
+
+Start with Projects 01-05 as the foundation: server baseline, AD structure, DNS,
+DHCP/IPAM, and GPO baselines. After that, move in smaller cross-family loops so
+each project proves something real in another part of the homelab.
+
+Detailed order: [execution-roadmap.md](docs/execution-roadmap.md)
+
+---
+
 ## Actual Environment (Discovered 2026-06-05)
 
 WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hyper-V host.
@@ -86,6 +101,7 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 | [identity-design.md](docs/identity-design.md) | AD OU structure, account tiers, AGDLP model |
 | [naming-standards.md](docs/naming-standards.md) | Server/VM/user/group naming conventions |
 | [security-model.md](docs/security-model.md) | Security boundaries, admin tiers, least privilege |
+| [execution-roadmap.md](docs/execution-roadmap.md) | Starting base, cross-family rotation plan, done criteria, and immediate work queue |
 
 ---
 

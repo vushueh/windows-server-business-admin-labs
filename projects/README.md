@@ -1,13 +1,48 @@
 # Projects
 
-Work through projects in order — each builds on the last.
+Work through projects in order inside this Windows family, but do not work only
+inside this family until all 13 projects are done. Each Windows milestone should
+connect back to another family: NetOps, SOC, OPNsense, FreePBX, ServiceNow,
+Microsoft 365, Proxmox, or case studies.
+
 Project 13 (capstone) requires all previous projects complete.
+
+See [../docs/execution-roadmap.md](../docs/execution-roadmap.md) for the
+starting base, cross-family rotation plan, and done criteria.
+
+## Starting Base
+
+Start with Projects 01-05 before building higher-level services:
+
+| Order | Project | Why it comes first |
+|-------|---------|--------------------|
+| 1 | P01 Server Baseline | Confirms what the live server is doing and secures admin access. |
+| 2 | P02 AD Architecture | Creates the OU, account, service-account, and group model every later project depends on. |
+| 3 | P03 DNS Engineering | Makes name resolution reliable before more VMs and services are added. |
+| 4 | P04 DHCP/IPAM | Makes addressing and reservations predictable across Windows, OPNsense, NetOps, and SOC. |
+| 5 | P05 GPO Baselines | Applies audit, firewall, account policy, and logon controls before client and SOC tests. |
+
+After P05, rotate into client, SOC, backup, M365, NPS/RADIUS, FreePBX, and
+ServiceNow work in smaller loops instead of finishing every Windows project
+without touching the other families.
+
+## Cross-Family Rotation Points
+
+| After Windows milestone | Touch this family next | Purpose |
+|-------------------------|------------------------|---------|
+| P02 AD Architecture | NetOps + SOC docs | Record AD groups and admin tiers before they control devices/tools. |
+| P03/P04 DNS + DHCP | OPNsense + NetOps | Align VLANs, hostnames, reservations, and monitoring inventory. |
+| P05/P07 GPO + client | SOC/Wazuh | Confirm Windows security events and client behavior are visible. |
+| P08/P09 Hyper-V + PowerShell | Homelab automation | Tie VM inventory, backups, and scripts into operated workflows. |
+| P10 Security Monitoring | SOC case workflow | Build one incident path from Windows event to Wazuh/TheHive evidence. |
+| P12 M365/Entra | ServiceNow planning | Users, groups, licenses, and mail workflows become ticket/service-request sources. |
+| P13 Identity Integration | CML, CCNA, OPNsense, Proxmox, FreePBX | Prove one AD identity across the whole lab with local fallback. |
 
 ## Core Projects
 
 | Project | Focus | Status |
 |---------|-------|--------|
-| [project-01-server-baseline-hardening](project-01-server-baseline-hardening/) | Role inventory, secure admin access, firewall posture, privileged account separation | ⬜ Planned |
+| [project-01-server-baseline-hardening](project-01-server-baseline-hardening/) | Role inventory, secure admin access, firewall posture, privileged account separation | 🔄 In Progress |
 | [project-02-ad-architecture](project-02-ad-architecture/) | OU design, delegated admin, tiered accounts, naming standards, service accounts, least privilege | ⬜ Planned |
 | [project-03-dns-engineering](project-03-dns-engineering/) | AD-integrated DNS, split DNS, forwarders, conditional forwarders, broken DNS troubleshooting | ⬜ Planned |
 | [project-04-dhcp-ipam](project-04-dhcp-ipam/) | DHCP scopes, reservations, options, relay, VLAN-aware design, documentation | ⬜ Planned |

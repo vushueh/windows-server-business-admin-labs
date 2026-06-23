@@ -15,7 +15,8 @@ the test client for every GPO, share permission, and user account created in P02
 
 ## Environment Context
 
-- New workstation VM: WIN-WS01 (Hyper-V VM — Windows 11 Pro/Enterprise, 2 vCPU, 4GB RAM, 60GB disk)
+- Dedicated lab workstation VM: WIN-WS01 (Hyper-V VM — Windows 11 Pro/Enterprise, 2 vCPU, 4GB RAM, 60GB disk)
+- Existing AD already shows several DESKTOP-* domain-joined clients. Those are useful for discovery, but WIN-WS01 is still needed as the controlled test client for screenshots, GPO testing, RSAT, offboarding drills, and repeatable evidence.
 - OU target: Computers\Workstations
 - GPOs applied at join: Workstations-LocalAdminRestriction, Workstations-AuditPolicy, Workstations-UserRestrictions (from P05)
 - Test users: standard user `leonel`, Tier 2 admin `ws-leonel`, Tier 1 `srv-leonel` (should NOT be local admin here)
@@ -119,8 +120,9 @@ gpmc.msc  # Group Policy Management
 
 ## STAR Summary
 
-**Situation:** No domain-joined test workstation exists. Every GPO, share permission,
-and tiered admin rule has been created but never verified from a real client.
+**Situation:** Existing DESKTOP-* machines are already domain joined, but there is no
+dedicated, controlled lab workstation for repeatable evidence. Every GPO, share
+permission, and tiered admin rule needs to be verified from a known client state.
 
 **Task:** Build WIN-WS01, domain-join it, run every GPO and account scenario, and prove
 the admin model, drive maps, and offboarding process work exactly as designed.

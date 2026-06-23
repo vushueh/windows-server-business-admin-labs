@@ -19,7 +19,8 @@ loop that proves every security control from P01–P09 actually works.
 - Log source servers: WIN-PRQD8TJG04M (PDC), WIN-DC02, WIN-FS01, WIN-RDS01, WIN-WS01
 - WEF collector: WIN-PRQD8TJG04M (also the DC — acceptable for lab scale)
 - Wazuh SIEM: existing Wazuh server in Blue Team family (cross-family integration)
-- Key event IDs to capture: 4624, 4625, 4634, 4648, 4740, 4728, 4732, 4756, 7045, 4697
+- Key event IDs to capture first: 4624, 4625, 4634, 4648, 4740, 4728, 4732, 4756, 7045, 4697
+- Telemetry expansion after baseline: process creation 4688 with command line, PowerShell 4103/4104, and optional Sysmon on WIN-WS01 before wider rollout
 
 ## Critical Windows Event IDs
 
@@ -33,6 +34,20 @@ loop that proves every security control from P01–P09 actually works.
 | 4728/4732/4756 | Group membership change | Privilege escalation indicator |
 | 7045 | New service installed | Malware persistence indicator |
 | 4697 | Service installed via SCM | Same — different logging path |
+| 4688 | Process creation | Shows what executed; stronger when command-line logging is enabled |
+| 4103/4104 | PowerShell module/script block logging | Shows suspicious PowerShell use and admin automation evidence |
+
+## Optional Sysmon Pilot
+
+Sysmon should start on WIN-WS01 only. Do not roll it across servers until the
+event volume is understood in Wazuh.
+
+| Sysmon event | Meaning | Use in this lab |
+|--------------|---------|-----------------|
+| 1 | Process creation | Suspicious command execution and admin-script evidence |
+| 3 | Network connection | Workstation-to-server and workstation-to-internet visibility |
+| 11 | File created | Simple malware/dropper and script-write scenarios |
+| 22 | DNS query | Domain lookup evidence for SOC case studies |
 
 ## Phases
 
@@ -47,8 +62,10 @@ loop that proves every security control from P01–P09 actually works.
 | 7 | Wazuh AD Rules | Confirm Wazuh receives and alerts on 4740, 4728, 4625 events |
 | 8 | Account Lockout IR Playbook | Write and execute step-by-step: detect → identify source → remediate |
 | 9 | Privilege Escalation IR Playbook | Write and execute: detect group change → investigate → remediate |
-| 10 | Windows Defender Review | Audit Defender status across all servers, enable ASR rules |
-| 11 | Document + Push | Playbooks committed, Wazuh dashboard screenshot, STAR summary |
+| 10 | Process and PowerShell Logging | Enable 4688 command-line logging and PowerShell 4103/4104 through staged GPO |
+| 11 | Sysmon Pilot on WIN-WS01 | Install Sysmon on the controlled client first, then verify event volume in Wazuh |
+| 12 | Windows Defender Review | Audit Defender status across all servers, enable ASR rules |
+| 13 | Document + Push | Playbooks committed, Wazuh dashboard screenshot, STAR summary |
 
 ## Phase Detail
 
@@ -61,9 +78,20 @@ wecutil qc /q:true
 wecutil cs C:\AdminScripts\WEF\SecurityEvents.xml
 # SecurityEvents.xml defines:
 #   SubscriptionType: SourceInitiated
-#   EventFilter: Security log IDs 4624,4625,4634,4648,4740,4728,4732,4756,4697
+#   EventFilter: Security log IDs 4624,4625,4634,4648,4688,4740,4728,4732,4756,4697
 #                System log ID 7045
 #   DeliveryMode: Push (minimize latency)
+```
+
+### Phase 10 — Process and PowerShell Logging
+```
+GPO: Servers-AuditPolicy / Workstations-AuditPolicy
+Computer Configuration -> Policies -> Administrative Templates -> System -> Audit Process Creation:
+  Include command line in process creation events: Enabled
+
+Computer Configuration -> Policies -> Administrative Templates -> Windows Components -> Windows PowerShell:
+  Turn on PowerShell Script Block Logging: Enabled
+  Turn on PowerShell Module Logging: Enabled
 ```
 
 ### Phase 3 — WEF GPO Settings

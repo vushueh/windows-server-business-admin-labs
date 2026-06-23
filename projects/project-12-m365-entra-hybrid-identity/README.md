@@ -8,7 +8,9 @@
 Connect the on-premises Chongong.local AD to Microsoft 365 via Entra Connect (formerly
 Azure AD Connect). Add a custom UPN suffix aligned to your M365 domain, sync on-prem
 users to cloud identities, and build a documented onboarding/offboarding workflow that
-works in both on-prem AD and M365 simultaneously.
+works in both on-prem AD and M365 simultaneously. Also document the Microsoft 365 admin
+center, Entra admin center, license assignment, and Exchange/email readiness so this
+family can later feed ServiceNow and business-service case studies.
 
 **Why twelfth:** Hybrid identity requires a clean AD (P02), enforced UPNs (naming standards),
 and automated provisioning scripts (P09). It feeds into the capstone (P13) because Entra-synced
@@ -21,6 +23,9 @@ groups control M365 license assignment and can be used in NPS/RADIUS conditional
 - Entra Connect server: runs on WIN-PRQD8TJG04M (acceptable for lab; dedicated server in enterprise)
 - Sync account: `svc-sync` if using a custom AD DS connector account; otherwise Entra Connect creates its own connector account
 - M365 tenant: existing or new (Leonel to confirm at project start)
+- Microsoft 365 admin center: users, groups, licenses, and billing/service health evidence
+- Entra admin center: synced users, groups, sign-in/authentication method evidence
+- Exchange admin center: mailbox/mail-flow evidence if the chosen license includes Exchange Online
 
 ## Hybrid Identity Architecture
 
@@ -40,23 +45,25 @@ On-Prem AD (Chongong.local)          Microsoft 365 / Entra
 | Scope filter | Sync Users OU only | Exclude admin accounts (adm-*, srv-*, ws-*, svc-*) from cloud |
 | License assignment | Group-based licensing | Entra group → license; not per-user manual |
 | Password writeback | Enabled only after permissions are verified | Password reset in M365 writes back to on-prem AD |
+| Admin-center evidence | Screenshot + notes per admin center | Keeps the portfolio readable for non-technical and technical readers |
 
 ## Phases
 
 | # | Phase | Key Action |
 |---|-------|------------|
-| 1 | M365 Tenant Verification | Confirm M365 tenant exists, custom domain verified in DNS |
+| 1 | M365/Admin Center Verification | Confirm tenant exists, custom domain is verified, and admin centers are reachable |
 | 2 | Add UPN Suffix to AD | Add `<yourbusiness>.com` UPN suffix to on-prem AD |
 | 3 | Update User UPNs | Change all standard users from @Chongong.local to @<yourbusiness>.com |
 | 4 | Prepare svc-sync | Verify svc-sync exists with minimum permissions for Entra Connect |
 | 5 | Install Entra Connect | Custom install, select Password Hash Sync, scope to Users OU, start in staging mode |
 | 6 | Initial Sync | Review pending adds/deletes, disable staging mode only after verification |
 | 7 | Group-Based Licensing | Create Entra group → assign M365 license (E3 or Business) |
-| 8 | Password Writeback | Enable and test: reset password in M365 portal → confirm in AD |
-| 9 | Onboarding Workflow | Update New-LabUser.ps1 (from P09) to set correct UPN suffix |
-| 10 | Offboarding Workflow | Update Remove-LabUser.ps1: disable on-prem → M365 license released |
-| 11 | Break/Fix Exercise | Remove svc-sync permissions → confirm sync failure → restore → re-sync |
-| 12 | Document + Push | Sync config, UPN design, onboarding/offboarding runbook committed |
+| 8 | Microsoft Admin Center Evidence | Document users, groups, licenses, service health, and Exchange/mailbox state if available |
+| 9 | Password Writeback | Enable and test: reset password in M365 portal → confirm in AD |
+| 10 | Onboarding Workflow | Update New-LabUser.ps1 (from P09) to set correct UPN suffix |
+| 11 | Offboarding Workflow | Update Remove-LabUser.ps1: disable on-prem → M365 license released |
+| 12 | Break/Fix Exercise | Stop sync service → confirm sync failure → restore → re-sync |
+| 13 | Document + Push | Sync config, UPN design, admin-center evidence, onboarding/offboarding runbook committed |
 
 ## Phase Detail
 
@@ -90,6 +97,16 @@ Installation wizard settings:
   Optional features: Password writeback (enable)
   Staging mode: ON for first validation; turn OFF only after confirming no unexpected deletes/updates
 ```
+
+### Phase 8 — Microsoft Admin Center Evidence
+Capture plain-language evidence before writing any case study:
+
+| Admin center | Evidence to capture |
+|--------------|---------------------|
+| Microsoft 365 admin center | Active users, groups, assigned licenses, service health |
+| Entra admin center | Synced user source, synced groups, sync status, authentication methods |
+| Exchange admin center | Mailbox created, accepted domain, mail-flow status, shared mailbox if licensed |
+| Microsoft 365 Defender portal | Security baseline status if available in the tenant/license |
 
 ### Phase 11 — Break/Fix: Sync Failure
 ```powershell

@@ -41,6 +41,25 @@ GG-ServerAdmins   → full admin on member servers
 GG-SOC-Analysts   → read-only on security tools
 ```
 
+## NPS/RADIUS Starting Plan
+
+NPS/RADIUS is the first cross-family identity bridge because it connects Windows
+AD to CML, physical Cisco, OPNsense, and later firewall/admin workflows.
+
+| Step | Scope | Evidence |
+|------|-------|----------|
+| 1 | Audit current NPS role, policies, clients, and the existing `radius-service` account. | Exported NPS config saved outside public docs if secrets exist; redacted summary committed. |
+| 2 | Create AD groups `GG-NetAdmins` and `GG-Net-ReadOnly` if they do not already exist. | Group membership screenshot or PowerShell output. |
+| 3 | Add one test RADIUS client first, preferably a lab/CML device before physical devices. | NPS client entry with shared secret redacted. |
+| 4 | Build read-only network policy before admin policy. | Read-only login gets limited privilege. |
+| 5 | Build admin network policy. | Admin login gets intended privilege only for approved AD group. |
+| 6 | Confirm local fallback on every device before enabling AD-backed login broadly. | Break/fix test: NPS unavailable, local device login still works. |
+| 7 | Expand to physical Cisco, OPNsense, then Palo Alto only after each earlier target is verified. | One row per device family: configured, verified, rollback path. |
+
+Guardrail: never reuse the same RADIUS shared secret for every device family.
+Use unique shared secrets and keep full NPS exports out of public GitHub if they
+contain secrets.
+
 ## Test Scenario (Capstone Proof)
 
 User `leonel` signs in with one AD identity and can:
@@ -57,14 +76,16 @@ User `leonel` signs in with one AD identity and can:
 
 1. Audit integration readiness (all P01-12 dependencies met?)
 2. Design integration architecture and AD groups
-3. Deploy NPS/RADIUS — configure CML and physical Cisco gear AAA
-4. Deploy SSSD on Proxmox Linux VMs
-5. Configure OPNsense RADIUS admin auth
-6. Deploy Wazuh agent on WIN-DC01 for event forwarding
-7. Verify Entra sync includes NPS/RADIUS groups
-8. End-to-end test: one user, all systems
-9. Break/fix: take AD offline — verify fallback on every system
-10. Document + push to GitHub
+3. Audit existing NPS/RADIUS role, clients, policies, and secrets-handling risk
+4. Deploy NPS/RADIUS to one lab/CML device first
+5. Expand NPS/RADIUS to physical Cisco gear after fallback is verified
+6. Deploy SSSD on Proxmox Linux VMs
+7. Configure OPNsense RADIUS admin auth
+8. Deploy Wazuh agent on WIN-DC01 for event forwarding
+9. Verify Entra sync includes NPS/RADIUS groups
+10. End-to-end test: one user, all systems
+11. Break/fix: take AD/NPS offline — verify fallback on every system
+12. Document + push to GitHub
 
 ## STAR Summary
 
