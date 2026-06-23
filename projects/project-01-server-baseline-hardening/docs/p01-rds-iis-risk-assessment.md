@@ -133,6 +133,14 @@ Queried directly via `Get-ADGroup` / `Get-ADGroupMember` (read-only) plus a chec
 VMware-related services on the host, since this console wasn't separately
 screenshotted but the data was already captured this session.
 
+**Command:**
+```powershell
+Get-ADGroup "__vmware__" -Properties Description, whenCreated, ManagedBy |
+    Select-Object Name, GroupScope, Description, whenCreated, ManagedBy
+Get-ADGroupMember "__vmware__" -ErrorAction SilentlyContinue | Select-Object SamAccountName, ObjectClass
+Get-Service | Where-Object {$_.Name -match "vmware|vmauth|vmnet|vmtools"} | Select-Object Name, DisplayName, Status
+```
+
 - **Group:** `__vmware__`, scope `DomainLocal`, Description: "VMware User Group",
   created `8/21/2025`, `ManagedBy`: blank.
 - **Members:** none (empty group).

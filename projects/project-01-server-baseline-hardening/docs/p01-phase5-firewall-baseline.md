@@ -59,6 +59,14 @@ RECOMMENDATION: Confirm with Leonel whether VNC access is still needed; if so,
 
 ## 3. TCP listener inventory (via SSH, read-only)
 
+**Command:**
+```powershell
+Get-NetTCPConnection -State Listen |
+    Select-Object LocalAddress, LocalPort,
+        @{N="ProcessName";E={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName}} |
+    Sort-Object LocalPort | Format-Table -AutoSize
+```
+
 Full inventory captured `2026-06-22`. Notable items beyond the expected AD/DC set
 (`lsass` on 88/389/464/3268/3269, `dns` on 53, `svchost` on 135/3389/etc.):
 
@@ -83,6 +91,17 @@ and complete.
 ---
 
 ## 4. UDP listener inventory (via SSH, read-only)
+
+**Command:**
+```powershell
+Get-NetUDPEndpoint |
+    Where-Object {$_.LocalPort -in @(53, 88, 389, 464, 1812, 1813)} |
+    Select-Object LocalAddress, LocalPort,
+        @{N="ProcessName";E={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName}} |
+    Sort-Object LocalPort | Format-Table -AutoSize
+
+Get-NetFirewallProfile | Select-Object Name, Enabled, DefaultInboundAction
+```
 
 All expected ports present and correctly bound:
 
