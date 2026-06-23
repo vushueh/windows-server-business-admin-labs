@@ -58,7 +58,13 @@ Who pushes: Claude by default. Codex may push bridge files only when Leonel expl
 
 ### Tier 3 — Live infrastructure (approval required)
 Use for: SSH to WIN-PRQD8TJG04M, AD/GPO changes, DHCP/DNS edits, NPS config.
-Who: Leonel executes all commands on the server. Claude coordinates via SSH with explicit per-action approval.
+Who: **Updated 2026-06-22** — Claude now has a working SSH key (`winserver_claude_ed25519`,
+config alias `winserver01`, connects as `chongong\adm-leonel`) and may execute both
+read and write commands directly on WIN-PRQD8TJG04M. **Explicit approval is still
+required before any live AD/GPO change** — that rule did not change, only who can type
+the command after approval is given. (Earlier in P01, Leonel ran everything manually
+through the GUI while no SSH key existed; that constraint is gone now that the key
+does.)
 Never: Codex does not execute live server commands.
 
 ## Critical Safety Rules

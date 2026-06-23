@@ -11,7 +11,9 @@ description: >
 # Windows Server Project 01 — Server Baseline + Hardening
 
 **Repo:** https://github.com/vushueh/windows-server-business-admin-labs
-**SSH:** `ssh -i "$env:USERPROFILE\.ssh\claude_winserver_2022_ed25519" Administrator@100.81.197.116`
+**SSH:** `ssh winserver01` (config alias → `100.81.197.116`, key `winserver_claude_ed25519`,
+connects as `chongong\adm-leonel`). Claude may execute directly as of 2026-06-22 —
+see `AGENTS.md` Tier 3. Explicit approval still required before any live AD/GPO change.
 
 ---
 
@@ -72,7 +74,7 @@ Chongong.local
   ├── Domain Controllers            ← existing
   ├── Management / IT / HR / Sales / Finance  ← existing flat OUs (restructure P02)
   ├── Groups                        ← existing
-  └── Quarantine                    ← disabled accounts (Phase 6)
+  └── Quarantine                    ← disabled accounts (Phase 6 — created 2026-06-23, contains testuser)
 ```
 
 **Tier 1 rule:** `srv-leonel` goes into `GG-ServerAdmins` only.
@@ -85,7 +87,7 @@ Project 05 (GPO Security Baselines) grants local admin rights on member servers 
 
 ```powershell
 # SSH to server
-ssh -i "$env:USERPROFILE\.ssh\claude_winserver_2022_ed25519" Administrator@100.81.197.116
+ssh winserver01
 
 dcdiag /test:all /q                    # Domain health
 netdom query fsmo                      # FSMO roles (all on WIN-PRQD8TJG04M)
@@ -110,18 +112,18 @@ repadmin /showrepl                     # Replication (no partners — single DC)
 | Default Domain Controllers Policy | Can lock out AD completely | Project 05 |
 | Hyper-V VMs | 13 running VMs | Project 08 |
 | DefaultInboundAction = Block | Needs full AD port allowlist GPO first | Project 05 |
-| __vmware__ group | Unknown purpose — investigate before touching | Project 02 |
+| __vmware__ group | "VMware User Group", empty, no ManagedBy — confirmed via Phase 4 query, host has VMware NAT/Autostart services | Project 02 |
 
 ---
 
 ## Project 01 Completion Checklist
 
-- [ ] Phase 1: Audit in docs/p01-audit-baseline.md
-- [ ] Phase 2: LockoutThreshold=5, MinPasswordLength=14, GPO backup saved
-- [ ] Phase 3: _Admin OU + sub-OUs, adm-leonel (Tier0 DA), srv-leonel (GG-ServerAdmins only)
-- [ ] Phase 3: PSO-Tier0-Admins active (precedence 10, min 20 chars, lockout 3)
-- [ ] Phase 4: RDS/IIS risk assessment documented — no roles changed
-- [ ] Phase 5: TCP + UDP baseline CSVs in docs/, RDP restricted to Tailscale
-- [ ] Phase 6: Lockout exercise confirmed, testuser quarantined
+- [x] Phase 1: Audit in docs/p01-audit-baseline.md
+- [x] Phase 2: LockoutThreshold=5, MinPasswordLength=14, GPO backup saved
+- [x] Phase 3: _Admin OU + sub-OUs, adm-leonel (Tier0 DA), srv-leonel (GG-ServerAdmins only)
+- [x] Phase 3: PSO-Tier0-Admins active (precedence 10, min 20 chars, lockout 3)
+- [x] Phase 4: RDS/IIS risk assessment documented — no roles changed (docs/p01-rds-iis-risk-assessment.md)
+- [x] Phase 5: TCP + UDP baseline documented (docs/p01-phase5-firewall-baseline.md). RDP/Tailscale deliberately left unrestricted per Leonel's explicit instruction — not a gap, do not "fix" later.
+- [x] Phase 6: Lockout exercise confirmed (5 attempts -> LockedOut=True, Event 4740 logged), testuser quarantined (Enabled=False, moved to OU=Quarantine). Finding: failed-logon events 4625/4776/4771 are NOT logged despite BadLogonCount tracking correctly -- audit policy gap, deferred to GPO work.
 - [ ] Phase 7: All scripts saved, docs complete, NPS XML NOT in repo, GitHub push done
 - [ ] Parent skill (/winserver) marked P01 ✅
