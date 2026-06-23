@@ -82,23 +82,50 @@ choice to keep in Domain Admins rather than fully separating from admin access).
 so I made zero live changes. I found that the RD Connection Broker reports
 unreachable in Server Manager even though the broker process itself is actually
 listening locally — a finding I flagged for Project 08 rather than trying to patch
-in place on a live PDC. I confirmed IIS exists solely to serve RD Web Access and
-RPC-over-HTTPS, not general web hosting. I confirmed NPS has zero custom
-configuration — no RADIUS clients, only Windows' stock default policies — which
-told me the RADIUS buildout for Project 13 genuinely hasn't started yet. And I
-tracked down the mysterious `__vmware__` AD group: it's empty, unmanaged, and tied
-to a VMware Workstation installation on the host, so I left it alone and deferred
-real investigation to Project 02.
+in place on a live PDC.
+
+![RDS Overview broker error](screenshots/phase4-01-rds-overview-broker-error.jpg)
+![RDS Servers pool — host Online, broker process actually listening locally](screenshots/phase4-02-rds-servers-pool.jpg)
+![RDS-Users group — broad, cross-department membership](screenshots/phase4-03-rds-users-members.jpg)
+
+I confirmed IIS exists solely to serve RD Web Access and RPC-over-HTTPS, not general
+web hosting.
+
+![IIS Default Web Site — bindings on *:80 and *:443](screenshots/phase4-05-iis-default-web-site.jpg)
+![IIS Application Pools — all Started](screenshots/phase4-04-iis-application-pools.jpg)
+![IIS app pool identities, full column — all ApplicationPoolIdentity, no named domain accounts](screenshots/phase4-06-iis-app-pool-identities.jpg)
+
+I confirmed NPS has zero custom configuration — no RADIUS clients, only Windows'
+stock default policies — which told me the RADIUS buildout for Project 13 genuinely
+hasn't started yet.
+
+![NPS Policies overview](screenshots/phase4-07-nps-policies-overview.jpg)
+![RADIUS Clients and Servers overview](screenshots/phase4-09-nps-radius-clients-servers-overview.jpg)
+![RADIUS Clients — empty](screenshots/phase4-10-nps-radius-clients-empty.jpg)
+![Remote RADIUS Server Groups — empty](screenshots/phase4-11-nps-remote-radius-groups-empty.jpg)
+![NPS Connection Request Policies — stock Windows default only](screenshots/phase4-08-nps-connection-request-policies.jpg)
+![Connection Request Policy detail — no custom conditions](screenshots/phase4-13-nps-connection-request-policy-detail.jpg)
+![NPS Network Policies — stock default deny rules only](screenshots/phase4-12-nps-network-policies.jpg)
+
+And I tracked down the mysterious `__vmware__` AD group: it's empty, unmanaged, and
+tied to a VMware Workstation installation on the host, so I left it alone and
+deferred real investigation to Project 02.
 
 **Phase 5 — Firewall baseline.** I inventoried every TCP and UDP listener on the
 host and confirmed the firewall is on across all three profiles with default
-behavior unchanged. Leonel explicitly told me to leave RDP and Tailscale exactly as
-they are — no scoping, no restriction — so I documented that as a deliberate
-decision rather than a gap to "fix" later. Along the way I found two things worth
-flagging: the RD Connection Broker process is genuinely running (refining the Phase
-4 finding), and there's a VNC server (`winvnc`) with its own explicit, enabled
-firewall rules — a second remote-access path into the PDC alongside RDP and
-Tailscale that I noted for Leonel to decide on, not something I touched myself.
+behavior unchanged.
+
+![WFAS overview — all three profiles on, defaults unchanged](screenshots/phase5-01-wfas-overview.jpg)
+
+Leonel explicitly told me to leave RDP and Tailscale exactly as they are — no
+scoping, no restriction — so I documented that as a deliberate decision rather than
+a gap to "fix" later. Along the way I found two things worth flagging: the RD
+Connection Broker process is genuinely running (refining the Phase 4 finding), and
+there's a VNC server (`winvnc`) with its own explicit, enabled firewall rules — a
+second remote-access path into the PDC alongside RDP and Tailscale that I noted for
+Leonel to decide on, not something I touched myself.
+
+![WFAS inbound rules — includes explicit VNC (vnc5800/vnc5900) and VMware Authd rules](screenshots/phase5-02-wfas-inbound-rules.jpg)
 
 **Phase 6 — Lockout break/fix exercise.** With explicit approval, I reset
 `testuser`'s password (the value was never displayed or stored anywhere), ran one
@@ -126,15 +153,16 @@ working SSH key to the server, so later phases were executed directly rather tha
 relayed as PowerShell for him to paste manually — but the approval requirement for
 live changes never went away, it just changed who was physically typing the command.
 
-## Evidence — Screenshots
+## Evidence
 
-Every screenshot is embedded directly under the finding it supports, not listed
-separately — see:
-- [`docs/p01-phase2-evidence.md`](docs/p01-phase2-evidence.md) — Phase 2, command/output only (no GUI used)
-- [`docs/p01-phase3-evidence.md`](docs/p01-phase3-evidence.md) — Phase 3, command/output only (no GUI used)
-- [`docs/p01-rds-iis-risk-assessment.md`](docs/p01-rds-iis-risk-assessment.md) — Phase 4, 13 screenshots
-- [`docs/p01-phase5-firewall-baseline.md`](docs/p01-phase5-firewall-baseline.md) — Phase 5, 2 screenshots
-- [`docs/p01-phase6-lockout-breakfix.md`](docs/p01-phase6-lockout-breakfix.md) — Phase 6, command/output only (no GUI used)
+Every screenshot is embedded above, directly under the finding it supports (Phase 4
+and Phase 5 — the phases that used the GUI). Phases 2, 3, and 6 ran in PowerShell, so
+their evidence is command + output, not screenshots — full detail in:
+- [`docs/p01-phase2-evidence.md`](docs/p01-phase2-evidence.md)
+- [`docs/p01-phase3-evidence.md`](docs/p01-phase3-evidence.md)
+- [`docs/p01-rds-iis-risk-assessment.md`](docs/p01-rds-iis-risk-assessment.md) — same Phase 4 screenshots, with the full write-up
+- [`docs/p01-phase5-firewall-baseline.md`](docs/p01-phase5-firewall-baseline.md) — same Phase 5 screenshots, with the full write-up
+- [`docs/p01-phase6-lockout-breakfix.md`](docs/p01-phase6-lockout-breakfix.md)
 
 Full-resolution image files live in [`screenshots/`](screenshots/).
 
