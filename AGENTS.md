@@ -95,7 +95,7 @@ Never: Codex does not execute live server commands.
 | Project | Status | Notes |
 |---------|--------|-------|
 | 01 — Server Baseline + Hardening | ✅ Complete | Password/lockout hardened, tiered admin model created, RDS/IIS/NPS/firewall risk documented |
-| 02 — AD Architecture | ⬜ Planned | Next Windows project; starts OU cleanup, replica DC planning, service accounts, and delegated admin |
+| 02 — AD Architecture | 🔄 AD complete; WIN-DC02 pending | Managed OUs, AGDLP groups, disabled staged accounts, AD Recycle Bin, and helpdesk delegation are live |
 | 03–13 | ⬜ Planned | Follow the cross-family execution roadmap |
 
 ## Cross-Family Integration Awareness

@@ -1,6 +1,6 @@
 # Network Topology — Windows Server Lab
 
-## Actual Server State (Discovered 2026-06-05)
+## Actual Server State (Discovered 2026-06-05; P02 updated 2026-06-23)
 
 WIN-PRQD8TJG04M is a single physical/bare-metal host that currently runs EVERYTHING.
 It is not just a Hyper-V host — it IS the Domain Controller.
@@ -23,7 +23,7 @@ It is not just a Hyper-V host — it IS the Domain Controller.
 | DHCP | Active scope | Lan-Network: 192.168.20.0/24, range .1–.254 |
 | NPAS | NPS / RADIUS | radius-service account exists; purpose under investigation |
 | FS-FileServer | File Server | Active |
-| Hyper-V | 13 VMs running | This host IS the Hyper-V server |
+| Hyper-V | 18 VMs inventoried on 2026-06-23 | This host IS the Hyper-V server |
 | RDS (full farm) | Connection Broker, Gateway, Licensing, Session Host, Web Access | ⚠️ On DC — risk documented in P01 |
 | IIS | Full install, ASP.NET, Windows Auth | ⚠️ On DC — likely serving RDS Web Access |
 
@@ -39,8 +39,19 @@ It is not just a Hyper-V host — it IS the Domain Controller.
 | DESKTOP-PGMHP9F | Workstation | Domain-joined client |
 | DESKTOP-VHPSR2K | Workstation | Domain-joined client |
 | DESKTOP-5ISQOPR | Workstation | Domain-joined client |
+| DESKTOP-HD87LV2 | Workstation | Domain-joined client |
 
-## Hyper-V VM Inventory (13 VMs — details TBD)
+## AD Placement After Project 02
+
+| Object type | Current OU |
+|-------------|------------|
+| Department OUs | `OU=<Department>,OU=ManagedUsers,DC=Chongong,DC=local` |
+| Workstations | `OU=Workstations,OU=ManagedComputers,DC=Chongong,DC=local` |
+| Member servers | `OU=Servers,OU=ManagedComputers,DC=Chongong,DC=local` |
+| Global groups | `OU=GlobalGroups,OU=Groups,DC=Chongong,DC=local` |
+| Domain local groups | `OU=DomainLocalGroups,OU=Groups,DC=Chongong,DC=local` |
+
+## Hyper-V VM Inventory (18 VMs — details finalized in Project 08)
 
 Inventory to be documented in Project 08 (Hyper-V Operations).
 Known from AD computer accounts: RADIUS01, GITEA are domain-joined VMs.
@@ -51,6 +62,7 @@ Known from AD computer accounts: RADIUS01, GITEA are domain-joined VMs.
 |----|---------|--------|
 | WIN-RDS01 | Project 08 | RD Session Host (migrate from DC) |
 | WIN-RDWEB01 | Project 08 | RD Gateway + Web Access + Broker + Licensing (optional) |
+| WIN-DC02 | Project 02 follow-up | Replica Domain Controller; VM not present as of 2026-06-23 |
 | WIN-FS01 | Project 06 | Dedicated File Server |
 | WIN-WS01 | Project 07 | Test Workstation (Win 11) |
 

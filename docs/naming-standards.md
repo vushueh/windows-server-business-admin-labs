@@ -48,4 +48,6 @@
 |---------|--------|
 | `\\WIN-FS01\[Department]` | `\\WIN-FS01\Finance` |
 | `\\WIN-FS01\IT` | IT department share |
-| `\\WIN-FS01\Operations` | Operations share |
+| `\\WIN-FS01\HR` | HR department share |
+| `\\WIN-FS01\Management` | Management department share |
+| `\\WIN-FS01\Sales` | Sales department share |

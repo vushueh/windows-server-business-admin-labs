@@ -19,7 +19,7 @@ description: >
 |-----------|-------|
 | PDC | WIN-PRQD8TJG04M — 192.168.20.11 / Tailscale 100.81.197.116 |
 | Domain | Chongong.local / CHONGONG |
-| Replica DC | WIN-DC02 (created in P02) |
+| Replica DC | WIN-DC02 (planned; VM not present after P02 AD architecture work) |
 | File Server | WIN-FS01 (created in P06) |
 | Workstation | WIN-WS01 (created in P07) |
 | RDS farm | WIN-RDS01 + WIN-RDWEB01 (created in P08) |
@@ -37,98 +37,79 @@ NEVER delete AD objects — disable/move only. NEVER run scripts without Claude 
 **Slash command:** `/winserver-p02`
 
 ### Purpose
-Build full AD structure: OU hierarchy, tiered admin accounts, AGDLP groups, service accounts, delegated administration, replica DC for redundancy and DC-skills practice.
+Build the live AD structure: managed OU hierarchy, tiered admin/service-account
+containers, AGDLP groups, department placement, delegated administration, and a
+documented replica-DC path.
 
-### Phase 1 — OU Structure
+### Live P02 Result
+
+Project 02 uses `ManagedUsers` and `ManagedComputers` because the domain already
+has built-in root containers named `CN=Users` and `CN=Computers`.
+
+```text
+Chongong.local
+  _Admin
+    Tier0-DomainAdmins
+    Tier1-ServerAdmins
+    Tier2-WorkstationAdmins
+    ServiceAccounts
+  ManagedComputers
+    Servers
+    Workstations
+  ManagedUsers
+    Finance
+    HR
+    IT
+    Management
+    Sales
+  Groups
+    GlobalGroups
+    DomainLocalGroups
+```
+
+### Phase 1 — Plan / Apply AD Architecture
+
+Use the project script instead of ad hoc one-liners:
 
 ```powershell
-# Build per identity-design.md
-$base = "DC=Chongong,DC=local"
-foreach ($ou in @("_Admin","Computers","Users","Groups")) {
-    New-ADOrganizationalUnit -Name $ou -Path $base
-}
-New-ADOrganizationalUnit -Name "Tier0-DomainAdmins"   -Path "OU=_Admin,$base"
-New-ADOrganizationalUnit -Name "Tier1-ServerAdmins"   -Path "OU=_Admin,$base"
-New-ADOrganizationalUnit -Name "Tier2-WorkstationAdmins" -Path "OU=_Admin,$base"
-New-ADOrganizationalUnit -Name "ServiceAccounts"      -Path "OU=_Admin,$base"
-New-ADOrganizationalUnit -Name "Servers"      -Path "OU=Computers,$base"
-New-ADOrganizationalUnit -Name "Workstations" -Path "OU=Computers,$base"
-foreach ($dept in @("IT","Finance","Operations")) {
-    New-ADOrganizationalUnit -Name $dept -Path "OU=Users,$base"
-}
-New-ADOrganizationalUnit -Name "GlobalGroups"      -Path "OU=Groups,$base"
-New-ADOrganizationalUnit -Name "DomainLocalGroups" -Path "OU=Groups,$base"
-# VERIFY
-Get-ADOrganizationalUnit -Filter * | Select-Object DistinguishedName | Sort-Object
+# Plan only
+.\projects\project-02-ad-architecture\scripts\p02-apply-ad-architecture.ps1 -Mode Plan
+
+# Apply only after explicit approval
+.\projects\project-02-ad-architecture\scripts\p02-apply-ad-architecture.ps1 -Mode Apply
 ```
 
-### Phase 2 — Move Existing Objects
+The script creates or verifies:
+- `ManagedComputers/Servers`
+- `ManagedComputers/Workstations`
+- `ManagedUsers/Finance`, `HR`, `IT`, `Management`, `Sales`
+- `Groups/GlobalGroups`
+- `Groups/DomainLocalGroups`
+- `GG-*` global groups and `DL-*` domain local groups
+- disabled staged accounts: `ws-leonel`, `svc-backup`, `svc-sync`
+- AD Recycle Bin
+- `GG-Helpdesk` password reset/unlock delegation on `ManagedUsers`
+
+### Phase 2 — Verify
 
 ```powershell
-# Move existing users to correct OU
-Get-ADUser -Filter {SamAccountName -ne "Administrator"} |
-  Move-ADObject -TargetPath "OU=IT,OU=Users,DC=Chongong,DC=local"
-# Move computers
-Get-ADComputer -Filter {Name -like "DESKTOP-*"} |
-  Move-ADObject -TargetPath "OU=Workstations,OU=Computers,DC=Chongong,DC=local"
+.\projects\project-02-ad-architecture\scripts\p02-verify-ad-architecture.ps1
 ```
 
-### Phase 3 — Tiered Admin Accounts
+Key manual GUI checks:
+- ADUC -> `Chongong.local` -> `ManagedUsers`
+- ADUC -> `Chongong.local` -> `ManagedComputers`
+- ADUC -> `Groups` -> `GlobalGroups`
+- ADUC -> `Groups` -> `DomainLocalGroups`
+- ADAC -> confirm AD Recycle Bin is enabled
 
-```powershell
-$base = "DC=Chongong,DC=local"
-# Tier 0
-New-ADUser -Name "adm-leonel" -SamAccountName "adm-leonel" `
-  -Path "OU=Tier0-DomainAdmins,OU=_Admin,$base" `
-  -AccountPassword (Read-Host -AsSecureString "adm-leonel password (20+ chars)") -Enabled $true
-Add-ADGroupMember -Identity "Domain Admins" -Members "adm-leonel"
+### Phase 3 — Replica DC Decision
 
-# Tier 1
-New-ADUser -Name "srv-leonel" -SamAccountName "srv-leonel" `
-  -Path "OU=Tier1-ServerAdmins,OU=_Admin,$base" `
-  -AccountPassword (Read-Host -AsSecureString "srv-leonel password") -Enabled $true
-Add-ADGroupMember -Identity "GG-ServerAdmins" -Members "srv-leonel"
+`WIN-DC02` is still pending because the VM does not exist yet. Treat it as a
+separate VM build before promotion. Do not pretend the domain has redundancy
+until `repadmin /replsummary` and `repadmin /showrepl` confirm it.
 
-# Tier 2
-New-ADUser -Name "ws-leonel" -SamAccountName "ws-leonel" `
-  -Path "OU=Tier2-WorkstationAdmins,OU=_Admin,$base" `
-  -AccountPassword (Read-Host -AsSecureString "ws-leonel password") -Enabled $true
-```
-
-### Phase 4 — AGDLP Groups
-
-```powershell
-$gou = "OU=GlobalGroups,OU=Groups,DC=Chongong,DC=local"
-$dlou = "OU=DomainLocalGroups,OU=Groups,DC=Chongong,DC=local"
-foreach ($dept in @("Finance","IT","Operations")) {
-    New-ADGroup -Name "GG-$dept-Users" -GroupScope Global -Path $gou
-    New-ADGroup -Name "DL-$dept-Share-RW" -GroupScope DomainLocal -Path $dlou
-    Add-ADGroupMember -Identity "DL-$dept-Share-RW" -Members "GG-$dept-Users"
-}
-New-ADGroup -Name "GG-NetAdmins"   -GroupScope Global -Path $gou
-New-ADGroup -Name "GG-ServerAdmins" -GroupScope Global -Path $gou
-New-ADGroup -Name "GG-Helpdesk"    -GroupScope Global -Path $gou
-```
-
-### Phase 5 — Service Accounts
-
-```powershell
-New-ADUser -Name "svc-backup" -SamAccountName "svc-backup" `
-  -Path "OU=ServiceAccounts,OU=_Admin,DC=Chongong,DC=local" `
-  -AccountPassword (Read-Host -AsSecureString "svc-backup password") `
-  -Enabled $true -PasswordNeverExpires $true
-# Deny interactive logon via GPO
-```
-
-### Phase 6 — Delegated Administration
-
-```
-GUI: ADUC → Users OU → right-click → Delegate Control
-  Delegate to: GG-Helpdesk
-  Task: Reset user passwords and force password change at next logon
-```
-
-### Phase 7 — Replica DC (WIN-DC02)
+### Phase 4 — Replica DC Build (WIN-DC02)
 
 ```powershell
 # On WIN-DC02 Hyper-V VM (2 vCPU, 4GB, 80GB) — after Windows Server 2022 install
@@ -148,19 +129,22 @@ Get-ADReplicationPartnerMetadata -Target WIN-DC02
 netdom query fsmo   # All FSMO roles still on WIN-PRQD8TJG04M
 ```
 
-### Phase 8 — Functional Level Upgrade
+### Phase 5 — Functional Level Verification
 
 ```powershell
-Set-ADDomainMode -Identity "Chongong.local" -DomainMode Windows2016Domain
-Set-ADForestMode -Identity "Chongong.local" -ForestMode Windows2016Forest
-# VERIFY: Get-ADDomain | Select-Object DomainMode
+Get-ADDomain | Select-Object DNSRoot, DomainMode
+Get-ADForest | Select-Object Name, ForestMode
 ```
+
+Windows Server 2022 still reports `Windows2016Domain` and
+`Windows2016Forest`. Do not run a functional-level upgrade for a non-existent
+Windows Server 2022 AD DS functional level.
 
 ---
 
 ## Project 03 — AD DNS Engineering
 
-**Requires:** P02 complete (WIN-DC02 running)
+**Requires:** P02 managed AD architecture complete. `WIN-DC02` replication checks wait until that VM exists.
 **Slash command:** `/winserver-p03`
 
 ### Phase 1 — Audit
@@ -175,8 +159,9 @@ Get-DnsServerScavenging
 ### Phase 2 — Fix DNS Server Addressing
 
 ```
-WIN-PRQD8TJG04M NIC: Primary DNS = 127.0.0.1 | Secondary = WIN-DC02 IP
-WIN-DC02 NIC:        Primary DNS = WIN-PRQD8TJG04M IP | Secondary = 127.0.0.1
+WIN-PRQD8TJG04M NIC now: Primary DNS = 127.0.0.1
+After WIN-DC02 exists: add WIN-DC02 IP as secondary DNS on WIN-PRQD8TJG04M
+WIN-DC02 NIC later: Primary DNS = WIN-PRQD8TJG04M IP | Secondary = 127.0.0.1
 NEVER set DC NIC DNS to 8.8.8.8 — breaks AD authentication
 ```
 
@@ -301,7 +286,7 @@ WHY: Use Advanced Audit Policy Configuration (not legacy Audit Policy) — gives
 ### Phase 1 — Create WIN-FS01 (Hyper-V VM)
 
 2 vCPU | 4GB RAM | 80GB OS + 200GB data disk | Windows Server 2022
-Domain join → move to `OU=Servers,OU=Computers,DC=Chongong,DC=local`
+Domain join -> move to `OU=Servers,OU=ManagedComputers,DC=Chongong,DC=local`
 
 ### Phase 2 — Shares and NTFS
 
@@ -309,7 +294,7 @@ Domain join → move to `OU=Servers,OU=Computers,DC=Chongong,DC=local`
 Install-WindowsFeature FS-FileServer, FS-Resource-Manager -IncludeManagementTools
 
 # Create share structure
-foreach ($dept in @("Finance","IT","Operations","Shared","Archives")) {
+foreach ($dept in @("Finance","HR","IT","Management","Sales","Shared","Archives")) {
     New-Item -ItemType Directory -Path "D:\Shares\$dept"
     New-SmbShare -Name $dept -Path "D:\Shares\$dept" -FullAccess "Domain Admins"
 }
@@ -364,7 +349,7 @@ Get-ADGroupMember "DL-Finance-Share-RW" | ForEach-Object {
 ### Phase 1 — Create WIN-WS01 (Hyper-V VM)
 
 Windows 11 Pro/Enterprise | 2 vCPU | 4GB RAM | 60GB disk
-Set DNS to 192.168.20.11 → domain join → move to `OU=Workstations,OU=Computers,DC=Chongong,DC=local`
+Set DNS to 192.168.20.11 -> domain join -> move to `OU=Workstations,OU=ManagedComputers,DC=Chongong,DC=local`
 
 ### Phase 2 — RSAT Install
 
@@ -491,7 +476,7 @@ Test-WSMan -ComputerName WIN-DC02, WIN-FS01, WIN-WS01
 ```powershell
 param([string]$FirstName, [string]$LastName, [string]$Department, [string]$Title)
 $Username = $FirstName.ToLower()
-$OU = "OU=$Department,OU=Users,DC=Chongong,DC=local"
+$OU = "OU=$Department,OU=ManagedUsers,DC=Chongong,DC=local"
 New-ADUser -Name "$FirstName $LastName" -SamAccountName $Username `
   -UserPrincipalName "$Username@Chongong.local" -Path $OU `
   -Department $Department -Title $Title `
@@ -635,7 +620,7 @@ Get-ADForest | Set-ADForest -UPNSuffixes @{Add="<yourbusiness>.com"}
 ### Phase 2 — Bulk UPN Update
 
 ```powershell
-Get-ADUser -Filter * -SearchBase "OU=Users,DC=Chongong,DC=local" | ForEach-Object {
+Get-ADUser -Filter * -SearchBase "OU=ManagedUsers,DC=Chongong,DC=local" | ForEach-Object {
     Set-ADUser $_ -UserPrincipalName "$($_.SamAccountName)@<yourbusiness>.com"
 }
 ```
@@ -646,7 +631,7 @@ Get-ADUser -Filter * -SearchBase "OU=Users,DC=Chongong,DC=local" | ForEach-Objec
 Custom installation:
   Auth method: Password Hash Sync
   Connect to Entra: global admin credentials
-  Scope: OU=Users only (exclude _Admin, ServiceAccounts)
+  Scope: OU=ManagedUsers only (exclude _Admin and ServiceAccounts)
   Optional features: Password writeback (enable)
   Staging mode: ON for first validation → turn OFF only after confirming no unexpected deletes
 ```

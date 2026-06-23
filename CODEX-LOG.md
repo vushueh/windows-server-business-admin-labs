@@ -4,6 +4,68 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-23 (Codex — Project 02 AD architecture live completion)
+### What I did
+- Applied the approved Project 02 AD architecture changes on `WIN-PRQD8TJG04M`.
+- Created the managed OU layout: `ManagedUsers`, `ManagedComputers`, `Groups/GlobalGroups`, and `Groups/DomainLocalGroups`.
+- Moved the five real department OUs (`Finance`, `HR`, `IT`, `Management`, `Sales`) under `ManagedUsers`.
+- Moved domain-joined workstations under `ManagedComputers/Workstations` and member servers (`GITEA`, `RADIUS01`) under `ManagedComputers/Servers`.
+- Created P02 `GG-*` global groups and `DL-*` domain local groups, then nested department groups into the matching DL groups.
+- Created disabled staged accounts `ws-leonel`, `svc-backup`, and `svc-sync`.
+- Enabled AD Recycle Bin and delegated `GG-Helpdesk` reset-password, force-password-change, and unlock rights on `ManagedUsers`.
+- Confirmed `__vmware__` is still an empty Domain Local group with description `VMware User Group`; left it untouched.
+- Confirmed no `WIN-DC02` VM/computer object exists yet, so replica DC remains the only P02 infrastructure dependency.
+- Added idempotent apply and read-only verification scripts for future runs.
+
+### Files created/modified
+- `projects/project-02-ad-architecture/scripts/p02-apply-ad-architecture.ps1`
+- `projects/project-02-ad-architecture/scripts/p02-verify-ad-architecture.ps1`
+- `projects/project-02-ad-architecture/README.md`
+- `docs/identity-design.md`
+- `docs/topology.md`
+- `docs/naming-standards.md`
+- `docs/execution-roadmap.md`
+- `README.md`
+- `projects/README.md`
+- `AGENTS.md`
+- `skills/windows-server-business-admin.md`
+- `skills/winserver-projects.md`
+- `projects/project-03-dns-engineering/README.md`
+- `projects/project-05-gpo-security-baselines/README.md`
+- `projects/project-06-file-server-access-governance/README.md`
+- `projects/project-07-windows-client-lifecycle/README.md`
+- `projects/project-09-powershell-admin-platform/README.md`
+- `projects/project-12-m365-entra-hybrid-identity/README.md`
+- `projects/project-01-server-baseline-hardening/README.md`
+- `projects/project-01-server-baseline-hardening/docs/p01-verified-final-state.md`
+- `skills/project-01-server-baseline-hardening.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- Use `ManagedUsers` and `ManagedComputers` because built-in root containers `CN=Users` and `CN=Computers` already exist.
+- Keep the real five departments from the live domain: Finance, HR, IT, Management, and Sales. Do not create the old planned `Operations` department.
+- Keep all FSMO roles on `WIN-PRQD8TJG04M`.
+- Do not delete or rename legacy groups such as `__vmware__`; document and leave untouched unless a later approved cleanup project owns them.
+- Treat `WIN-DC02` as a separate VM build/promotion step because the VM is not present.
+
+### Verification
+- `p02-apply-ad-architecture.ps1 -Mode Plan` now recognizes all objects as already in place.
+- `p02-verify-ad-architecture.ps1` ran successfully from `C:\Windows\Temp` on `WIN-PRQD8TJG04M`.
+- PowerShell parser check passed for both P02 scripts.
+- Verification confirmed Recycle Bin enabled and all five FSMO roles still on `WIN-PRQD8TJG04M`.
+
+### Cross-family impacts
+- NetOps/NPS groups now exist: `GG-NetAdmins` and `GG-Net-ReadOnly`.
+- SOC group now exists: `GG-SOC-Analysts`.
+- Project 06 file-share groups now match the real department list.
+- Project 12 Entra sync planning now scopes to `ManagedUsers`, excluding `_Admin` and service accounts.
+
+### Open questions for Claude
+- Review and push the Project 02 commit if Leonel wants Claude to own the GitHub publish step.
+- Build/promotion of `WIN-DC02` remains the next P02 infrastructure item after Windows Server install media and VM details are ready.
+
+---
+
 ## Session — 2026-06-23 (Codex — Project 01 documentation cleanup)
 ### What I did
 - Pulled latest `main` and reviewed the new Project 01 evidence/documentation set.

@@ -93,13 +93,13 @@ Start-Process -FilePath ".\WindowsAdminCenter.exe" `
 param(
   [string]$FirstName,
   [string]$LastName,
-  [string]$Department,   # IT, Finance, Operations
+  [string]$Department,   # Finance, HR, IT, Management, Sales
   [string]$Title,
   [string]$Manager
 )
 $Username = $FirstName.ToLower()
 $UPN = "$Username@Chongong.local"
-$OU = "OU=$Department,OU=Users,DC=Chongong,DC=local"
+$OU = "OU=$Department,OU=ManagedUsers,DC=Chongong,DC=local"
 
 New-ADUser -Name "$FirstName $LastName" -SamAccountName $Username -UserPrincipalName $UPN `
   -Path $OU -Department $Department -Title $Title -Manager $Manager `

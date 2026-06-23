@@ -104,7 +104,7 @@ Full screenshots: [screenshots/](screenshots/)
 | VNC exposure | Flagged, not removed | Leonel decision |
 | NPS/RADIUS policies | No clients configured yet | Project 13 |
 | Failed-logon audit gap | 4740 worked, but 4625/4776/4771 need audit policy work | Project 05 / SOC |
-| `__vmware__` group | VMware-related artifact, left untouched | Project 02 |
+| `__vmware__` group | Empty VMware-related Domain Local group, confirmed again in P02 and left untouched | No action |
 
 ## Technical Links
 

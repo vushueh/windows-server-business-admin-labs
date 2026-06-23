@@ -76,7 +76,7 @@ $User = "test-offboard"
 
 if (-not (Get-ADUser -Filter "SamAccountName -eq '$User'")) {
   New-ADUser -Name $User -SamAccountName $User `
-    -Path "OU=Users,DC=Chongong,DC=local" -Enabled $true `
+    -Path "OU=IT,OU=ManagedUsers,DC=Chongong,DC=local" -Enabled $true `
     -AccountPassword (Read-Host -AsSecureString "Temporary password for $User")
 }
 

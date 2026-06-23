@@ -112,7 +112,7 @@ repadmin /showrepl                     # Replication (no partners — single DC)
 | Default Domain Controllers Policy | Can lock out AD completely | Project 05 |
 | Hyper-V VMs | 13 running VMs | Project 08 |
 | DefaultInboundAction = Block | Needs full AD port allowlist GPO first | Project 05 |
-| __vmware__ group | "VMware User Group", empty, no ManagedBy — confirmed via Phase 4 query, host has VMware NAT/Autostart services | Project 02 |
+| __vmware__ group | "VMware User Group", empty, no ManagedBy — confirmed via Phase 4 and checked again during P02 | No action |
 
 ---
 

@@ -17,16 +17,18 @@ from P05 must exist before NTFS permission assignments make sense.
 
 - DC: WIN-PRQD8TJG04M (file server role currently on DC — to be offloaded)
 - New file server: WIN-FS01 (Hyper-V VM — created in this project)
-- Groups: GG-Finance-Users, GG-IT-Admins, GG-Operations-Users (created in P02)
-- Domain Local Groups: DL-Finance-Share-RW, DL-IT-Share-Full, DL-Operations-Share-RW (P02)
+- Groups: GG-Finance-Users, GG-HR-Users, GG-IT-Users, GG-IT-Admins, GG-Management-Users, GG-Sales-Users (created in P02)
+- Domain Local Groups: DL-Finance-Share-RW, DL-HR-Share-RW, DL-IT-Share-RW, DL-IT-Share-Full, DL-Management-Share-RW, DL-Sales-Share-RW (P02)
 
 ## Target Share Structure
 
 ```
 \\WIN-FS01\
   ├── Finance\       → DL-Finance-Share-RW (Modify), DL-Finance-Share-RO (ReadOnly)
+  ├── HR\            → DL-HR-Share-RW (Modify)
   ├── IT\            → DL-IT-Share-Full (Full Control)
-  ├── Operations\    → DL-Operations-Share-RW (Modify)
+  ├── Management\    → DL-Management-Share-RW (Modify)
+  ├── Sales\         → DL-Sales-Share-RW (Modify)
   ├── Shared\        → Authenticated Users (Read) — company-wide read share
   └── Archives\      → Domain Admins only — retired/archived content
 ```
@@ -43,12 +45,12 @@ from P05 must exist before NTFS permission assignments make sense.
 | # | Phase | Key Action |
 |---|-------|------------|
 | 1 | Create WIN-FS01 VM | Hyper-V VM: 2 vCPU, 4GB RAM, 80GB OS + 200GB data disk |
-| 2 | Domain Join WIN-FS01 | Join to Chongong.local, move to Computers\Servers OU |
+| 2 | Domain Join WIN-FS01 | Join to Chongong.local, move to ManagedComputers\Servers OU |
 | 3 | Install File Server Role | FS-FileServer, FSRM, DFS Namespaces |
-| 4 | Create Department Shares | Finance, IT, Operations, Shared, Archives |
+| 4 | Create Department Shares | Finance, HR, IT, Management, Sales, Shared, Archives |
 | 5 | Apply NTFS AGDLP Permissions | Remove inheritance, assign DL-* groups only — no direct user permissions |
 | 6 | Configure Shadow Copies | Enable VSS on data volume, 2× daily schedule |
-| 7 | Enable File Auditing | Object Access GPO linked to Computers\Servers — log all write/delete |
+| 7 | Enable File Auditing | Object Access GPO linked to ManagedComputers\Servers — log all write/delete |
 | 8 | FSRM Quotas and Screens | 10GB quota per dept, block executable extensions |
 | 9 | Access-Based Enumeration | Enable ABE on all shares |
 | 10 | Access Review Process | PowerShell report: who is in each DL-* group and what share does it grant |

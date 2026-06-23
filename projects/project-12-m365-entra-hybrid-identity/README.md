@@ -42,7 +42,7 @@ On-Prem AD (Chongong.local)          Microsoft 365 / Entra
 |----------|--------|--------|
 | UPN suffix | `<yourbusiness>.com` | Chongong.local is not internet-routable |
 | Sync mode | Password Hash Sync (PHS) | Simplest for lab; no ADFS/PTA dependency |
-| Scope filter | Sync Users OU only | Exclude admin accounts (adm-*, srv-*, ws-*, svc-*) from cloud |
+| Scope filter | Sync `ManagedUsers` only | Exclude admin accounts (adm-*, srv-*, ws-*, svc-*) from cloud |
 | License assignment | Group-based licensing | Entra group → license; not per-user manual |
 | Password writeback | Enabled only after permissions are verified | Password reset in M365 writes back to on-prem AD |
 | Admin-center evidence | Screenshot + notes per admin center | Keeps the portfolio readable for non-technical and technical readers |
@@ -55,7 +55,7 @@ On-Prem AD (Chongong.local)          Microsoft 365 / Entra
 | 2 | Add UPN Suffix to AD | Add `<yourbusiness>.com` UPN suffix to on-prem AD |
 | 3 | Update User UPNs | Change all standard users from @Chongong.local to @<yourbusiness>.com |
 | 4 | Prepare svc-sync | Verify svc-sync exists with minimum permissions for Entra Connect |
-| 5 | Install Entra Connect | Custom install, select Password Hash Sync, scope to Users OU, start in staging mode |
+| 5 | Install Entra Connect | Custom install, select Password Hash Sync, scope to `ManagedUsers`, start in staging mode |
 | 6 | Initial Sync | Review pending adds/deletes, disable staging mode only after verification |
 | 7 | Group-Based Licensing | Create Entra group → assign M365 license (E3 or Business) |
 | 8 | Microsoft Admin Center Evidence | Document users, groups, licenses, service health, and Exchange/mailbox state if available |
@@ -78,8 +78,8 @@ Get-ADForest | Set-ADForest -UPNSuffixes @{Add="<yourbusiness>.com"}
 
 ### Phase 3 — Bulk UPN Update
 ```powershell
-# Update all standard users in Users OU to new UPN suffix
-Get-ADUser -Filter * -SearchBase "OU=Users,DC=Chongong,DC=local" |
+# Update all standard users in ManagedUsers OU to new UPN suffix
+Get-ADUser -Filter * -SearchBase "OU=ManagedUsers,DC=Chongong,DC=local" |
   ForEach-Object {
     $NewUPN = "$($_.SamAccountName)@<yourbusiness>.com"
     Set-ADUser $_ -UserPrincipalName $NewUPN
@@ -92,7 +92,7 @@ Get-ADUser -Filter * -SearchBase "OU=Users,DC=Chongong,DC=local" |
 Installation wizard settings:
   Authentication method: Password Hash Sync
   Connect to Entra: global admin credentials
-  Sync scope: Domain and OU filtering → select OU=Users only
+  Sync scope: Domain and OU filtering → select OU=ManagedUsers only
     (excludes _Admin, ServiceAccounts from cloud sync)
   Optional features: Password writeback (enable)
   Staging mode: ON for first validation; turn OFF only after confirming no unexpected deletes/updates
@@ -134,7 +134,7 @@ Get-ADSyncConnectorStatistics -ConnectorName "Chongong.local"
 # Reset leonel password in M365 admin center → login to WIN-WS01 with new password
 
 # Confirm UPNs correct
-Get-ADUser -Filter * -SearchBase "OU=Users,DC=Chongong,DC=local" |
+Get-ADUser -Filter * -SearchBase "OU=ManagedUsers,DC=Chongong,DC=local" |
   Select-Object SamAccountName, UserPrincipalName
 ```
 

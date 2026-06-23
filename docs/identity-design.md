@@ -34,17 +34,23 @@ chongong.local
   │   ├── Tier1-ServerAdmins
   │   ├── Tier2-WorkstationAdmins
   │   └── ServiceAccounts
-  ├── Computers
+  ├── ManagedComputers
   │   ├── Servers
   │   └── Workstations
-  ├── Users
-  │   ├── IT
+  ├── ManagedUsers
   │   ├── Finance
-  │   └── Operations
+  │   ├── HR
+  │   ├── IT
+  │   ├── Management
+  │   └── Sales
   └── Groups
       ├── GlobalGroups    ← GG-* (who people are)
       └── DomainLocalGroups  ← DL-* (what they can access)
 ```
+
+`ManagedUsers` and `ManagedComputers` are intentional. The domain already has
+built-in root containers named `CN=Users` and `CN=Computers`, so Project 02 uses
+managed OUs for GPO-ready objects without touching the built-in containers.
 
 ## AGDLP Model
 

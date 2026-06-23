@@ -23,7 +23,7 @@ rest of the Windows family can be trusted.
 | Order | Windows project | What must be true before moving on | Cross-family check |
 |-------|-----------------|------------------------------------|--------------------|
 | 1 | P01 Server Baseline | Server role inventory, admin model, lockout policy, firewall/RDP posture, and break/fix evidence are documented. | Homelab-management status reflects the DC as a critical identity platform. |
-| 2 | P02 AD Architecture | OU structure, tiered admin accounts, service accounts, AGDLP groups, delegated admin, and replica-DC decision are documented. | NetOps/SOC docs know which AD groups will later control access. |
+| 2 | P02 AD Architecture | Managed OU structure, tiered admin/service accounts, AGDLP groups, delegated admin, and replica-DC decision are documented. | NetOps/SOC docs know which AD groups will later control access. |
 | 3 | P03 DNS Engineering | DC DNS, forwarders, reverse zones, stale-record handling, and DNS break/fix tests are documented. | NetOps tools can resolve key Windows, firewall, Proxmox, and SOC hosts by name. |
 | 4 | P04 DHCP/IPAM | Scope design, reservations, options, relay planning, and IPAM records are documented. | OPNsense/NetOps topology uses the same addressing plan. |
 | 5 | P05 GPO Baselines | Audit, firewall, lockout/password, workstation restrictions, and Tier 0 logon restrictions are staged and verified. | SOC/Wazuh has the audit events needed for Windows case studies. |
@@ -61,13 +61,12 @@ Each project is done only when these exist:
 
 Start here:
 
-1. Close Project 01 with evidence and mark its true status.
-2. Start Project 02 AD Architecture.
-3. Pause for a short NetOps/SOC alignment check after P02.
-4. Run Project 03 DNS Engineering.
-5. Run Project 04 DHCP/IPAM.
-6. Run Project 05 GPO Security Baselines.
-7. Build Project 07 WIN-WS01 only after P05 and the required file/share pieces are ready.
+1. Use the completed P02 AD structure as the identity base for NetOps/SOC alignment.
+2. Build `WIN-DC02` as the remaining replica-DC dependency when install media and VM details are ready.
+3. Run Project 03 DNS Engineering on the current PDC, then extend checks to `WIN-DC02` after it exists.
+4. Run Project 04 DHCP/IPAM.
+5. Run Project 05 GPO Security Baselines.
+6. Build Project 07 `WIN-WS01` only after P05 and the required file/share pieces are ready.
 
 This order gives the lab a stable identity, name-resolution, addressing, and
 policy base before the SOC, ServiceNow, FreePBX, and case-study work depends on

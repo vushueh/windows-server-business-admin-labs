@@ -36,7 +36,7 @@ audit policy, tested DR, and hybrid identity.
 | Component | IP | Platform | Notes |
 |-----------|----|----------|-------|
 | WIN-PRQD8TJG04M | 192.168.20.11 | Physical / Hyper-V Host | Existing PDC for Chongong.local; runs all Windows Server VMs |
-| WIN-DC02 | TBD (Project 02) | Hyper-V VM | Planned replica DC, AD DS, DNS, and possible NPS staging |
+| WIN-DC02 | TBD | Hyper-V VM | Planned replica DC; VM not present as of P02 live AD architecture completion |
 | WIN-FS01 | TBD (Project 06) | Hyper-V VM | File Server |
 | WIN-WS01 | TBD (Project 07) | Hyper-V VM | Test workstation |
 | OPNsense | 192.168.20.x | Hyper-V VM | Firewall — RADIUS auth in Project 13 |
@@ -94,17 +94,24 @@ chongong.local
   ├── _Admin
   │   ├── Tier0-DomainAdmins
   │   ├── Tier1-ServerAdmins
+  │   ├── Tier2-WorkstationAdmins
   │   └── ServiceAccounts
-  ├── Workstations
-  ├── Servers
-  ├── Users
-  │   ├── IT
+  ├── ManagedComputers
+  │   ├── Servers
+  │   └── Workstations
+  ├── ManagedUsers
   │   ├── Finance
-  │   └── Operations
+  │   ├── HR
+  │   ├── IT
+  │   ├── Management
+  │   └── Sales
   └── Groups
       ├── GlobalGroups
       └── DomainLocalGroups
 ```
+
+Project 02 uses `ManagedUsers` and `ManagedComputers` because the live domain
+already has built-in root containers named `CN=Users` and `CN=Computers`.
 
 ---
 
@@ -119,7 +126,7 @@ Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
 Install-ADDSForest -DomainName "chongong.local" -SafeModeAdministratorPassword (Read-Host -AsSecureString)
 
 # Create OU
-New-ADOrganizationalUnit -Name "IT" -Path "OU=Users,DC=chongong,DC=local"
+New-ADOrganizationalUnit -Name "IT" -Path "OU=ManagedUsers,DC=chongong,DC=local"
 
 # Create user
 New-ADUser -Name "Leonel Chongong" -SamAccountName "leonel" -UserPrincipalName "leonel@chongong.local" -AccountPassword (Read-Host -AsSecureString) -Enabled $true

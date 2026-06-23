@@ -15,8 +15,8 @@ GPO gets applied at domain join, not after.
 
 ## Environment Context
 
-- DC: WIN-PRQD8TJG04M (PDC) + WIN-DC02 (replica, from P02)
-- OU structure: built in P02 — _Admin, Computers\Servers, Computers\Workstations, Users
+- DC: WIN-PRQD8TJG04M (PDC); WIN-DC02 replica pending
+- OU structure: built in P02 — _Admin, ManagedComputers\Servers, ManagedComputers\Workstations, ManagedUsers
 - Existing GPO gap: only Default Domain Policy + Default Domain Controllers Policy exist
 
 ## GPO Architecture
@@ -24,11 +24,11 @@ GPO gets applied at domain join, not after.
 | GPO Name | Scope/Link | Purpose |
 |----------|-----------|---------|
 | Domain-AccountPolicy | Domain root | Password length 14, complexity, history, lockout threshold 5 |
-| Servers-AuditPolicy | Computers\Servers | Logon, account mgmt, privilege use, object access |
-| Servers-FirewallBaseline | Computers\Servers | DefaultInboundAction=Block, allow management only |
-| Workstations-LocalAdminRestriction | Computers\Workstations | Remove standard users from local admins |
-| Workstations-AuditPolicy | Computers\Workstations | Logon, removable storage, process creation |
-| Workstations-UserRestrictions | Computers\Workstations | Screen lock 10min, disable USB, logon banner |
+| Servers-AuditPolicy | ManagedComputers\Servers | Logon, account mgmt, privilege use, object access |
+| Servers-FirewallBaseline | ManagedComputers\Servers | DefaultInboundAction=Block, allow management only |
+| Workstations-LocalAdminRestriction | ManagedComputers\Workstations | Remove standard users from local admins |
+| Workstations-AuditPolicy | ManagedComputers\Workstations | Logon, removable storage, process creation |
+| Workstations-UserRestrictions | ManagedComputers\Workstations | Screen lock 10min, disable USB, logon banner |
 | Admins-TierZeroRestriction | _Admin\Tier0-DomainAdmins | Deny logon to workstations for adm-* accounts |
 
 ## Phases

@@ -1,6 +1,6 @@
 # Project 03 — AD DNS and Name Resolution Engineering
 
-**Status:** ⬜ Planned (requires Project 02 complete)
+**Status:** ⬜ Planned (requires Project 02 managed AD structure complete)
 **Skill:** `/winserver-p03` — written when this project starts
 
 ## Objective
@@ -17,7 +17,7 @@ later projects avoids compounding failures.
 
 - DNS server: WIN-PRQD8TJG04M (192.168.20.11)
 - AD-integrated zone: `Chongong.local`
-- Secondary DNS after P02: `WIN-DC02` (replica DC also runs DNS)
+- Secondary DNS: `WIN-DC02` after the replica DC VM is built and promoted
 - External resolver: forwarders to 8.8.8.8 / 1.1.1.1
 
 ## Current DNS State (from P01 Audit)
@@ -29,8 +29,9 @@ later projects avoids compounding failures.
 | Standard reverse lookup zones | Active | Verify completeness |
 
 **Known gap:** DC DNS must never point directly to 8.8.8.8 or 1.1.1.1 on the NIC.
-After WIN-DC02 exists, each DC should use the other DC as preferred DNS and itself as secondary/loopback.
-Forwarders send unresolved queries outbound. WIN-DC02 DNS must replicate after Phase 7 of P02.
+For now, `WIN-PRQD8TJG04M` is the only DC/DNS server. After `WIN-DC02` exists,
+each DC should use AD DNS only: the other DC as preferred DNS and itself as
+secondary/loopback. Forwarders send unresolved queries outbound.
 
 ## Phases
 
@@ -44,7 +45,7 @@ Forwarders send unresolved queries outbound. WIN-DC02 DNS must replicate after P
 | 6 | DNS Scavenging | Enable scavenging to remove stale records automatically |
 | 7 | Split-Brain DNS | Internal zone resolves privately; external DNS resolves publicly |
 | 8 | Break/Fix Exercise | Simulate 3 common DNS failures and troubleshoot to resolution |
-| 9 | WIN-DC02 DNS Verification | Confirm DNS replication to replica DC is healthy |
+| 9 | WIN-DC02 DNS Verification | Deferred until the replica DC VM exists; then confirm DNS replication |
 | 10 | Document + Push | All zone configs documented, STAR summary written |
 
 ## Phase Detail

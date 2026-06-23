@@ -78,7 +78,7 @@ and should not be "corrected" by a future session without asking first.
 **Carried-forward items for later projects:**
 - RD Connection Broker issue → Project 08
 - IIS migration → Project 08
-- `__vmware__` group investigation → Project 02
+- `__vmware__` group confirmed again during Project 02; empty VMware artifact left untouched
 - NPS/RADIUS buildout (currently empty) → Project 13
 - Failed-logon audit policy gap → Project 05 / Blue Team log forwarding
 - VNC exposure (winvnc, explicit firewall rules) → flagged, no project assigned yet —

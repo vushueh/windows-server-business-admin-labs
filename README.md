@@ -51,7 +51,7 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 
 | Component | Platform | IP | Notes |
 |-----------|----------|----|-------|
-| WIN-PRQD8TJG04M | Windows Server 2022 Datacenter | 192.168.20.11 / Tailscale 100.81.197.116 | PDC for Chongong.local, DHCP, DNS, NPS, RDS farm, IIS, Hyper-V (13 VMs) |
+| WIN-PRQD8TJG04M | Windows Server 2022 Datacenter | 192.168.20.11 / Tailscale 100.81.197.116 | PDC for Chongong.local, DHCP, DNS, NPS, RDS farm, IIS, Hyper-V |
 | WIN-RDS01 | Hyper-V VM | TBD (Project 08) | Migration target: RD Session Host (moving off DC) |
 | WIN-FS01 | Hyper-V VM | TBD (Project 06) | Dedicated File Server |
 | WIN-WS01 | Hyper-V VM | TBD (Project 07) | Domain-joined test workstation |
@@ -67,7 +67,7 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 | # | Project | Focus | Status |
 |---|---------|-------|--------|
 | [01](projects/project-01-server-baseline-hardening/) | **Server Baseline, Hardening, and Admin Model** | Role inventory, tiered admin, lockout policy, firewall baseline | ✅ Complete |
-| [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | OU design, delegated admin, AGDLP groups, naming standards | ⬜ Planned |
+| [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | Managed OUs, delegated admin, AGDLP groups, naming standards | 🔄 AD complete; WIN-DC02 pending |
 | [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, split DNS, forwarders | ⬜ Planned |
 | [04](projects/project-04-dhcp-ipam/) | **DHCP, IPAM, and Network Integration** | Scopes, reservations, VLAN-aware design | ⬜ Planned |
 | [05](projects/project-05-gpo-security-baselines/) | **Group Policy Security Baselines** | Firewall GPO, audit policy, DefaultInboundAction | ⬜ Planned |
