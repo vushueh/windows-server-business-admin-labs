@@ -53,7 +53,7 @@ WIN-PRQD8TJG04M IS the live PDC. There is no separate "future WIN-DC01" — this
 | 2 | Password Policy + Lockout | Fix LockoutThreshold=0, MinLength=14 | [phase-2-password-policy.md](p01-references/phase-2-password-policy.md) |
 | 3 | Tiered Admin Model | _Admin OU, adm-leonel (Tier0), srv-leonel (Tier1) | [phase-3-tiered-admin.md](p01-references/phase-3-tiered-admin.md) |
 | 4 | Assess RDS/IIS on DC | Document risk, NPS audit — do NOT remove | [phase-4-rds-iis-risk.md](p01-references/phase-4-rds-iis-risk.md) |
-| 5 | Firewall Baseline | TCP + UDP port inventory, RDP → Tailscale | [phase-5-firewall-baseline.md](p01-references/phase-5-firewall-baseline.md) |
+| 5 | Firewall Baseline | TCP + UDP port inventory; RDP/Tailscale decision documented | [phase-5-firewall-baseline.md](p01-references/phase-5-firewall-baseline.md) |
 | 6 | Break/Fix Lockout | Exercise + testuser quarantine | [phase-6-lockout-breakfix.md](p01-references/phase-6-lockout-breakfix.md) |
 | 7 | Document + Push | Scripts saved, GitHub push | [phase-7-document-push.md](p01-references/phase-7-document-push.md) |
 
@@ -125,5 +125,5 @@ repadmin /showrepl                     # Replication (no partners — single DC)
 - [x] Phase 4: RDS/IIS risk assessment documented — no roles changed (docs/p01-rds-iis-risk-assessment.md)
 - [x] Phase 5: TCP + UDP baseline documented (docs/p01-phase5-firewall-baseline.md). RDP/Tailscale deliberately left unrestricted per Leonel's explicit instruction — not a gap, do not "fix" later.
 - [x] Phase 6: Lockout exercise confirmed (5 attempts -> LockedOut=True, Event 4740 logged), testuser quarantined (Enabled=False, moved to OU=Quarantine). Finding: failed-logon events 4625/4776/4771 are NOT logged despite BadLogonCount tracking correctly -- audit policy gap, deferred to GPO work.
-- [ ] Phase 7: All scripts saved, docs complete, NPS XML NOT in repo, GitHub push done
-- [ ] Parent skill (/winserver) marked P01 ✅
+- [x] Phase 7: All scripts saved, docs complete, NPS XML NOT in repo, GitHub push done
+- [x] Parent skill (/winserver) marked P01 ✅

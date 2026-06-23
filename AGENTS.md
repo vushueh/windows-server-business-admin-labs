@@ -37,7 +37,8 @@ and do NOT execute live server commands (Leonel or Claude does that).
 2. Read the relevant project README.md and current phase skill file
 3. Read `docs/identity-design.md` for AD architecture reference
 4. Read `docs/naming-standards.md` for naming conventions
-5. Read `skills/project-01-server-baseline-hardening.md` for P01 current phase details
+5. For documentation work, read `skills/winserver-evidence-documentation/SKILL.md`
+6. Read `skills/project-01-server-baseline-hardening.md` for P01 current phase details
 
 ## Edit Tier Rules
 
@@ -93,8 +94,9 @@ Never: Codex does not execute live server commands.
 
 | Project | Status | Notes |
 |---------|--------|-------|
-| 01 — Server Baseline + Hardening | 🔄 In Progress | Phase 1 (audit) complete; Phase 2+ pending |
-| 02–13 | ⬜ Planned | Blocked on P01 completion |
+| 01 — Server Baseline + Hardening | ✅ Complete | Password/lockout hardened, tiered admin model created, RDS/IIS/NPS/firewall risk documented |
+| 02 — AD Architecture | ⬜ Planned | Next Windows project; starts OU cleanup, replica DC planning, service accounts, and delegated admin |
+| 03–13 | ⬜ Planned | Follow the cross-family execution roadmap |
 
 ## Cross-Family Integration Awareness
 

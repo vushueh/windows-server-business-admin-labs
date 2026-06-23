@@ -4,6 +4,38 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-23 (Codex — Project 01 documentation cleanup)
+### What I did
+- Pulled latest `main` and reviewed the new Project 01 evidence/documentation set.
+- Rewrote `projects/project-01-server-baseline-hardening/README.md` as a direct portfolio page instead of a long command transcript.
+- Separated README screenshots into evidence blocks with description, manual GUI path, PowerShell equivalent, and reason.
+- Reworked `skills/winserver-evidence-documentation/SKILL.md` into the required documentation standard for future project README/evidence updates.
+- Updated status references so Project 01 is consistently marked complete.
+
+### Files created/modified
+- `projects/project-01-server-baseline-hardening/README.md`
+- `skills/winserver-evidence-documentation/SKILL.md`
+- `README.md`
+- `projects/README.md`
+- `skills/README.md`
+- `skills/project-01-server-baseline-hardening.md`
+- `AGENTS.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- Project READMEs should be direct portfolio summaries, not full execution transcripts.
+- Detailed commands, outputs, screenshots, and rollback notes belong in linked evidence docs under each project.
+- Any screenshot shown in a README must sit beside what it proves, how it was checked manually, the PowerShell equivalent, and why it matters.
+- The documentation standard is now required for every Windows Server project documentation update.
+
+### Cross-family impacts
+- Improves portfolio readability for the Windows identity backbone before it is linked from homelab-management and future case studies.
+
+### Open questions for Claude
+- Review the rewritten Project 01 README for tone and screenshots, then push if Leonel approves Codex's local commit or asks Claude to publish it.
+
+---
+
 ## Session — 2026-06-22 (Claude — P01 Phase 4, manual GUI mode + SSH access change)
 ### What I did
 - Resumed P01 at Phase 4 (RDS/IIS/NPS risk assessment) in manual-GUI mode per Leonel's

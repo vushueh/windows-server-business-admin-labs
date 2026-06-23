@@ -66,7 +66,7 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 
 | # | Project | Focus | Status |
 |---|---------|-------|--------|
-| [01](projects/project-01-server-baseline-hardening/) | **Server Baseline, Hardening, and Admin Model** | Role inventory, tiered admin, lockout policy, firewall baseline | 🔄 In Progress |
+| [01](projects/project-01-server-baseline-hardening/) | **Server Baseline, Hardening, and Admin Model** | Role inventory, tiered admin, lockout policy, firewall baseline | ✅ Complete |
 | [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | OU design, delegated admin, AGDLP groups, naming standards | ⬜ Planned |
 | [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, split DNS, forwarders | ⬜ Planned |
 | [04](projects/project-04-dhcp-ipam/) | **DHCP, IPAM, and Network Integration** | Scopes, reservations, VLAN-aware design | ⬜ Planned |
@@ -88,6 +88,7 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 |-------|---------|---------------|
 | [windows-server-business-admin](skills/windows-server-business-admin.md) | Main family skill | `/winserver` |
 | [project-01-server-hardening](skills/project-01-server-baseline-hardening.md) | P01 lean skill + phase references | `/winserver-p01` ✅ Ready |
+| [winserver-evidence-documentation](skills/winserver-evidence-documentation/SKILL.md) | Documentation standard: readable README first, technical evidence behind links | Use for every project/phase documentation update |
 | project-12-m365-hybrid | M365/Entra skill | `/winserver-p12` — written when P12 starts |
 | project-13-identity-integration | Capstone skill | `/winserver-p13` — written when P13 starts |
 

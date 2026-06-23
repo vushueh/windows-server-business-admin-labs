@@ -42,7 +42,7 @@ without touching the other families.
 
 | Project | Focus | Status |
 |---------|-------|--------|
-| [project-01-server-baseline-hardening](project-01-server-baseline-hardening/) | Role inventory, secure admin access, firewall posture, privileged account separation | 🔄 In Progress |
+| [project-01-server-baseline-hardening](project-01-server-baseline-hardening/) | Role inventory, secure admin access, firewall posture, privileged account separation | ✅ Complete |
 | [project-02-ad-architecture](project-02-ad-architecture/) | OU design, delegated admin, tiered accounts, naming standards, service accounts, least privilege | ⬜ Planned |
 | [project-03-dns-engineering](project-03-dns-engineering/) | AD-integrated DNS, split DNS, forwarders, conditional forwarders, broken DNS troubleshooting | ⬜ Planned |
 | [project-04-dhcp-ipam](project-04-dhcp-ipam/) | DHCP scopes, reservations, options, relay, VLAN-aware design, documentation | ⬜ Planned |

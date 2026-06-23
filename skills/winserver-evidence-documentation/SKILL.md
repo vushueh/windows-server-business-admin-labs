@@ -1,395 +1,202 @@
 ---
 name: winserver-evidence-documentation
 description: >
-  Windows Server evidence and portfolio documentation workflow.
-  Trigger when Leonel says: "document phase", "save evidence", "take screenshots",
-  "update README", "phase complete", "project complete", "portfolio update",
-  "what did I build", "log the break fix", or after completing any Windows Server
-  phase or project (P01-P13). This skill handles PROVING the work was done.
-  The technical skills (winserver-p01, winserver-projects) handle HOW to do the work.
+  Windows Server Business Admin documentation standard. Trigger whenever creating,
+  rewriting, reviewing, or updating project README files, evidence docs, screenshots,
+  scripts, phase completion notes, portfolio summaries, status tables, or final
+  project documentation for P01-P13. Enforces layered documentation: readable public
+  summary first, technical evidence behind links, no secrets, and consistent status.
 ---
 
-# Windows Server — Evidence and Portfolio Documentation
+# Windows Server Documentation Standard
 
-## Purpose
+Use this skill whenever documenting any Windows Server Business Admin project.
+The goal is a portfolio that a hiring manager can understand quickly, while still
+giving technical reviewers proof of the exact configuration.
 
-This skill guides you through capturing and organizing proof that each phase and
-project was completed. The outcome is a public GitHub portfolio that shows:
-- What you built (screenshots from real admin tools)
-- That it works (PowerShell verification output)
-- That you can troubleshoot (break/fix log)
-- Why it matters (portfolio narrative in README)
+## Core Rule
+
+Do not turn the project README into a command transcript.
+
+The README is the public-facing project story. Detailed commands, raw output,
+screenshots, rollback notes, and troubleshooting evidence belong in linked files
+under the project folder.
+
+## Required Read Order
+
+Before editing documentation, read:
+
+1. `AGENTS.md`
+2. The project `README.md`
+3. Existing files under that project's `docs/`, `scripts/`, and `screenshots/`
+4. The relevant technical project skill
+5. This skill
+
+## Layered Documentation Model
+
+Every project has three layers:
+
+| Layer | Audience | Where it lives | Purpose |
+|-------|----------|----------------|---------|
+| Public summary | Hiring manager, recruiter, non-technical reader | Project `README.md` | What I built, why it matters, what changed, proof links |
+| Technical evidence | Engineer, architect, future me | `docs/*.md`, `scripts/`, `screenshots/` | Exact commands, output, screenshots, verification, rollback |
+| Operator handoff | Claude/Codex/Leonel | `CODEX-LOG.md`, `CLAUDE-REVIEW.md`, phase skills | What to do next, blockers, safety notes |
+
+## Project README Standard
+
+Keep project READMEs direct. Target 70-130 lines unless the project truly needs
+more. Use first-person portfolio language for completed work.
+
+Required section order:
+
+1. Title, status, completion date if complete, system or scope
+2. Short plain-language summary that includes why it matters
+3. Starting point or problem found
+4. What I changed
+5. What I proved
+6. Evidence links
+7. Decisions intentionally deferred or not changed
+8. Next project impact or carried-forward items
+9. Portfolio STAR summary
+
+Allowed in the README:
+
+- Short tables
+- 1-3 screenshots, each in its own evidence block
+- Links to technical evidence
+- Short command names when they clarify verification
+
+Do not put these in the README:
+
+- Long PowerShell blocks
+- Full terminal output
+- Step-by-step GUI click transcripts
+- Stacked screenshots with no explanation
+- Every screenshot from the project unless each one has a reason
+- Raw troubleshooting logs
+- Secrets, tokens, passwords, private keys, shared secrets, or NPS XML exports
+
+## Evidence File Standard
+
+Use evidence files for technical depth. A good evidence file includes:
+
+1. Objective
+2. Date and method
+3. Approval or safety gate if live infrastructure changed
+4. Before state
+5. Commands or GUI path used
+6. Output or screenshot proof
+7. Verification result
+8. Rollback or recovery path
+9. Findings carried forward
+
+Evidence files may include long command blocks and command output, but keep them
+organized by phase and redact sensitive data.
+
+## Screenshot Standard
+
+Screenshots must prove something. Do not add screenshots just to make the repo look
+busy.
+
+Good screenshots show:
+
+- Before and after state
+- A policy value
+- A membership list
+- A service/tool status
+- A verified error or break/fix result
+
+Naming pattern:
+
+```text
+phaseN-NN-short-description.jpg
+```
+
+For the README, preview only the strongest screenshots. Link the full screenshot
+folder for technical reviewers.
+
+Every screenshot shown in a README must use this block:
+
+````markdown
+### Short Evidence Title
+
+![short alt text](screenshots/file.jpg)
+
+- **What it shows:** One direct sentence.
+- **Manual check:** GUI path Leonel used.
+- **Why:** Why this configuration or finding matters.
+- **PowerShell equivalent:**
+
+```powershell
+# PowerShell command that proves the same point
+```
+````
+
+Do not group several images together and explain them later. Image, description,
+manual path, PowerShell equivalent, and reason must stay together.
 
 ## No-Secrets Policy
 
-**Never commit to GitHub:**
-```
-❌ Passwords or password hashes
-❌ M365 tenant credentials or secrets
-❌ Entra Connect service account passwords
-❌ NPS exports (contain RADIUS shared secrets)
-❌ BitLocker recovery keys
-❌ Screenshots showing credential fields with real values
-❌ Any file from C:\Audit\ that was flagged as sensitive (e.g. NPS XML)
-```
-
-**Safe to commit:**
-```
-✅ PowerShell command outputs (no credentials in output)
-✅ Screenshots of GUI config screens (blur password fields)
-✅ AD object exports (Get-ADUser, Get-GPO, etc.)
-✅ GPO backup files (XML format — settings only, no secrets)
-✅ Anonymized break/fix logs
-```
-
----
-
-## Folder Structure Per Project
-
-Every project uses this structure. Create it before starting Phase 1.
-
-```
-projects/project-NN-name/
-├── README.md                    ← planning + STAR summary (fill Action/Result when done)
-├── phases/                      ← step-by-step guides (read before each phase)
-├── configs/
-│   ├── pre-project-state.txt    ← export before touching anything
-│   └── post-project-state.txt   ← export after project complete
-├── verification/
-│   ├── screenshots/             ← all GUI screenshots go here
-│   └── command-outputs/         ← all PowerShell/cmd outputs go here
-└── troubleshooting/
-    └── break-fix-log.md         ← log every problem encountered
-```
-
----
-
-## Screenshot Naming Convention
-
-```
-<project>-<phase>-<what-it-shows>.png
-
-Examples:
-  p02-ph1-ou-structure-aduc.png          ← P02 Phase 1, OU tree in ADUC
-  p02-ph3-tiered-accounts-aduc.png       ← P02 Phase 3, admin accounts in ADUC
-  p05-ph3-password-policy-gpmc.png       ← P05 Phase 3, password settings in GPMC
-  p07-ph4-adm-leonel-blocked-ws01.png    ← P07 Phase 4, Tier0 denied on workstation
-  p09-ph1-wac-dashboard.png              ← P09 Phase 1, WAC main screen
-```
-
-**Always capture:**
-- BEFORE screenshot (shows the default/original state)
-- AFTER screenshot (shows your change applied)
-- Verification screenshot (shows it working, e.g. a successful ping or policy applied)
-
----
-
-## Verification Output Naming Convention
-
-```
-<project>-<phase>-<command>-output.txt
-
-Examples:
-  p02-ph7-repadmin-replsummary.txt
-  p02-ph8-netdom-query-fsmo.txt
-  p05-ph3-gpresult-workstation.txt     ← use real phase numbers
-  p10-ph3-winevent-4740.txt
-```
-
----
-
-## Config File Naming Convention
-
-```
-pre-<project>-<device-or-component>.txt
-post-<project>-<device-or-component>.txt
-
-Examples:
-  pre-p02-ad-users.txt       ← Get-ADUser -Filter * output before P02
-  post-p02-ad-users.txt      ← Get-ADUser -Filter * output after P02
-  pre-p05-gpo-list.txt       ← Get-GPO -All before P05
-  post-p05-gpo-list.txt      ← Get-GPO -All after P05
-```
-
----
-
-## Per-Phase Documentation Loop
-
-Run this loop for every phase:
-
-### Step 1 — Before State (start of phase)
-```powershell
-# Run the appropriate before-state export for the project
-# Examples:
-Get-ADOrganizationalUnit -Filter * | Select DistinguishedName | Sort | Out-File configs\pre-p02-ou-state.txt
-Get-GPO -All | Select DisplayName, GpoStatus | Out-File configs\pre-p05-gpo-list.txt
-Get-DhcpServerv4Scope | Out-File configs\pre-p04-dhcp-scopes.txt
-```
-Take a **before screenshot** of the relevant GUI tool.
-
-### Step 2 — Do the Work
-Follow Track A (GUI) from the phase file:
-- Screenshot each significant GUI screen as you configure it
-- Name screenshots following the convention above
-
-### Step 3 — After State (end of phase)
-```powershell
-# Run the after-state export matching Step 1
-# Same command — different output file name (post- prefix)
-```
-Take an **after screenshot** showing the change applied.
-
-### Step 4 — Verification
-Run Track B PowerShell verification from the phase file:
-```powershell
-# Save output to verification/command-outputs/
-<verification-command> | Out-File verification\command-outputs\<name>.txt
-# Or copy-paste terminal output into the file manually
-```
-
-### Step 5 — Break/Fix Log (if anything went wrong)
-Add an entry to `troubleshooting/break-fix-log.md` using the template below.
-
-### Step 6 — Phase Completion Note
-Add a short completion block to the project README.md:
-```markdown
-### ✅ Phase N Complete — YYYY-MM-DD
-- What I configured: [1-3 bullet points]
-- Key screenshot: [filename]
-- Verification: [command + result in one line]
-- Problem/fix: [if any — one line]
-```
-
----
-
-## GUI Screenshot Guide — What to Capture Per Tool
-
-### Active Directory Users and Computers (ADUC / dsa.msc)
-```
-□ OU tree expanded — shows full hierarchy
-□ Each OU with its contents visible
-□ Tiered admin accounts in correct OUs
-□ Group membership (right-click → Properties → Members tab)
-□ Delegation of Control wizard screenshots
-```
-
-### Active Directory Administrative Center (ADAC)
-```
-□ Password Settings Container showing PSO
-□ PSO properties (precedence, length, lockout settings)
-□ Fine-grained password policy applied to group
-```
-
-### Group Policy Management Console (GPMC / gpmc.msc)
-```
-□ GPO list showing all custom GPOs created
-□ GPO linked to correct OU (shown in left pane)
-□ Settings tab showing configured policy values
-□ Scope tab showing OU link
-□ gpresult /H output opened in browser
-```
-
-### DNS Manager (dnsmgmt.msc)
-```
-□ Forward lookup zone showing all records
-□ Reverse lookup zone
-□ Forwarders list
-□ Zone properties (replication scope, dynamic update)
-```
-
-### DHCP Manager (dhcpmgmt.msc)
-```
-□ Scope with address pool configured
-□ Reservations list
-□ Scope options (003 Router, 006 DNS, 015 Domain Name)
-□ Failover relationship properties
-□ Active leases
-```
-
-### Event Viewer
-```
-□ Security log filtered to specific Event ID (4740, 4625, 4728, etc.)
-□ Event detail expanded showing full properties
-□ Custom view created and saved
-□ Forwarded Events log showing events from member servers
-```
-
-### Hyper-V Manager
-```
-□ VM list showing all VMs with state
-□ VM settings (vCPU, RAM, network adapter, VLAN)
-□ Checkpoint settings (Production selected)
-□ Virtual switch manager showing switch names and types
-```
-
-### Windows Admin Center
-```
-□ Dashboard showing all managed servers
-□ Server detail page (CPU, memory, uptime)
-□ VM management showing Hyper-V VMs
-□ PowerShell session opened from WAC
-□ Event viewer in WAC
-```
-
-### Entra Connect / Azure AD Connect
-```
-□ Installation wizard — each configuration screen
-□ Sync scope (OUs selected)
-□ Synchronization Service Manager — successful sync shown
-□ Entra admin center — users synced with cloud icon
-□ Password writeback test — reset in M365, confirmed in AD
-```
-
-### Server Manager
-```
-□ Roles and features installed
-□ Post-deployment notification (e.g. DC promotion complete)
-□ All Servers view showing WIN-DC02, WIN-FS01, WIN-WS01
-```
-
-### Certificate Manager (certsrv.msc / certmgr.msc)
-Capture when PKI, ADCS, or certificate-based auth is in scope (P01 IIS cert, P08 WAC SSL).
-```
-□ Certification Authority console showing CA name and issued certificates
-□ Certificate Templates enabled on the CA
-□ Issued certificate showing subject, validity, and template used
-□ Personal certificate store on the server (certlm.msc) showing the bound certificate
-```
-
-### IIS Manager (inetmgr)
-Capture only when IIS is relevant (P01 RDS/IIS risk documentation, P08 WAC gateway).
-```
-□ Sites list showing bound sites, ports, and state
-□ Bindings dialog showing HTTP/HTTPS and certificate selected
-□ Application pool list showing identity accounts and state
-□ Authentication settings (Windows Auth enabled/disabled as required)
-```
-
-### Local Users and Groups (lusrmgr.msc)
-Capture for P01 baseline hardening and local account audit.
-```
-□ Users list showing built-in accounts (Administrator, Guest, DefaultAccount)
-□ Groups list — confirm no unexpected members in Administrators
-□ Administrator account Properties → account is disabled (if applicable)
-□ Guest account Properties → account is disabled
-```
-
----
-
-## Break/Fix Log Template
-
-File: `troubleshooting/break-fix-log.md`
-
-```markdown
-## Break/Fix — [Short Title] — YYYY-MM-DD
-
-**Phase:** P0X Phase Y
-**What I did:** [The action that caused the problem]
-
-**Symptom:**
-[What I observed — error message, failed command output, unexpected behavior]
-
-**Screenshot:** [filename if captured]
-
-**Diagnosis:**
-[Commands I ran to find the root cause]
-[Output that revealed the issue]
-
-**Root cause:**
-[One sentence — what was actually wrong]
-
-**Fix applied:**
-[Commands or GUI steps that resolved it]
-
-**Verification:**
-[How I confirmed it was fixed]
-
-**Lesson:**
-[One sentence — what to remember for next time]
-```
-
----
-
-## Completed Project README Template
-
-When a project is fully complete, add this section to the project README.md
-directly below the Phases table:
-
-```markdown
----
-
-## ✅ Project Complete — YYYY-MM-DD
-
-### What I Built
-- [Bullet 1 — specific thing configured]
-- [Bullet 2]
-- [Bullet 3]
-- [etc.]
-
-### Key Evidence
-
-| What | Screenshot / Output |
-|------|-------------------|
-| [e.g. OU structure] | ![OU structure](verification/screenshots/p02-ph1-ou-structure-aduc.png) |
-| [e.g. Replication healthy] | [repadmin output](verification/command-outputs/p02-ph7-repadmin-replsummary.txt) |
-| [e.g. GPO applied] | ![GPO applied](verification/screenshots/p05-ph3-gpresult-workstation.png) |
-
-### Verification Summary
-```
-[Key command output pasted inline — 5-10 lines max]
-[The most important proof — e.g. repadmin /replsummary showing 0 failures]
-```
-
-### Problems Encountered and Fixed
-| Problem | Root Cause | Fix |
-|---------|-----------|-----|
-| [e.g. adm-leonel could log into WS] | GPO not linked to Workstations OU | Linked GPO → confirmed blocked |
-
-### STAR Result
-**Result:** [2-3 sentences describing the outcome — what works now that didn't before]
-
-### Links
-- [Phase detail](phases/) | [Screenshots](verification/screenshots/) | [Configs](configs/) | [Break/Fix log](troubleshooting/break-fix-log.md)
-```
-
----
-
-## Main Family README Update
-
-When a project is complete, update the project index table in the main
-`windows-server-business-admin-labs/README.md`:
-
-```markdown
-| [02](projects/project-02-ad-architecture/) | Active Directory Architecture | ✅ Complete — 2026-07-15 |
-```
-
-Then add a completed project summary section under the index table:
-
-```markdown
-## ✅ Project 02 — Active Directory Architecture
-
-**Built:** 2026-07-15 | [Full detail →](projects/project-02-ad-architecture/)
-
-| OU Structure | Tiered Accounts | DC Replication |
-|---|---|---|
-| ![OU](verification/screenshots/p02-ph1-ou-structure-aduc.png) | ![Accounts](verification/screenshots/p02-ph3-tiered-accounts-aduc.png) | ![Repadmin](verification/screenshots/p02-ph7-repadmin-replsummary.png) |
-
-Built full AD OU hierarchy, tiered admin model (Tier 0/1/2), AGDLP group structure,
-delegated password reset, and replica DC with healthy replication.
-[→ Screenshots](projects/project-02-ad-architecture/verification/screenshots/) |
-[→ Verification](projects/project-02-ad-architecture/verification/command-outputs/) |
-[→ Break/Fix log](projects/project-02-ad-architecture/troubleshooting/break-fix-log.md)
-```
-
----
-
-## Trigger Phrases
-
-Load this skill when Leonel says:
-- "document this phase" / "phase X is done"
-- "project complete" / "time to document"
-- "what screenshots do I need"
-- "update the README"
-- "save the evidence"
-- "how do I prove this"
-- After completing any Windows Server phase or project
+Never commit:
+
+- Passwords or generated passwords
+- Password hashes
+- Private keys
+- Microsoft 365 or Entra credentials
+- RADIUS shared secrets
+- NPS XML exports
+- BitLocker recovery keys
+- Screenshots showing unredacted credential fields
+- Any `C:\Audit` export marked sensitive
+
+Safe to commit when reviewed:
+
+- Redacted command output
+- AD object summaries without passwords
+- Screenshots of settings with credential fields hidden
+- Scripts without embedded secrets
+- Markdown evidence summaries
+
+## Status Consistency
+
+When a project status changes, update all relevant places in the same commit:
+
+- Root `README.md`
+- `projects/README.md`
+- Project `README.md`
+- Relevant project skill checklist
+- `AGENTS.md` current status if it mentions the project
+- `CODEX-LOG.md` session note
+
+Do not leave one file saying "In Progress" while the final evidence says
+"Complete."
+
+## Voice and Attribution
+
+Use first person for portfolio work:
+
+- "I audited..."
+- "I configured..."
+- "I verified..."
+- "I deferred..."
+
+Use tool/operator names only where they matter:
+
+- Approval source
+- Who executed a live command
+- Handoff notes
+- Safety gate history
+
+Avoid making the public README read like a Claude/Codex transcript.
+
+## Final Review Checklist
+
+Before committing documentation:
+
+- README can be understood without opening a technical evidence file
+- Technical readers have clear links to exact proof
+- No secrets or sensitive exports are present
+- Status matches across indexes and skills
+- Deferred risks point to the correct future project
+- Markdown links are relative and valid
+- The README does not duplicate entire evidence files
