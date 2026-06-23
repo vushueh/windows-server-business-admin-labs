@@ -21,6 +21,8 @@ All three profiles enabled and using Windows' built-in default behavior, unchang
 | Private | On | Block (unmatched) | Allow (unmatched) |
 | Public | On | Block (unmatched) | Allow (unmatched) |
 
+![WFAS overview — all three profiles](../screenshots/phase5-01-wfas-overview.jpg)
+
 Confirmed via PowerShell: `Get-NetFirewallProfile` → `DefaultInboundAction` =
 `NotConfigured` on all three (i.e., using the OS default shown above). **Not changed.**
 Setting this to an explicit `Block` requires a full AD port allowlist GPO first —
@@ -39,6 +41,8 @@ deferred to Project 05 (GPO Security Baselines), per the existing do-not-touch l
 | Tailscale-In (x2), Tailscale-Process | Domain/Private — left as-is |
 | VMware Authd Service (x2) | Domain/Private |
 | vnc5800, vnc5900 | Domain |
+
+![WFAS inbound rules](../screenshots/phase5-02-wfas-inbound-rules.jpg)
 
 ```
 FINDING: VNC (winvnc) has explicit, enabled inbound firewall rules (vnc5800,

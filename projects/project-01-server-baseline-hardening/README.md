@@ -128,46 +128,15 @@ live changes never went away, it just changed who was physically typing the comm
 
 ## Evidence — Screenshots
 
-Full-resolution images live in [`screenshots/`](screenshots/). The findings behind
-each one are written up in
-[`docs/p01-rds-iis-risk-assessment.md`](docs/p01-rds-iis-risk-assessment.md) and
-[`docs/p01-phase5-firewall-baseline.md`](docs/p01-phase5-firewall-baseline.md).
+Every screenshot is embedded directly under the finding it supports, not listed
+separately — see:
+- [`docs/p01-phase2-evidence.md`](docs/p01-phase2-evidence.md) — Phase 2, command/output only (no GUI used)
+- [`docs/p01-phase3-evidence.md`](docs/p01-phase3-evidence.md) — Phase 3, command/output only (no GUI used)
+- [`docs/p01-rds-iis-risk-assessment.md`](docs/p01-rds-iis-risk-assessment.md) — Phase 4, 13 screenshots
+- [`docs/p01-phase5-firewall-baseline.md`](docs/p01-phase5-firewall-baseline.md) — Phase 5, 2 screenshots
+- [`docs/p01-phase6-lockout-breakfix.md`](docs/p01-phase6-lockout-breakfix.md) — Phase 6, command/output only (no GUI used)
 
-**Phase 4 — RDS / IIS / NPS Risk Assessment**
-
-- ![RDS Overview broker error](screenshots/phase4-01-rds-overview-broker-error.jpg)
-  RDS Overview — RD Connection Broker reported unreachable.
-- ![RDS Servers pool](screenshots/phase4-02-rds-servers-pool.jpg)
-  RDS Servers pool — host shows Online; the broker process is actually listening locally.
-- ![RDS-Users members](screenshots/phase4-03-rds-users-members.jpg)
-  RDS-Users group — broad, cross-department membership.
-- ![IIS Application Pools](screenshots/phase4-04-iis-application-pools.jpg)
-  IIS Application Pools — all running as the default ApplicationPoolIdentity.
-- ![IIS Default Web Site](screenshots/phase4-05-iis-default-web-site.jpg)
-  IIS Default Web Site — bindings on `*:80` and `*:443`.
-- ![IIS app pool identities](screenshots/phase4-06-iis-app-pool-identities.jpg)
-  IIS app pool Identity column, full and unabbreviated — confirms no named domain accounts.
-- ![NPS Policies overview](screenshots/phase4-07-nps-policies-overview.jpg)
-  NPS Policies overview.
-- ![NPS Connection Request Policies](screenshots/phase4-08-nps-connection-request-policies.jpg)
-  NPS Connection Request Policies — stock Windows default only.
-- ![NPS RADIUS Clients/Servers overview](screenshots/phase4-09-nps-radius-clients-servers-overview.jpg)
-  RADIUS Clients and Servers overview.
-- ![NPS RADIUS Clients empty](screenshots/phase4-10-nps-radius-clients-empty.jpg)
-  RADIUS Clients — empty list, confirming NPS buildout hasn't started.
-- ![Remote RADIUS Server Groups empty](screenshots/phase4-11-nps-remote-radius-groups-empty.jpg)
-  Remote RADIUS Server Groups — also empty.
-- ![NPS Network Policies](screenshots/phase4-12-nps-network-policies.jpg)
-  Network Policies — stock default deny rules only.
-- ![NPS Connection Request Policy detail](screenshots/phase4-13-nps-connection-request-policy-detail.jpg)
-  Connection Request Policy detail — no custom conditions configured.
-
-**Phase 5 — Firewall Baseline**
-
-- ![WFAS overview](screenshots/phase5-01-wfas-overview.jpg)
-  Windows Firewall with Advanced Security — all three profiles on, defaults unchanged.
-- ![WFAS inbound rules](screenshots/phase5-02-wfas-inbound-rules.jpg)
-  Inbound Rules — includes explicit VNC (`vnc5800`/`vnc5900`) and VMware Authd rules.
+Full-resolution image files live in [`screenshots/`](screenshots/).
 
 ## STAR Summary
 

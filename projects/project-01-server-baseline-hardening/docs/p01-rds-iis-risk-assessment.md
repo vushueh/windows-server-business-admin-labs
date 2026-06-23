@@ -17,9 +17,14 @@ responding on `WIN-PRQD8TJG04M`, even though the server itself is reachable and 
 - Server Manager → RDS → **Overview**: reports "The server pool does not match the RD
   Connection Broker that are in it" / cannot connect to any specified RD Connection
   Broker server.
+
+  ![RDS Overview broker error](../screenshots/phase4-01-rds-overview-broker-error.jpg)
+
 - Server Manager → RDS → **Servers**: 1 server in pool (`WIN-PRQD8TJG04M`), status
   **Online — Performance counters not started**, 0 events logged. Confirms the host
   is up; the failure is specific to the broker role, not host connectivity.
+
+  ![RDS Servers pool](../screenshots/phase4-02-rds-servers-pool.jpg)
 
 ```
 RISK: RD Connection Broker service(s) not responding on PDC (single-server, all-in-one
@@ -36,6 +41,8 @@ DO NOT TOUCH NOW: Restarting RDS services or reconfiguring the deployment here i
 spanning every department — Finance (Achiril Desmond, Mickelle Tson...), IT (Akaseng
 Fran..., Test User, Vushueh Banks), Management (Chongong Le..., Gefter Mbi), HR
 (Elsa-Jinelle C..., Michell-Flore...), Sales (Joiceline Kinyuy, Lionel-Asher...).
+
+![RDS-Users members](../screenshots/phase4-03-rds-users-members.jpg)
 
 ```
 RISK: RDS-Users group has broad, cross-department membership on a single-server,
@@ -57,9 +64,15 @@ it is not a general-purpose web host.
 
 - Sites (IIS Manager → Sites): one site, `Default Web Site`, bound to `*:80 (http)` and
   `*:443 (https)`. Child applications: `aspnet_client`, `RDWeb`, `Rpc`, `RpcWithCert`.
+
+  ![IIS Default Web Site](../screenshots/phase4-05-iis-default-web-site.jpg)
+
 - Application Pools: `.NET v4.5`, `.NET v4.5 Classic`, `DefaultAppPool`, `RDWebAccess` —
   all **Started**, all identity **ApplicationPoolIdentity** (confirmed via full,
   unabbreviated Identity column — no named domain account running any pool).
+
+  ![IIS Application Pools](../screenshots/phase4-04-iis-application-pools.jpg)
+  ![IIS app pool identities, full column](../screenshots/phase4-06-iis-app-pool-identities.jpg)
 
 ```
 FINDING: IIS on PDC exists solely to serve RD Web Access + RPC-over-HTTPS
@@ -75,14 +88,27 @@ MITIGATION: Migrates to WIN-RDS01/WIN-RDWEB01 alongside RDS in Project 08.
 **Finding:** NPS is installed but entirely unconfigured — stock defaults only, no
 custom policies, no clients.
 
+![NPS Policies overview](../screenshots/phase4-07-nps-policies-overview.jpg)
+
 - **RADIUS Clients**: empty (0 entries).
 - **Remote RADIUS Server Groups**: empty (0 entries).
+
+  ![RADIUS Clients and Servers overview](../screenshots/phase4-09-nps-radius-clients-servers-overview.jpg)
+  ![RADIUS Clients — empty](../screenshots/phase4-10-nps-radius-clients-empty.jpg)
+  ![Remote RADIUS Server Groups — empty](../screenshots/phase4-11-nps-remote-radius-groups-empty.jpg)
+
 - **Connection Request Policies**: 1 entry, `Use Windows authentication for all users`
   (Enabled, order 999999, Source: Unspecified) — the Windows out-of-box default.
+
+  ![NPS Connection Request Policies](../screenshots/phase4-08-nps-connection-request-policies.jpg)
+  ![Connection Request Policy detail](../screenshots/phase4-13-nps-connection-request-policy-detail.jpg)
+
 - **Network Policies**: 2 entries, both Windows defaults — `Connections to Microsoft
   Routing and Remote Access server` and `Connections to other access servers`, both
   **Enabled / Deny Access**, orders 999998/999999. Neither has any Conditions
   configured.
+
+  ![NPS Network Policies](../screenshots/phase4-12-nps-network-policies.jpg)
 
 **`radius-service` investigation:** Not found anywhere. Confirmed by inspecting the
 Conditions tab of every policy in both lists (none have any conditions at all) and by
