@@ -4,6 +4,28 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-23 (Codex — phase-section README correction)
+### What I did
+- Corrected Project 02 so the table is only a simple phase/status summary.
+- Added normal `Phase 1` through `Phase 9` sections under Project 02 explaining what was done, why it matters, and what screenshot to capture.
+- Corrected Project 01 the same way by adding `Phase 1` through `Phase 7` sections explaining the completed work.
+
+### Files created/modified
+- `projects/project-01-server-baseline-hardening/README.md`
+- `projects/project-02-ad-architecture/README.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- Project README files should not rely only on summary tables. Each project should also have readable phase sections that explain what was actually done.
+
+### Cross-family impacts
+- None. Documentation-only update.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-06-23 (Codex — Project 02 phase and screenshot documentation)
 ### What I did
 - Updated the Project 02 README so every phase is explicitly labeled `Phase 1` through `Phase 9`.

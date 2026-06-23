@@ -32,19 +32,193 @@ No AD objects were deleted.
 Project 02 has 9 phases. Phases 1-6 and 8-9 are complete. Phase 7 is pending
 because the `WIN-DC02` VM does not exist yet.
 
-| Phase | Name | Status | What happened |
-|-------|------|--------|---------------|
-| Phase 1 | OU Structure Design | Complete | Built `ManagedUsers`, `ManagedComputers`, `Groups/GlobalGroups`, and `Groups/DomainLocalGroups` |
-| Phase 2 | Move Existing Objects | Complete | Moved department OUs, workstations, and member servers into the managed OUs |
-| Phase 3 | Tiered Admin Accounts | Complete for P02 | Kept the P01 admin model and staged `ws-leonel` disabled for Tier 2 workstation admin use |
-| Phase 4 | AGDLP Group Model | Complete | Created `GG-*` global groups and `DL-*` domain local groups |
-| Phase 5 | Service Account Provisioning | Complete | Created disabled `svc-backup` and `svc-sync` accounts |
-| Phase 6 | Delegated Administration + AD Recycle Bin | Complete | Enabled AD Recycle Bin and delegated reset/unlock rights to `GG-Helpdesk` |
-| Phase 7 | Replica DC Deployment | Pending | `WIN-DC02` VM is not present in Hyper-V yet |
-| Phase 8 | Functional Level Verification | Complete | Verified `Windows2016Domain` / `Windows2016Forest`, which is correct for Windows Server 2022 AD DS |
-| Phase 9 | Document + Verify | Complete | Added apply/verify scripts and updated the project docs |
+| Phase | Name | Status |
+|-------|------|--------|
+| Phase 1 | OU Structure Design | Complete |
+| Phase 2 | Move Existing Objects | Complete |
+| Phase 3 | Tiered Admin Accounts | Complete for P02 |
+| Phase 4 | AGDLP Group Model | Complete |
+| Phase 5 | Service Account Provisioning | Complete |
+| Phase 6 | Delegated Administration + AD Recycle Bin | Complete |
+| Phase 7 | Replica DC Deployment | Pending |
+| Phase 8 | Functional Level Verification | Complete |
+| Phase 9 | Document + Verify | Complete |
 
 Screenshot checklist: [docs/p02-screenshot-plan.md](docs/p02-screenshot-plan.md)
+
+## Phase Details
+
+### Phase 1 - OU Structure Design
+
+I created the managed OU structure that future GPOs, file shares, admin accounts,
+and user lifecycle work will depend on.
+
+What I did:
+
+- Created `ManagedUsers`.
+- Created `ManagedComputers`.
+- Created `ManagedComputers/Servers`.
+- Created `ManagedComputers/Workstations`.
+- Created `Groups/GlobalGroups`.
+- Created `Groups/DomainLocalGroups`.
+
+Why it matters: this gives the domain a clean structure without touching the
+built-in `CN=Users` and `CN=Computers` containers.
+
+Screenshot to take: ADUC showing the top-level `Chongong.local` OU layout.
+
+### Phase 2 - Move Existing Objects
+
+I moved existing AD objects into the new managed structure.
+
+What I did:
+
+- Moved `Finance`, `HR`, `IT`, `Management`, and `Sales` under `ManagedUsers`.
+- Moved `DESKTOP-*` computer accounts under `ManagedComputers/Workstations`.
+- Moved `GITEA` and `RADIUS01` under `ManagedComputers/Servers`.
+- Left `WIN-PRQD8TJG04M` in `Domain Controllers`.
+
+Why it matters: servers, workstations, and users can now receive the right GPOs
+without applying everything from the domain root.
+
+Screenshots to take: `ManagedUsers` showing the five departments, and
+`ManagedComputers` showing `Servers` and `Workstations`.
+
+### Phase 3 - Tiered Admin Accounts
+
+I kept the Project 01 admin model and staged the Tier 2 workstation admin account
+for future workstation work.
+
+What I did:
+
+- Verified the `_Admin` structure exists.
+- Kept `Tier0-DomainAdmins`, `Tier1-ServerAdmins`, `Tier2-WorkstationAdmins`,
+  and `ServiceAccounts`.
+- Created `ws-leonel` under `Tier2-WorkstationAdmins`.
+- Left `ws-leonel` disabled until a future workstation-admin task needs it.
+
+Why it matters: admin accounts stay separated by purpose, and no new admin
+access is enabled before it is needed.
+
+Screenshot to take: ADUC showing `_Admin` and `ws-leonel` disabled in
+`Tier2-WorkstationAdmins`.
+
+### Phase 4 - AGDLP Group Model
+
+I built the group model that Project 06 file shares and Project 13 identity
+integration will use.
+
+What I did:
+
+- Created department global groups such as `GG-Finance-Users`,
+  `GG-HR-Users`, `GG-IT-Users`, `GG-Management-Users`, and
+  `GG-Sales-Users`.
+- Created domain local groups such as `DL-Finance-Share-RW`,
+  `DL-HR-Share-RW`, `DL-IT-Share-RW`, `DL-Management-Share-RW`, and
+  `DL-Sales-Share-RW`.
+- Nested each department `GG-*` group into the matching `DL-*` group.
+- Created cross-family groups including `GG-NetAdmins`, `GG-Net-ReadOnly`,
+  `GG-SOC-Analysts`, `GG-Helpdesk`, and `GG-WorkstationAdmins`.
+
+Why it matters: users go into global groups, and resource permissions later go
+on domain local groups. That keeps access clean and easy to audit.
+
+Screenshots to take: `GlobalGroups`, `DomainLocalGroups`, and one example
+membership such as `DL-Finance-Share-RW` containing `GG-Finance-Users`.
+
+### Phase 5 - Service Account Provisioning
+
+I staged service accounts for future automation and backup work.
+
+What I did:
+
+- Created `svc-backup`.
+- Created `svc-sync`.
+- Left both accounts disabled.
+- Placed both accounts under `_Admin/ServiceAccounts`.
+
+Why it matters: service accounts exist for future projects, but they cannot be
+used until their owning workflow is ready and approved.
+
+Screenshot to take: ADUC showing `svc-backup` and `svc-sync` disabled under
+`ServiceAccounts`.
+
+### Phase 6 - Delegated Administration And AD Recycle Bin
+
+I added basic recovery and helpdesk delegation without giving broad admin rights.
+
+What I did:
+
+- Enabled AD Recycle Bin.
+- Delegated password reset rights to `GG-Helpdesk` on `ManagedUsers`.
+- Delegated force-password-change support through `pwdLastSet`.
+- Delegated unlock support through `lockoutTime`.
+
+Why it matters: accidental deletions have a recovery path, and helpdesk-style
+tasks do not require Domain Admin rights.
+
+Screenshots to take: AD Recycle Bin enabled, and `ManagedUsers` advanced
+security showing `GG-Helpdesk` delegation.
+
+### Phase 7 - Replica DC Deployment
+
+This phase is pending. I did not complete it because `WIN-DC02` does not exist
+as a Hyper-V VM yet.
+
+What is needed before I can do it:
+
+- Windows Server 2022 ISO or prepared source VM.
+- Hyper-V switch/VLAN decision.
+- Static IP address for `WIN-DC02`.
+- DNS on `WIN-DC02` pointed to `192.168.20.11` before domain join.
+- DSRM password typed by Leonel only.
+- Explicit approval before promoting it as a domain controller.
+- System state backup plan before changing DC replication.
+
+What I will do when ready:
+
+- Create or prepare the `WIN-DC02` VM.
+- Join it to `Chongong.local`.
+- Promote it as an additional domain controller with DNS.
+- Verify replication with `repadmin /replsummary` and `repadmin /showrepl`.
+- Keep FSMO roles on `WIN-PRQD8TJG04M` unless a later DR project approves a
+  transfer.
+
+Future screenshots to take: `WIN-DC02` in Hyper-V, `WIN-DC02` in the
+`Domain Controllers` OU, and healthy `repadmin` output.
+
+### Phase 8 - Functional Level Verification
+
+I verified the domain and forest functional levels.
+
+What I did:
+
+- Confirmed `DomainMode` is `Windows2016Domain`.
+- Confirmed `ForestMode` is `Windows2016Forest`.
+- Confirmed no functional-level change was needed.
+
+Why it matters: Windows Server 2022 AD DS still uses the Windows Server 2016
+functional-level labels. There is no separate Windows Server 2022 functional
+level to upgrade to.
+
+Screenshot to take: PowerShell output showing domain and forest modes.
+
+### Phase 9 - Document And Verify
+
+I added repeatable scripts and updated the documentation so the live state can be
+checked again later.
+
+What I did:
+
+- Added `scripts/p02-apply-ad-architecture.ps1`.
+- Added `scripts/p02-verify-ad-architecture.ps1`.
+- Ran the verification script against the live domain.
+- Updated the project README, shared identity docs, skills, and project indexes.
+
+Why it matters: future Claude/Codex sessions can verify Project 02 without
+guessing or rebuilding the same work.
+
+Screenshot to take: PowerShell output from `p02-verify-ad-architecture.ps1`.
 
 ## Why The OU Names Are ManagedUsers And ManagedComputers
 

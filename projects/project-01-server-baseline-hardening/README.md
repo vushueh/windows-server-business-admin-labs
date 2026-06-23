@@ -34,6 +34,141 @@ I audited the live Domain Controller, fixed the critical identity gaps, document
 | Firewall | TCP/UDP listeners and firewall profile state documented | [Firewall baseline](docs/p01-phase5-firewall-baseline.md) |
 | `testuser` | Lockout tested, then account disabled and quarantined | [Break/fix](docs/p01-phase6-lockout-breakfix.md) |
 
+## Project Phases
+
+| Phase | Name | Status |
+|-------|------|--------|
+| Phase 1 | Audit Documentation | Complete |
+| Phase 2 | Password Policy + Lockout | Complete |
+| Phase 3 | Tiered Admin Model | Complete |
+| Phase 4 | RDS/IIS/NPS Risk Assessment | Complete |
+| Phase 5 | Firewall Baseline | Complete |
+| Phase 6 | Lockout Break/Fix | Complete |
+| Phase 7 | Document + Push | Complete |
+
+## Phase Details
+
+### Phase 1 - Audit Documentation
+
+I audited the live server before changing anything.
+
+What I did:
+
+- Confirmed `WIN-PRQD8TJG04M` is the live Primary Domain Controller.
+- Documented installed roles: AD DS, DNS, DHCP, NPS, File Server, Hyper-V,
+  RDS, and IIS.
+- Reviewed users, groups, GPOs, firewall posture, and joined computers.
+- Identified the main risks: weak password policy, no lockout, too many Domain
+  Admins, and RDS/IIS running on the DC.
+
+Why it matters: I treated the server as a live production-style DC, not as a
+fresh install.
+
+Evidence: [Final state](docs/p01-verified-final-state.md)
+
+### Phase 2 - Password Policy + Lockout
+
+I fixed the most important account-security gap first.
+
+What I did:
+
+- Backed up the current policy state.
+- Set minimum password length to 14.
+- Enabled account lockout at 5 bad attempts.
+- Verified the new domain account policy.
+
+Why it matters: the domain no longer allows weak 7-character passwords, and
+brute-force attempts now lock accounts.
+
+Evidence: [Phase 2 evidence](docs/p01-phase2-evidence.md)
+
+### Phase 3 - Tiered Admin Model
+
+I separated privileged access from daily-user access.
+
+What I did:
+
+- Created the `_Admin` OU structure.
+- Created `adm-leonel` for Tier 0 domain administration.
+- Created `srv-leonel` for Tier 1 server administration.
+- Created `GG-Tier0-Admins` and `GG-ServerAdmins`.
+- Reduced Domain Admin membership from 12 to 3 approved members.
+- Created the Tier 0 fine-grained password policy.
+
+Why it matters: Domain Admin access is now limited and easier to audit.
+
+Evidence: [Phase 3 evidence](docs/p01-phase3-evidence.md)
+
+### Phase 4 - RDS/IIS/NPS Risk Assessment
+
+I documented risky roles without removing anything from the live DC.
+
+What I did:
+
+- Reviewed Remote Desktop Services.
+- Reviewed IIS application pools and web role usage.
+- Reviewed NPS/RADIUS configuration.
+- Confirmed NPS had no custom RADIUS clients yet.
+- Documented that RDS/IIS migration belongs in Project 08.
+
+Why it matters: removing RDS or IIS from a live DC without a migration plan
+could break access. This phase documented the risk and moved remediation to the
+right project.
+
+Evidence: [RDS/IIS/NPS risk assessment](docs/p01-rds-iis-risk-assessment.md)
+
+### Phase 5 - Firewall Baseline
+
+I captured the firewall and listener baseline without tightening rules too early.
+
+What I did:
+
+- Documented Windows Firewall profile state.
+- Captured TCP and UDP listening services.
+- Verified NPS-related UDP listeners.
+- Left RDP/Tailscale scope unchanged by explicit instruction.
+- Deferred full default-block hardening to Project 05.
+
+Why it matters: firewall hardening needs a tested AD/GPO allowlist first, not a
+random live change on the Domain Controller.
+
+Evidence: [Firewall baseline](docs/p01-phase5-firewall-baseline.md)
+
+### Phase 6 - Lockout Break/Fix
+
+I tested the lockout policy with a disposable account.
+
+What I did:
+
+- Used `testuser` for the lockout simulation.
+- Triggered lockout after 5 failed attempts.
+- Verified Event 4740.
+- Disabled `testuser`.
+- Moved `testuser` to `OU=Quarantine`.
+- Documented the audit gap for missing failed-logon events.
+
+Why it matters: this proved the new lockout policy works and created a real
+break/fix exercise for future SOC documentation.
+
+Evidence: [Lockout break/fix](docs/p01-phase6-lockout-breakfix.md)
+
+### Phase 7 - Document + Push
+
+I closed the project by saving the evidence and updating the repo.
+
+What I did:
+
+- Updated the Project 01 README.
+- Saved the phase evidence documents.
+- Confirmed sensitive NPS exports were not committed.
+- Updated project status references.
+- Pushed the documentation to GitHub.
+
+Why it matters: the project is not only configured; it is also documented and
+usable as portfolio evidence.
+
+Evidence: [Final state](docs/p01-verified-final-state.md)
+
 ## Verified State
 
 | Check | Result |
