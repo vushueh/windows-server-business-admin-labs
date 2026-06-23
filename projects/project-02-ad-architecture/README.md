@@ -27,6 +27,23 @@ Project 02 now provides:
 
 No AD objects were deleted.
 
+## Project Phases
+
+Project 02 has 9 phases. Phases 1-6 and 8-9 are complete. Phase 7 is pending
+because the `WIN-DC02` VM does not exist yet.
+
+| Phase | Name | Status | What happened |
+|-------|------|--------|---------------|
+| 1 | OU Structure Design | Complete | Built `ManagedUsers`, `ManagedComputers`, `Groups/GlobalGroups`, and `Groups/DomainLocalGroups` |
+| 2 | Move Existing Objects | Complete | Moved department OUs, workstations, and member servers into the managed OUs |
+| 3 | Tiered Admin Accounts | Complete for P02 | Kept the P01 admin model and staged `ws-leonel` disabled for Tier 2 workstation admin use |
+| 4 | AGDLP Group Model | Complete | Created `GG-*` global groups and `DL-*` domain local groups |
+| 5 | Service Account Provisioning | Complete | Created disabled `svc-backup` and `svc-sync` accounts |
+| 6 | Delegated Administration + AD Recycle Bin | Complete | Enabled AD Recycle Bin and delegated reset/unlock rights to `GG-Helpdesk` |
+| 7 | Replica DC Deployment | Pending | `WIN-DC02` VM is not present in Hyper-V yet |
+| 8 | Functional Level Verification | Complete | Verified `Windows2016Domain` / `Windows2016Forest`, which is correct for Windows Server 2022 AD DS |
+| 9 | Document + Verify | Complete | Added apply/verify scripts and updated the project docs |
+
 ## Why The OU Names Are ManagedUsers And ManagedComputers
 
 The domain already has built-in root containers named `CN=Users` and
