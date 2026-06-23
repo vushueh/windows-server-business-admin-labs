@@ -4,6 +4,28 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-23 (Codex — phase command and image placeholders)
+### What I did
+- Added PowerShell/proof command blocks inside each Project 02 phase section.
+- Added image filenames/placeholders inside each Project 02 phase section for later screenshot insertion.
+- Added the same command/proof and image-placeholder structure to Project 01 phase sections.
+
+### Files created/modified
+- `projects/project-01-server-baseline-hardening/README.md`
+- `projects/project-02-ad-architecture/README.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- Each phase section should include what was done, how it can be proven with commands, and where the image for that phase will be inserted later.
+
+### Cross-family impacts
+- None. Documentation-only update.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-06-23 (Codex — phase-section README correction)
 ### What I did
 - Corrected Project 02 so the table is only a simple phase/status summary.

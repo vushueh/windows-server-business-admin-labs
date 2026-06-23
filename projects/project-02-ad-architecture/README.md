@@ -65,7 +65,17 @@ What I did:
 Why it matters: this gives the domain a clean structure without touching the
 built-in `CN=Users` and `CN=Computers` containers.
 
-Screenshot to take: ADUC showing the top-level `Chongong.local` OU layout.
+PowerShell used/proof:
+
+```powershell
+.\scripts\p02-apply-ad-architecture.ps1 -Mode Apply
+
+Get-ADOrganizationalUnit -Filter * |
+  Select-Object Name, DistinguishedName |
+  Sort-Object DistinguishedName
+```
+
+Image to insert later: `screenshots/phase1-01-managed-ou-layout.png`
 
 ### Phase 2 - Move Existing Objects
 
@@ -81,8 +91,24 @@ What I did:
 Why it matters: servers, workstations, and users can now receive the right GPOs
 without applying everything from the domain root.
 
-Screenshots to take: `ManagedUsers` showing the five departments, and
-`ManagedComputers` showing `Servers` and `Workstations`.
+PowerShell used/proof:
+
+```powershell
+.\scripts\p02-apply-ad-architecture.ps1 -Mode Apply
+
+Get-ADOrganizationalUnit -SearchBase "OU=ManagedUsers,DC=Chongong,DC=local" -Filter * |
+  Select-Object Name, DistinguishedName |
+  Sort-Object Name
+
+Get-ADComputer -Filter * -Properties OperatingSystem |
+  Select-Object Name, OperatingSystem, DistinguishedName |
+  Sort-Object Name
+```
+
+Images to insert later:
+
+- `screenshots/phase2-01-managed-users-departments.png`
+- `screenshots/phase2-02-managed-computers-placement.png`
 
 ### Phase 3 - Tiered Admin Accounts
 
@@ -100,8 +126,16 @@ What I did:
 Why it matters: admin accounts stay separated by purpose, and no new admin
 access is enabled before it is needed.
 
-Screenshot to take: ADUC showing `_Admin` and `ws-leonel` disabled in
-`Tier2-WorkstationAdmins`.
+PowerShell used/proof:
+
+```powershell
+.\scripts\p02-apply-ad-architecture.ps1 -Mode Apply
+
+Get-ADUser ws-leonel -Properties Enabled, DistinguishedName |
+  Select-Object SamAccountName, Enabled, DistinguishedName
+```
+
+Image to insert later: `screenshots/phase3-01-workstation-admin-staged-disabled.png`
 
 ### Phase 4 - AGDLP Group Model
 
@@ -123,8 +157,23 @@ What I did:
 Why it matters: users go into global groups, and resource permissions later go
 on domain local groups. That keeps access clean and easy to audit.
 
-Screenshots to take: `GlobalGroups`, `DomainLocalGroups`, and one example
-membership such as `DL-Finance-Share-RW` containing `GG-Finance-Users`.
+PowerShell used/proof:
+
+```powershell
+.\scripts\p02-apply-ad-architecture.ps1 -Mode Apply
+
+Get-ADGroup -Filter 'Name -like "GG-*" -or Name -like "DL-*"' |
+  Select-Object Name, GroupScope, DistinguishedName |
+  Sort-Object Name
+
+Get-ADGroupMember DL-Finance-Share-RW |
+  Select-Object Name, SamAccountName, ObjectClass
+```
+
+Images to insert later:
+
+- `screenshots/phase4-01-global-and-domain-local-groups.png`
+- `screenshots/phase4-02-sample-agdlp-nesting.png`
 
 ### Phase 5 - Service Account Provisioning
 
@@ -140,8 +189,16 @@ What I did:
 Why it matters: service accounts exist for future projects, but they cannot be
 used until their owning workflow is ready and approved.
 
-Screenshot to take: ADUC showing `svc-backup` and `svc-sync` disabled under
-`ServiceAccounts`.
+PowerShell used/proof:
+
+```powershell
+.\scripts\p02-apply-ad-architecture.ps1 -Mode Apply
+
+Get-ADUser -LDAPFilter '(|(sAMAccountName=svc-backup)(sAMAccountName=svc-sync))' -Properties Enabled, DistinguishedName |
+  Select-Object SamAccountName, Enabled, DistinguishedName
+```
+
+Image to insert later: `screenshots/phase5-01-disabled-service-accounts.png`
 
 ### Phase 6 - Delegated Administration And AD Recycle Bin
 
@@ -157,8 +214,21 @@ What I did:
 Why it matters: accidental deletions have a recovery path, and helpdesk-style
 tasks do not require Domain Admin rights.
 
-Screenshots to take: AD Recycle Bin enabled, and `ManagedUsers` advanced
-security showing `GG-Helpdesk` delegation.
+PowerShell used/proof:
+
+```powershell
+.\scripts\p02-apply-ad-architecture.ps1 -Mode Apply
+
+Get-ADOptionalFeature "Recycle Bin Feature" |
+  Select-Object Name, EnabledScopes
+
+dsacls "OU=ManagedUsers,DC=Chongong,DC=local" | findstr /i "GG-Helpdesk Reset pwdLastSet lockoutTime"
+```
+
+Images to insert later:
+
+- `screenshots/phase6-01-ad-recycle-bin-enabled.png`
+- `screenshots/phase6-02-helpdesk-delegation.png`
 
 ### Phase 7 - Replica DC Deployment
 
@@ -184,8 +254,35 @@ What I will do when ready:
 - Keep FSMO roles on `WIN-PRQD8TJG04M` unless a later DR project approves a
   transfer.
 
-Future screenshots to take: `WIN-DC02` in Hyper-V, `WIN-DC02` in the
-`Domain Controllers` OU, and healthy `repadmin` output.
+Current proof that Phase 7 is pending:
+
+```powershell
+Get-VM WIN-DC02
+
+Get-ADComputer -LDAPFilter '(name=WIN-DC02)'
+```
+
+Future PowerShell commands:
+
+```powershell
+Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+
+Install-ADDSDomainController `
+  -DomainName "Chongong.local" `
+  -InstallDns `
+  -NoGlobalCatalog:$false `
+  -SafeModeAdministratorPassword (Read-Host -AsSecureString "DSRM password") `
+  -Force
+
+repadmin /replsummary
+repadmin /showrepl
+```
+
+Future images to insert:
+
+- `screenshots/phase7-01-win-dc02-hyperv-vm.png`
+- `screenshots/phase7-02-win-dc02-domain-controllers-ou.png`
+- `screenshots/phase7-03-replication-healthy.png`
 
 ### Phase 8 - Functional Level Verification
 
@@ -201,7 +298,14 @@ Why it matters: Windows Server 2022 AD DS still uses the Windows Server 2016
 functional-level labels. There is no separate Windows Server 2022 functional
 level to upgrade to.
 
-Screenshot to take: PowerShell output showing domain and forest modes.
+PowerShell used/proof:
+
+```powershell
+Get-ADDomain | Select-Object DNSRoot, DomainMode
+Get-ADForest | Select-Object Name, ForestMode
+```
+
+Image to insert later: `screenshots/phase8-01-functional-level.png`
 
 ### Phase 9 - Document And Verify
 
@@ -218,7 +322,13 @@ What I did:
 Why it matters: future Claude/Codex sessions can verify Project 02 without
 guessing or rebuilding the same work.
 
-Screenshot to take: PowerShell output from `p02-verify-ad-architecture.ps1`.
+PowerShell used/proof:
+
+```powershell
+.\scripts\p02-verify-ad-architecture.ps1
+```
+
+Image to insert later: `screenshots/phase9-01-p02-verification-output.png`
 
 ## Why The OU Names Are ManagedUsers And ManagedComputers
 

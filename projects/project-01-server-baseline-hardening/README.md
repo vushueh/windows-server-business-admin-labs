@@ -66,6 +66,17 @@ fresh install.
 
 Evidence: [Final state](docs/p01-verified-final-state.md)
 
+PowerShell used/proof:
+
+```powershell
+Get-ADDomain | Select-Object DNSRoot, DomainMode
+Get-WindowsFeature | Where-Object Installed
+Get-ADUser -Filter * | Select-Object SamAccountName, Enabled
+Get-GPO -All | Select-Object DisplayName, GpoStatus
+```
+
+Image to insert later: `screenshots/phase1-01-server-role-inventory.png`
+
 ### Phase 2 - Password Policy + Lockout
 
 I fixed the most important account-security gap first.
@@ -81,6 +92,15 @@ Why it matters: the domain no longer allows weak 7-character passwords, and
 brute-force attempts now lock accounts.
 
 Evidence: [Phase 2 evidence](docs/p01-phase2-evidence.md)
+
+PowerShell used/proof:
+
+```powershell
+Get-ADDefaultDomainPasswordPolicy |
+  Select-Object MinPasswordLength, LockoutThreshold, LockoutDuration, LockoutObservationWindow
+```
+
+Image to insert later: `screenshots/phase2-01-password-lockout-policy.png`
 
 ### Phase 3 - Tiered Admin Model
 
@@ -98,6 +118,21 @@ What I did:
 Why it matters: Domain Admin access is now limited and easier to audit.
 
 Evidence: [Phase 3 evidence](docs/p01-phase3-evidence.md)
+
+PowerShell used/proof:
+
+```powershell
+Get-ADOrganizationalUnit -SearchBase "OU=_Admin,DC=Chongong,DC=local" -Filter * |
+  Select-Object Name, DistinguishedName
+
+Get-ADGroupMember "Domain Admins" |
+  Select-Object Name, SamAccountName
+
+Get-ADFineGrainedPasswordPolicy -Filter * |
+  Select-Object Name, MinPasswordLength, LockoutThreshold
+```
+
+Image to insert later: `screenshots/phase3-01-tiered-admin-ou-and-groups.png`
 
 ### Phase 4 - RDS/IIS/NPS Risk Assessment
 
@@ -117,6 +152,22 @@ right project.
 
 Evidence: [RDS/IIS/NPS risk assessment](docs/p01-rds-iis-risk-assessment.md)
 
+PowerShell used/proof:
+
+```powershell
+Get-Service -Name Tssdis,RDMS,IAS -ErrorAction SilentlyContinue
+
+Import-Module WebAdministration
+Get-ChildItem IIS:\AppPools |
+  Select-Object Name, State, @{Name='Identity';Expression={$_.processModel.identityType}}
+```
+
+Images already captured:
+
+- `screenshots/phase4-01-rds-overview-broker-error.jpg`
+- `screenshots/phase4-04-iis-application-pools.jpg`
+- `screenshots/phase4-09-nps-radius-clients-servers-overview.jpg`
+
 ### Phase 5 - Firewall Baseline
 
 I captured the firewall and listener baseline without tightening rules too early.
@@ -133,6 +184,24 @@ Why it matters: firewall hardening needs a tested AD/GPO allowlist first, not a
 random live change on the Domain Controller.
 
 Evidence: [Firewall baseline](docs/p01-phase5-firewall-baseline.md)
+
+PowerShell used/proof:
+
+```powershell
+Get-NetFirewallProfile |
+  Select-Object Name, Enabled, DefaultInboundAction
+
+Get-NetTCPConnection -State Listen |
+  Select-Object LocalAddress, LocalPort, OwningProcess
+
+Get-NetUDPEndpoint |
+  Select-Object LocalAddress, LocalPort, OwningProcess
+```
+
+Images already captured:
+
+- `screenshots/phase5-01-wfas-overview.jpg`
+- `screenshots/phase5-02-wfas-inbound-rules.jpg`
 
 ### Phase 6 - Lockout Break/Fix
 
@@ -152,6 +221,20 @@ break/fix exercise for future SOC documentation.
 
 Evidence: [Lockout break/fix](docs/p01-phase6-lockout-breakfix.md)
 
+PowerShell used/proof:
+
+```powershell
+Search-ADAccount -LockedOut |
+  Select-Object SamAccountName, Enabled, LockedOut
+
+Get-ADUser testuser -Properties Enabled, DistinguishedName |
+  Select-Object SamAccountName, Enabled, DistinguishedName
+
+Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4740} -MaxEvents 5
+```
+
+Image to insert later: `screenshots/phase6-01-testuser-locked-and-quarantined.png`
+
 ### Phase 7 - Document + Push
 
 I closed the project by saving the evidence and updating the repo.
@@ -168,6 +251,20 @@ Why it matters: the project is not only configured; it is also documented and
 usable as portfolio evidence.
 
 Evidence: [Final state](docs/p01-verified-final-state.md)
+
+PowerShell/Git proof:
+
+```powershell
+Get-ADDefaultDomainPasswordPolicy
+Search-ADAccount -LockedOut
+```
+
+```bash
+git status --short
+git log --oneline -5
+```
+
+Image to insert later: `screenshots/phase7-01-project-01-final-github-state.png`
 
 ## Verified State
 
