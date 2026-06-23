@@ -4,6 +4,28 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-23 (Codex — screenshot upload skill clarification)
+### What I did
+- Updated the Windows Server evidence documentation skill with an explicit screenshot upload workflow.
+- Added where screenshots must be saved, how they must be named, how to check them for secrets, and how to link them in Markdown.
+- Added the rule to create a project-specific `docs/pNN-screenshot-plan.md` when a project needs many screenshots.
+
+### Files created/modified
+- `skills/winserver-evidence-documentation/SKILL.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- Screenshots for project documentation should be committed into each project repo under `screenshots/`, not hosted externally.
+- Every screenshot used in a README or evidence doc needs a filename, purpose, manual capture path, and PowerShell equivalent.
+
+### Cross-family impacts
+- None. Documentation-standard update only.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-06-23 (Codex — phase command and image placeholders)
 ### What I did
 - Added PowerShell/proof command blocks inside each Project 02 phase section.

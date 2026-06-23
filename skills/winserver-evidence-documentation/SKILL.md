@@ -112,6 +112,59 @@ Naming pattern:
 phaseN-NN-short-description.jpg
 ```
 
+## Screenshot Upload Workflow
+
+Use this workflow every time Leonel provides screenshots for a Windows project.
+
+1. Save screenshots under the project folder:
+
+```text
+projects/project-NN-project-name/screenshots/
+```
+
+2. Rename each screenshot with the phase-based pattern:
+
+```text
+phaseN-NN-short-description.png
+phaseN-NN-short-description.jpg
+```
+
+Examples:
+
+```text
+phase2-01-password-lockout-policy.png
+phase4-02-sample-agdlp-nesting.png
+phase9-01-final-verification-output.png
+```
+
+3. Check every image before committing:
+
+- no passwords
+- no private keys
+- no recovery keys
+- no shared secrets
+- no unredacted credential fields
+- no unrelated personal files, browser tabs, or notifications
+
+4. Link screenshots with relative Markdown paths only:
+
+```markdown
+![short alt text](screenshots/phaseN-NN-short-description.png)
+```
+
+5. Do not upload screenshots to external image hosts for repo documentation.
+Commit the reviewed image files into the repo with the README/evidence update.
+
+6. If a project needs many screenshots, create or update a project-specific
+screenshot plan:
+
+```text
+projects/project-NN-project-name/docs/pNN-screenshot-plan.md
+```
+
+That plan must list each screenshot filename, what it proves, where Leonel
+captures it manually, and the PowerShell command that proves the same result.
+
 For the README, preview only the strongest screenshots. Link the full screenshot
 folder for technical reviewers.
 
