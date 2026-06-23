@@ -4,6 +4,51 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-22 (Claude — P01 Phase 4, manual GUI mode + SSH access change)
+### What I did
+- Resumed P01 at Phase 4 (RDS/IIS/NPS risk assessment) in manual-GUI mode per Leonel's
+  request — gave GUI click-paths for Server Manager, ADUC, IIS Manager, NPS console;
+  Leonel executed each step and reported back via screenshots.
+- Walked through all 5 Phase 4 consoles: RDS Overview/Servers, RDS-Users membership,
+  IIS Sites/Application Pools, NPS Policies/RADIUS Clients, and `__vmware__` group.
+- Discovered mid-session that a new SSH key (`winserver_claude_ed25519`, alias
+  `winserver01`, connects as `chongong\adm-leonel`) now exists and works — this
+  contradicts the prior handoff doc's "no SSH key exists" statement. Asked Leonel how
+  to use it; he chose to let Claude execute both read and write commands directly going
+  forward, with approval still required before any live AD/GPO change. Used it
+  read-only to confirm `__vmware__` group metadata and host VMware services.
+- Wrote `docs/p01-rds-iis-risk-assessment.md` covering all Phase 4 findings.
+
+### Files created/modified
+- `projects/project-01-server-baseline-hardening/docs/p01-rds-iis-risk-assessment.md` (new)
+- `AGENTS.md` — Tier 3 rule updated to reflect working SSH access
+- `skills/project-01-server-baseline-hardening.md` — SSH quick-reference fixed (stale
+  key path removed), Phases 2–4 marked complete in checklist, `__vmware__` do-not-touch
+  entry filled in with confirmed findings
+- `CODEX-LOG.md` (this entry)
+
+### Architecture decisions made
+- RDS Connection Broker is failing on the PDC (server reachable, broker unreachable) —
+  documented as a finding, not fixed; remediation deferred to Project 08 (dedicated
+  RDS server) rather than patched in place on the PDC.
+- IIS on the PDC confirmed to exist solely for RD Web Access/RPC-over-HTTPS — no
+  general-purpose hosting, no named-account app pool identities.
+- NPS confirmed to have zero custom configuration (stock defaults only, no RADIUS
+  clients) — `radius-service` is not referenced anywhere, resolved via GUI inspection
+  alone, no XML export needed.
+- `__vmware__` confirmed as an empty, unmanaged artifact of a VMware desktop product
+  (NAT/Autostart services present) — left untouched, deferred to Project 02.
+
+### Cross-family impacts
+- None this session — Phase 4 made zero live changes by design.
+
+### Open questions for Claude/Codex
+- Confirm with Leonel whether the two clones (`C:\Projects\...` and
+  `E:\Homelab-Repos\family-projects\...`) should be reconciled now that Claude can SSH
+  directly — may reduce need for keeping both in sync manually.
+- Phase 5 (firewall baseline) needs the exact Tailscale management IP via `tailscale
+  ip -4` before restricting the RDP inbound rule — not yet captured.
+
 ## Session — 2026-06-22 (Imported AD/SSSD project into Project 13)
 ### What I did
 - Imported the full AD UNIX Attributes + SSSD Linux VM Integration plan from the former `homelab-projects` repo.
