@@ -74,7 +74,7 @@ Chongong.local
   ├── Domain Controllers            ← existing
   ├── Management / IT / HR / Sales / Finance  ← existing flat OUs (restructure P02)
   ├── Groups                        ← existing
-  └── Quarantine                    ← disabled accounts (Phase 6)
+  └── Quarantine                    ← disabled accounts (Phase 6 — created 2026-06-23, contains testuser)
 ```
 
 **Tier 1 rule:** `srv-leonel` goes into `GG-ServerAdmins` only.
@@ -124,6 +124,6 @@ repadmin /showrepl                     # Replication (no partners — single DC)
 - [x] Phase 3: PSO-Tier0-Admins active (precedence 10, min 20 chars, lockout 3)
 - [x] Phase 4: RDS/IIS risk assessment documented — no roles changed (docs/p01-rds-iis-risk-assessment.md)
 - [x] Phase 5: TCP + UDP baseline documented (docs/p01-phase5-firewall-baseline.md). RDP/Tailscale deliberately left unrestricted per Leonel's explicit instruction — not a gap, do not "fix" later.
-- [ ] Phase 6: Lockout exercise confirmed, testuser quarantined
+- [x] Phase 6: Lockout exercise confirmed (5 attempts -> LockedOut=True, Event 4740 logged), testuser quarantined (Enabled=False, moved to OU=Quarantine). Finding: failed-logon events 4625/4776/4771 are NOT logged despite BadLogonCount tracking correctly -- audit policy gap, deferred to GPO work.
 - [ ] Phase 7: All scripts saved, docs complete, NPS XML NOT in repo, GitHub push done
 - [ ] Parent skill (/winserver) marked P01 ✅
