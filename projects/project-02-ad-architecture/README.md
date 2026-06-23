@@ -34,15 +34,17 @@ because the `WIN-DC02` VM does not exist yet.
 
 | Phase | Name | Status | What happened |
 |-------|------|--------|---------------|
-| 1 | OU Structure Design | Complete | Built `ManagedUsers`, `ManagedComputers`, `Groups/GlobalGroups`, and `Groups/DomainLocalGroups` |
-| 2 | Move Existing Objects | Complete | Moved department OUs, workstations, and member servers into the managed OUs |
-| 3 | Tiered Admin Accounts | Complete for P02 | Kept the P01 admin model and staged `ws-leonel` disabled for Tier 2 workstation admin use |
-| 4 | AGDLP Group Model | Complete | Created `GG-*` global groups and `DL-*` domain local groups |
-| 5 | Service Account Provisioning | Complete | Created disabled `svc-backup` and `svc-sync` accounts |
-| 6 | Delegated Administration + AD Recycle Bin | Complete | Enabled AD Recycle Bin and delegated reset/unlock rights to `GG-Helpdesk` |
-| 7 | Replica DC Deployment | Pending | `WIN-DC02` VM is not present in Hyper-V yet |
-| 8 | Functional Level Verification | Complete | Verified `Windows2016Domain` / `Windows2016Forest`, which is correct for Windows Server 2022 AD DS |
-| 9 | Document + Verify | Complete | Added apply/verify scripts and updated the project docs |
+| Phase 1 | OU Structure Design | Complete | Built `ManagedUsers`, `ManagedComputers`, `Groups/GlobalGroups`, and `Groups/DomainLocalGroups` |
+| Phase 2 | Move Existing Objects | Complete | Moved department OUs, workstations, and member servers into the managed OUs |
+| Phase 3 | Tiered Admin Accounts | Complete for P02 | Kept the P01 admin model and staged `ws-leonel` disabled for Tier 2 workstation admin use |
+| Phase 4 | AGDLP Group Model | Complete | Created `GG-*` global groups and `DL-*` domain local groups |
+| Phase 5 | Service Account Provisioning | Complete | Created disabled `svc-backup` and `svc-sync` accounts |
+| Phase 6 | Delegated Administration + AD Recycle Bin | Complete | Enabled AD Recycle Bin and delegated reset/unlock rights to `GG-Helpdesk` |
+| Phase 7 | Replica DC Deployment | Pending | `WIN-DC02` VM is not present in Hyper-V yet |
+| Phase 8 | Functional Level Verification | Complete | Verified `Windows2016Domain` / `Windows2016Forest`, which is correct for Windows Server 2022 AD DS |
+| Phase 9 | Document + Verify | Complete | Added apply/verify scripts and updated the project docs |
+
+Screenshot checklist: [docs/p02-screenshot-plan.md](docs/p02-screenshot-plan.md)
 
 ## Why The OU Names Are ManagedUsers And ManagedComputers
 
@@ -182,6 +184,16 @@ Verified results on `2026-06-23`:
 
 The replica DC part is not complete because Hyper-V does not currently have a
 `WIN-DC02` VM. I verified the Hyper-V VM list and did not find it.
+
+What I need before Phase 7:
+
+- Windows Server 2022 ISO or a prepared source VM.
+- Hyper-V switch/VLAN decision for the replica DC.
+- Static IP address for `WIN-DC02`.
+- DNS on `WIN-DC02` pointed to `192.168.20.11` before domain join.
+- DSRM password typed by Leonel only, never saved in chat or the repo.
+- Explicit approval before promoting `WIN-DC02` as a domain controller.
+- A system state backup plan before changing DC replication.
 
 Next safe build:
 

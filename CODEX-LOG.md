@@ -4,6 +4,29 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-23 (Codex — Project 02 phase and screenshot documentation)
+### What I did
+- Updated the Project 02 README so every phase is explicitly labeled `Phase 1` through `Phase 9`.
+- Added a direct Phase 7 requirements list for the pending `WIN-DC02` replica DC work.
+- Added a Project 02 screenshot/evidence plan with filenames, manual GUI paths, why each screenshot matters, and PowerShell equivalents.
+
+### Files created/modified
+- `projects/project-02-ad-architecture/README.md`
+- `projects/project-02-ad-architecture/docs/p02-screenshot-plan.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- Keep the public README concise and link the detailed screenshot checklist as a technical evidence doc.
+- Treat Phase 7 as pending until `WIN-DC02` exists, has the correct network/DNS setup, and is explicitly approved for promotion.
+
+### Cross-family impacts
+- None. Documentation-only update.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-06-23 (Codex — Project 02 AD architecture live completion)
 ### What I did
 - Applied the approved Project 02 AD architecture changes on `WIN-PRQD8TJG04M`.
