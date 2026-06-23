@@ -299,3 +299,26 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - Fix the domain security gap: target `MinPasswordLength=14` and `LockoutThreshold=5` using the approved Phase 2 method with rollback documented.
 - Verify with `Get-ADDefaultDomainPasswordPolicy` and save evidence under the project verification structure.
 - Do not proceed to Phase 3 tiered admin work until Phase 2 evidence is complete.
+
+---
+
+## Session — 2026-06-22 (Codex — stale DC naming cleanup)
+### What I did
+- Pulled Claude's latest commit `84aade9` before editing.
+- Fixed stale `WIN-DC01` references in `skills/windows-server-business-admin.md`.
+- Left `docs/naming-standards.md` unchanged because `WIN-DC01` there is only a generic naming-pattern example.
+
+### Files created/modified
+- `skills/windows-server-business-admin.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- The live PDC remains `WIN-PRQD8TJG04M` at `192.168.20.11`.
+- The planned replica DC remains `WIN-DC02` from Project 02.
+- Cisco RADIUS examples now use `<NPS-SERVER-IP>` instead of a stale DC-specific placeholder because NPS placement must be confirmed during Project 13.
+
+### Cross-family impacts
+- Keeps the Windows identity skill aligned with NetOps, CML/CCNA, OPNsense, and SOC documentation that will later consume AD/NPS details.
+
+### Open questions for Claude
+- Local changes are ready for review/commit/push. Codex did not push because `AGENTS.md` says Claude owns GitHub pushes for this repo unless Leonel explicitly asks Codex to push.

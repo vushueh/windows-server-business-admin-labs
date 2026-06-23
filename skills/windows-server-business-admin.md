@@ -35,8 +35,8 @@ audit policy, tested DR, and hybrid identity.
 
 | Component | IP | Platform | Notes |
 |-----------|----|----------|-------|
-| Hyper-V Host | 192.168.20.11 | Physical / WIN-PRQD8TJG04M | Runs all Windows Server VMs |
-| WIN-DC01 | TBD (Project 01) | Hyper-V VM | Primary DC, AD DS, DNS, NPS |
+| WIN-PRQD8TJG04M | 192.168.20.11 | Physical / Hyper-V Host | Existing PDC for Chongong.local; runs all Windows Server VMs |
+| WIN-DC02 | TBD (Project 02) | Hyper-V VM | Planned replica DC, AD DS, DNS, and possible NPS staging |
 | WIN-FS01 | TBD (Project 06) | Hyper-V VM | File Server |
 | WIN-WS01 | TBD (Project 07) | Hyper-V VM | Test workstation |
 | OPNsense | 192.168.20.x | Hyper-V VM | Firewall — RADIUS auth in Project 13 |
@@ -167,7 +167,7 @@ Get-VM | Select-Object Name, State, MemoryAssigned, CPUUsage
 New-VM -Name "WIN-FS01" -MemoryStartupBytes 4GB -SwitchName "vSwitch-Internal" -NewVHDPath "D:\VMs\WIN-FS01.vhdx" -NewVHDSizeBytes 60GB
 
 # Create checkpoint
-Checkpoint-VM -Name "WIN-DC01" -SnapshotName "Before-Project02"
+Checkpoint-VM -Name "WIN-DC02" -SnapshotName "Before-Project02"
 ```
 
 ---
@@ -202,7 +202,7 @@ aaa new-model
 aaa authentication login ADMIN group radius local
 aaa authorization exec ADMIN group radius local
 radius server WIN-NPS
- address ipv4 <WIN-DC01-IP> auth-port 1812 acct-port 1813
+ address ipv4 <NPS-SERVER-IP> auth-port 1812 acct-port 1813
  key <shared-secret>
 line vty 0 4
  login authentication ADMIN
