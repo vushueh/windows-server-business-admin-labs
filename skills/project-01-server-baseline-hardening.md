@@ -123,7 +123,7 @@ repadmin /showrepl                     # Replication (no partners — single DC)
 - [x] Phase 3: _Admin OU + sub-OUs, adm-leonel (Tier0 DA), srv-leonel (GG-ServerAdmins only)
 - [x] Phase 3: PSO-Tier0-Admins active (precedence 10, min 20 chars, lockout 3)
 - [x] Phase 4: RDS/IIS risk assessment documented — no roles changed (docs/p01-rds-iis-risk-assessment.md)
-- [ ] Phase 5: TCP + UDP baseline CSVs in docs/, RDP restricted to Tailscale
+- [x] Phase 5: TCP + UDP baseline documented (docs/p01-phase5-firewall-baseline.md). RDP/Tailscale deliberately left unrestricted per Leonel's explicit instruction — not a gap, do not "fix" later.
 - [ ] Phase 6: Lockout exercise confirmed, testuser quarantined
 - [ ] Phase 7: All scripts saved, docs complete, NPS XML NOT in repo, GitHub push done
 - [ ] Parent skill (/winserver) marked P01 ✅
