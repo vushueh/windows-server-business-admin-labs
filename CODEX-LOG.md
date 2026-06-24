@@ -4,6 +4,32 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-23 (Codex — documentation skill screenshot placement rule)
+### What I did
+- Updated the Windows Server evidence documentation skill to match Leonel's documentation rule.
+- Made the root README rule explicit: no screenshots on the family/index README.
+- Made the individual project README rule explicit: screenshots belong under the phase they prove, with a first-person phase explanation, capture timing, GUI path, reason, and PowerShell equivalent.
+- Added the requirement to plan before/after/verification screenshots before configuration starts.
+- Lightly improved the root README introduction in first person without adding screenshots.
+
+### Files created/modified
+- `skills/winserver-evidence-documentation/SKILL.md`
+- `README.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- The root README stays as the clean navigation and portfolio entry page.
+- Phase-level screenshots live inside each project page after a reader clicks into that project.
+- Missing screenshots should be listed as pending capture notes, not broken image links.
+
+### Cross-family impacts
+- Future Windows Server projects should document evidence consistently before those screenshots are linked from the main homelab portfolio.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-06-23 (Codex — Project 03 consistency and screenshot plans)
 ### What I did
 - Rewrote Project 03 README into the same phase-section style used for Projects 01 and 02.

@@ -3,9 +3,29 @@
 **Status:** 🔒 Private — goes public when complete | **Platform:** Windows Server 2022, Hyper-V, Microsoft 365
 **Trigger phrase:** `windows server project`
 
-Advanced Windows Server 2022, Active Directory, Hyper-V, Microsoft 365, Hybrid Identity, and Small Business IT Operations.
+I am building this Windows Server family to prove that I can operate the
+Microsoft side of a real small-business environment: identity, DNS, DHCP,
+Group Policy, file access, endpoint administration, backups, monitoring, and
+Microsoft 365 integration.
 
-**Goal:** Build, secure, automate, monitor, and recover a real small-business Microsoft environment — then integrate it as the **identity and administration backbone** for all other homelab families.
+This is not just a Windows Server install. It is the identity and administration
+backbone for the rest of my homelab. Network devices, Linux systems, SOC tools,
+FreePBX, OPNsense, Palo Alto, Proxmox, Hyper-V, and future case studies all need
+a trusted place for users, groups, names, authentication, logs, and recovery.
+
+**Goal:** Build, secure, automate, monitor, and recover a real small-business
+Microsoft environment — then connect it to the rest of the homelab as the
+central identity and administration layer.
+
+## What This Family Proves
+
+| Area | What I am proving |
+|------|-------------------|
+| Identity | I can design and operate Active Directory, admin tiers, groups, and delegated access. |
+| Network services | I can run DNS, DHCP, IPAM, and RADIUS in a way that supports real network operations. |
+| Security | I can apply GPO baselines, collect Windows logs, and support SOC-style investigations. |
+| Operations | I can document, verify, back up, restore, and troubleshoot Windows infrastructure. |
+| Integration | I can make Windows Server support the rest of the homelab instead of standing alone. |
 
 ---
 
@@ -88,7 +108,7 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 |-------|---------|---------------|
 | [windows-server-business-admin](skills/windows-server-business-admin.md) | Main family skill | `/winserver` |
 | [project-01-server-hardening](skills/project-01-server-baseline-hardening.md) | P01 lean skill + phase references | `/winserver-p01` ✅ Ready |
-| [winserver-evidence-documentation](skills/winserver-evidence-documentation/SKILL.md) | Documentation standard: readable README first, technical evidence behind links | Use for every project/phase documentation update |
+| [winserver-evidence-documentation](skills/winserver-evidence-documentation/SKILL.md) | Documentation standard: clean root README, phase screenshots inside project pages | Use for every project/phase documentation update |
 | project-12-m365-hybrid | M365/Entra skill | `/winserver-p12` — written when P12 starts |
 | project-13-identity-integration | Capstone skill | `/winserver-p13` — written when P13 starts |
 
