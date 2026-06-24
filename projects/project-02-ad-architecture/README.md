@@ -75,7 +75,11 @@ Get-ADOrganizationalUnit -Filter * |
   Sort-Object DistinguishedName
 ```
 
-Image to insert later: `screenshots/phase1-01-managed-ou-layout.png`
+![Managed OU layout in ADUC](screenshots/phase1-01-managed-ou-layout.JPG)
+*Managed OU layout (`ManagedUsers`, `ManagedComputers`, `_Admin`, `Groups`, `Quarantine`, `Domain Controllers`) in Active Directory Users and Computers.*
+
+![Managed OU PowerShell proof](screenshots/phase1-02-managed-ou-powershell-proof.JPG)
+*PowerShell output confirming the managed OU structure matches what ADUC shows.*
 
 ### Phase 2 - Move Existing Objects
 
@@ -105,10 +109,11 @@ Get-ADComputer -Filter * -Properties OperatingSystem |
   Sort-Object Name
 ```
 
-Images to insert later:
+![Managed user departments](screenshots/phase2-01-managed-users-departments.JPG)
+*Finance, HR, IT, Management, and Sales moved under `ManagedUsers`.*
 
-- `screenshots/phase2-01-managed-users-departments.png`
-- `screenshots/phase2-02-managed-computers-placement.png`
+![Managed computers placement](screenshots/phase2-02-managed-computers-placement.JPG)
+*Servers and Workstations correctly placed under `ManagedComputers`.*
 
 ### Phase 3 - Tiered Admin Accounts
 
@@ -135,7 +140,11 @@ Get-ADUser ws-leonel -Properties Enabled, DistinguishedName |
   Select-Object SamAccountName, Enabled, DistinguishedName
 ```
 
-Image to insert later: `screenshots/phase3-01-workstation-admin-staged-disabled.png`
+![Admin OU layout](screenshots/phase3-01-admin-ou-layout.JPG)
+*`_Admin` structure with `Tier0-DomainAdmins`, `Tier1-ServerAdmins`, `Tier2-WorkstationAdmins`, and `ServiceAccounts`.*
+
+![Workstation admin staged disabled](screenshots/phase3-02-workstation-admin-staged-disabled.JPG)
+*`ws-leonel` staged under `Tier2-WorkstationAdmins`, disabled until needed.*
 
 ### Phase 4 - AGDLP Group Model
 
@@ -170,10 +179,11 @@ Get-ADGroupMember DL-Finance-Share-RW |
   Select-Object Name, SamAccountName, ObjectClass
 ```
 
-Images to insert later:
+![Global and domain local groups](screenshots/phase4-01-global-and-domain-local-groups.JPG)
+*`GlobalGroups` and `DomainLocalGroups` under `Groups`.*
 
-- `screenshots/phase4-01-global-and-domain-local-groups.png`
-- `screenshots/phase4-02-sample-agdlp-nesting.png`
+![Sample AGDLP nesting](screenshots/phase4-02-sample-agdlp-nesting.JPG)
+*`DL-Finance-Share-RW` with `GG-Finance-Users` nested as a member — proves the AGDLP model is actually nested, not just named.*
 
 ### Phase 5 - Service Account Provisioning
 
@@ -198,7 +208,11 @@ Get-ADUser -LDAPFilter '(|(sAMAccountName=svc-backup)(sAMAccountName=svc-sync))'
   Select-Object SamAccountName, Enabled, DistinguishedName
 ```
 
-Image to insert later: `screenshots/phase5-01-disabled-service-accounts.png`
+![Disabled service accounts](screenshots/phase5-01-disabled-service-accounts.JPG)
+*`svc-backup` and `svc-sync` staged under `_Admin/ServiceAccounts`, disabled.*
+
+![Service accounts PowerShell proof](screenshots/phase5-02-service-accounts-powershell-proof.JPG)
+*PowerShell confirming `svc-backup` and `svc-sync` are disabled and correctly placed.*
 
 ### Phase 6 - Delegated Administration And AD Recycle Bin
 
@@ -225,10 +239,11 @@ Get-ADOptionalFeature "Recycle Bin Feature" |
 dsacls "OU=ManagedUsers,DC=Chongong,DC=local" | findstr /i "GG-Helpdesk Reset pwdLastSet lockoutTime"
 ```
 
-Images to insert later:
+![AD Recycle Bin enabled](screenshots/phase6-01-ad-recycle-bin-enabled.JPG)
+*AD Recycle Bin enabled for the forest — gives accidental deletions a recovery path.*
 
-- `screenshots/phase6-01-ad-recycle-bin-enabled.png`
-- `screenshots/phase6-02-helpdesk-delegation.png`
+![Helpdesk delegation](screenshots/phase6-02-helpdesk-delegation.JPG)
+*`GG-Helpdesk` delegated reset/unlock rights on `ManagedUsers` without Domain Admin access.*
 
 ### Phase 7 - Replica DC Deployment
 
@@ -261,6 +276,9 @@ Get-VM WIN-DC02
 
 Get-ADComputer -LDAPFilter '(name=WIN-DC02)'
 ```
+
+![WIN-DC02 not present](screenshots/phase7-00-win-dc02-not-present.JPG)
+*`WIN-DC02` does not exist yet in Hyper-V or the `Domain Controllers` OU — proves Phase 7 is genuinely pending, not skipped.*
 
 Future PowerShell commands:
 
@@ -305,7 +323,11 @@ Get-ADDomain | Select-Object DNSRoot, DomainMode
 Get-ADForest | Select-Object Name, ForestMode
 ```
 
-Image to insert later: `screenshots/phase8-01-functional-level.png`
+![Functional level](screenshots/phase8-01-functional-level.JPG)
+*Domain and forest functional level confirmed as `Windows2016Domain`/`Windows2016Forest`.*
+
+![FSMO role placement](screenshots/phase8-02-fsmo-role-placement.JPG)
+*All five FSMO roles confirmed still on `WIN-PRQD8TJG04M`.*
 
 ### Phase 9 - Document And Verify
 
@@ -328,7 +350,7 @@ PowerShell used/proof:
 .\scripts\p02-verify-ad-architecture.ps1
 ```
 
-Image to insert later: `screenshots/phase9-01-p02-verification-output.png`
+Screenshots not yet captured for this phase (`phase9-01-p02-verification-output.png`, `phase9-02-project-02-github-files.png`).
 
 ## Why The OU Names Are ManagedUsers And ManagedComputers
 
