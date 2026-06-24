@@ -6,7 +6,8 @@ description: >
   scripts, phase completion notes, portfolio summaries, status tables, or final
   project documentation for P01-P13. Enforces layered documentation: readable public
   summary first, root README without screenshots, project phase evidence with
-  screenshots under the matching phase, no secrets, and consistent status.
+  screenshots under the matching phase, Server World style command-and-image
+  flow with stronger explanations, no secrets, and consistent status.
 ---
 
 # Windows Server Documentation Standard
@@ -96,8 +97,8 @@ Every phase section must include:
 - Phase title and status
 - Brief first-person explanation of what I did in that phase
 - What was achieved and why it matters
+- PowerShell/admin commands used or verification commands, when applicable
 - How I did it manually, when a GUI was used
-- PowerShell command used or verification command, when applicable
 - Screenshot block under that same phase once the image exists
 - Screenshot-to-capture note if the image has not been taken yet
 
@@ -129,6 +130,75 @@ Start -> Windows Tools -> Active Directory Users and Computers -> Chongong.local
 
 Longer click-by-click walkthroughs belong in a project screenshot plan under
 `docs/`.
+
+## Phase Documentation Pattern
+
+Use a command-and-image flow similar to Server World documentation, but make it
+more portfolio-ready. Each phase should read like a small case record, not a
+loose screenshot gallery.
+
+Required phase structure:
+
+````markdown
+## Phase N - Phase Name
+
+**Status:** Complete, partial, deferred, or pending
+
+I configured/verified/fixed ... so that ...
+
+**What I achieved**
+- Direct result 1
+- Direct result 2
+
+**Why this matters**
+One short paragraph connecting the work to business operations, security,
+network operations, or portfolio value.
+
+**PowerShell / verification**
+
+```powershell
+# comment explaining the command
+Command-That-Was-Used
+
+# verify the result
+Command-That-Proves-It
+```
+
+**Manual path**
+Start -> Windows Tools -> Tool Name -> object -> tab/button
+
+**Screenshot evidence**
+
+### Screenshot: phaseN-01-short-name.png
+
+![short alt text](screenshots/phaseN-01-short-name.png)
+
+- **When to capture:** Before change, after change, verification, or deferred proof.
+- **What it shows:** Explain exactly what is visible.
+- **How to capture it:** Click path or command window to open.
+- **Why it matters:** What this proves to a reviewer.
+- **PowerShell equivalent:** Matching command, if one exists.
+````
+
+PowerShell sections should be structured with comments the way good technical
+walkthroughs are: show the current state, apply the change when applicable, then
+verify. Do not paste huge terminal transcripts into the project README. Put long
+raw output in `docs/`.
+
+Screenshot sections must appear immediately after the instruction or command
+they prove. Do not put all screenshots at the bottom of the page. Do not place a
+row of images together without explanation. Each image needs its own title,
+caption, capture timing, click path, and reason.
+
+For phases that include both PowerShell and GUI work:
+
+1. Put the PowerShell/admin command block first when it is the clearest way to
+   show the exact configuration.
+2. Put the GUI/manual path next so Leonel and a non-technical reader can see
+   where the same setting lives.
+3. Put the screenshot directly below the GUI path or verification command.
+4. Add more explanation than Server World does: state what the screenshot proves
+   in this specific homelab, not only what button was clicked.
 
 ## Evidence File Standard
 
@@ -249,7 +319,7 @@ Every screenshot shown in an individual project README must use this block:
 
 - **What it shows:** One direct sentence.
 - **Capture timing:** Before change, after change, verification, or deferred proof.
-- **Manual check:** GUI path Leonel used.
+- **How to capture it:** GUI path, click path, or command window Leonel used.
 - **Why:** Why this configuration or finding matters.
 - **PowerShell equivalent:**
 
@@ -259,7 +329,7 @@ Every screenshot shown in an individual project README must use this block:
 ````
 
 Do not group several images together and explain them later. Image, description,
-capture timing, manual path, PowerShell equivalent, and reason must stay
+capture timing, capture path, PowerShell equivalent, and reason must stay
 together.
 
 ## No-Secrets Policy
@@ -323,6 +393,7 @@ Before committing documentation:
 - Root README has no screenshots and still explains why the family exists
 - Individual project README can be understood without opening a technical evidence file
 - Phase screenshots sit under the phase they prove, or the phase has a clear pending screenshot note
+- Each completed phase follows the explain, command, manual path, screenshot pattern
 - Technical readers have clear links to exact proof
 - No secrets or sensitive exports are present
 - Status matches across indexes and skills

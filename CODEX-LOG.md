@@ -4,6 +4,29 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-23 (Codex — Server World style phase evidence rule)
+### What I did
+- Reviewed the Server World Windows Server 2022 Active Directory example page Leonel referenced.
+- Updated the Windows Server evidence documentation skill so each phase follows a command-and-image flow: first-person explanation, achieved result, why it matters, PowerShell/admin command block, manual GUI path, then screenshot evidence directly under that phase.
+- Added the requirement that PowerShell sections show current state, change when applicable, and verification instead of becoming a raw transcript.
+- Added the requirement that every screenshot in a project phase explains when to capture it, how to capture it, what it proves, why it matters, and the matching PowerShell equivalent.
+
+### Files created/modified
+- `skills/winserver-evidence-documentation/SKILL.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- Future Windows Server project pages should use the same clear command-plus-screenshot rhythm as Server World, but with stronger portfolio explanations for each screenshot.
+- Screenshots still do not belong in the root README.
+
+### Cross-family impacts
+- Future Windows project documentation should be easier for non-technical readers to follow while still giving technical reviewers exact evidence.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-06-23 (Codex — documentation skill screenshot placement rule)
 ### What I did
 - Updated the Windows Server evidence documentation skill to match Leonel's documentation rule.
