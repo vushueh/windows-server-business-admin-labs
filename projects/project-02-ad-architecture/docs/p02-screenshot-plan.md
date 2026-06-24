@@ -23,6 +23,24 @@ If you only want a clean portfolio page, use these first:
 | `phase6-01-ad-recycle-bin-enabled.png` | Shows recovery protection is enabled |
 | `phase9-01-p02-verification-output.png` | Shows the final verification result |
 
+## Phase Screenshot Outline
+
+For completed phases, capture two screenshots when possible. For partially
+complete or pending phases, capture one screenshot showing why the phase is not
+complete yet.
+
+| Phase | Status | Screenshots to capture |
+|-------|--------|------------------------|
+| Phase 1 | Complete | 2 screenshots |
+| Phase 2 | Complete | 2 screenshots |
+| Phase 3 | Complete for P02 | 2 screenshots |
+| Phase 4 | Complete | 2 screenshots |
+| Phase 5 | Complete | 2 screenshots |
+| Phase 6 | Complete | 2 screenshots |
+| Phase 7 | Pending - blocked by `WIN-DC02` | 1 screenshot now, 3 future screenshots after build |
+| Phase 8 | Complete | 2 screenshots |
+| Phase 9 | Complete | 2 screenshots |
+
 ## Phase 1 - OU Structure Design
 
 ### Image: `phase1-01-managed-ou-layout.png`
@@ -32,6 +50,19 @@ If you only want a clean portfolio page, use these first:
 - **Manual check:** ADUC -> `Chongong.local`.
 - **Why:** This proves the domain now has a clean OU structure for GPOs, users,
   computers, admin accounts, and security groups.
+- **PowerShell equivalent:**
+
+```powershell
+Get-ADOrganizationalUnit -Filter * |
+  Select-Object Name, DistinguishedName |
+  Sort-Object DistinguishedName
+```
+
+### Image: `phase1-02-managed-ou-powershell-proof.png`
+
+- **What it shows:** PowerShell output listing the managed OU structure.
+- **Manual check:** PowerShell on the DC.
+- **Why:** Gives technical proof that matches the ADUC view.
 - **PowerShell equivalent:**
 
 ```powershell
@@ -148,6 +179,18 @@ Get-ADUser -LDAPFilter '(|(sAMAccountName=svc-backup)(sAMAccountName=svc-sync))'
   Select-Object SamAccountName, Enabled, DistinguishedName
 ```
 
+### Image: `phase5-02-service-accounts-powershell-proof.png`
+
+- **What it shows:** PowerShell output proving `svc-backup` and `svc-sync` are disabled and in the service-account OU.
+- **Manual check:** PowerShell on the DC.
+- **Why:** Confirms the accounts were staged safely without enabling unused credentials.
+- **PowerShell equivalent:**
+
+```powershell
+Get-ADUser -LDAPFilter '(|(sAMAccountName=svc-backup)(sAMAccountName=svc-sync))' -Properties Enabled, DistinguishedName |
+  Select-Object SamAccountName, Enabled, DistinguishedName
+```
+
 ## Phase 6 - Delegated Administration And AD Recycle Bin
 
 ### Image: `phase6-01-ad-recycle-bin-enabled.png`
@@ -195,6 +238,18 @@ Server VM.
 | DSRM password typed by Leonel | Do not put this password in chat or the repo |
 | Approval before promotion | Promoting a DC changes live domain replication |
 | System state backup plan | DC changes should have a recovery path |
+
+### Current Image: `phase7-00-win-dc02-not-present.png`
+
+- **What it shows:** `WIN-DC02` is not present yet.
+- **Manual check:** Hyper-V Manager and ADUC Domain Controllers OU.
+- **Why:** Proves Phase 7 is pending because the VM does not exist.
+- **PowerShell equivalent:**
+
+```powershell
+Get-VM WIN-DC02
+Get-ADComputer -LDAPFilter '(name=WIN-DC02)'
+```
 
 ### Future Image: `phase7-01-win-dc02-hyperv-vm.png`
 
@@ -249,6 +304,17 @@ Get-ADDomain | Select-Object DNSRoot, DomainMode
 Get-ADForest | Select-Object Name, ForestMode
 ```
 
+### Image: `phase8-02-fsmo-role-placement.png`
+
+- **What it shows:** FSMO roles remain on `WIN-PRQD8TJG04M`.
+- **Manual check:** PowerShell or Command Prompt on the DC.
+- **Why:** Confirms Project 02 did not move domain roles while building the AD structure.
+- **PowerShell equivalent:**
+
+```powershell
+netdom query fsmo
+```
+
 ## Phase 9 - Document And Verify
 
 ### Image: `phase9-01-p02-verification-output.png`
@@ -263,4 +329,15 @@ Get-ADForest | Select-Object Name, ForestMode
 
 ```powershell
 .\scripts\p02-verify-ad-architecture.ps1
+```
+
+### Image: `phase9-02-project-02-github-files.png`
+
+- **What it shows:** Project 02 README, scripts, and screenshot plan in the repo.
+- **Manual check:** GitHub project folder.
+- **Why:** Proves the configuration is documented and repeatable.
+- **PowerShell equivalent:**
+
+```bash
+find projects/project-02-ad-architecture -maxdepth 3 -type f | sort
 ```

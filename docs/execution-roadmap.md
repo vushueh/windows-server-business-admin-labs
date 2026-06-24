@@ -62,8 +62,8 @@ Each project is done only when these exist:
 Start here:
 
 1. Use the completed P02 AD structure as the identity base for NetOps/SOC alignment.
-2. Build `WIN-DC02` as the remaining replica-DC dependency when install media and VM details are ready.
-3. Run Project 03 DNS Engineering on the current PDC, then extend checks to `WIN-DC02` after it exists.
+2. Keep `WIN-DC02` as the remaining replica-DC dependency when install media and VM details are ready.
+3. Use the completed Project 03 current-PDC DNS work as the name-resolution base; extend DNS checks to `WIN-DC02` after it exists.
 4. Run Project 04 DHCP/IPAM.
 5. Run Project 05 GPO Security Baselines.
 6. Build Project 07 `WIN-WS01` only after P05 and the required file/share pieces are ready.

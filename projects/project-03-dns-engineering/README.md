@@ -1,242 +1,367 @@
-# Project 03 — AD DNS and Name Resolution Engineering
+# Project 03 - AD DNS and Name Resolution Engineering
 
-**Status:** ✅ Phases 1, 2, 3, 4, 6, 7, 8 complete | Phase 5 deferred (N/A) | Phase 9 deferred (blocked on P02 replica DC)
+**Status:** Mostly complete on `2026-06-23`; Phase 5 deferred as not needed, Phase 9 blocked by `WIN-DC02`
+
+**System:** `WIN-PRQD8TJG04M` (`192.168.20.11`) - live DNS server and Primary Domain Controller
+
 **Skill:** `/winserver-p03`
 
-## Objective
+## Summary
 
-Audit, design, and harden the AD-integrated DNS environment on Chongong.local.
-Configure forwarders, conditional forwarders, reverse lookup zones, and split-brain DNS.
-Practice broken DNS troubleshooting scenarios that directly mirror real enterprise incidents.
+I audited and hardened the AD-integrated DNS configuration for `Chongong.local`.
+During the audit I found a real DNS problem: the Domain Controller was using
+public DNS servers on its own LAN NIC instead of querying itself first. I fixed
+that, created the missing reverse lookup zone, enabled scavenging, verified
+internal/external resolution, and documented break/fix runbooks.
 
-**Why third:** DNS is the foundation every service in the lab depends on — AD authentication,
-replication, NPS, M365 sync, and Proxmox SSSD all require correct DNS. Fixing DNS before
-later projects avoids compounding failures.
+## What Changed
 
-## Environment Context
+| Area | Result |
+|------|--------|
+| DC DNS client settings | LAN NIC now points to `127.0.0.1` instead of public DNS |
+| Forwarders | Confirmed already configured: `8.8.8.8`, `1.1.1.1`, `8.8.4.4`, `9.9.9.9` |
+| Reverse DNS | Created `20.168.192.in-addr.arpa` and PTR for `192.168.20.11` |
+| Scavenging | Enabled server scavenging and zone aging for `Chongong.local` |
+| Split-brain behavior | Internal AD records and external public names both resolve correctly |
+| Break/fix evidence | One real DNS incident plus two documented runbooks |
 
-- DNS server: WIN-PRQD8TJG04M (192.168.20.11)
-- AD-integrated zone: `Chongong.local`
-- Secondary DNS: `WIN-DC02` — not yet built (Project 02 gap, blocks Phase 9)
-- External resolver: forwarders to 8.8.8.8 / 1.1.1.1 / 8.8.4.4 / 9.9.9.9
+## Project Phases
 
-## Phases
+Project 03 has 10 phases. Phases 1-4, 6-8, and 10 are complete. Phase 5 is
+deferred because there is no cross-lab DNS zone that needs conditional forwarding
+yet. Phase 9 is blocked until `WIN-DC02` exists.
 
-| # | Phase | Status | Key Action |
-|---|-------|--------|------------|
-| 1 | Audit Current DNS State | ✅ Complete | Documented all zones, records, forwarders, scavenging settings |
-| 2 | Fix DNS Server Addressing | ✅ Complete | Found and fixed DC NIC pointing at public DNS instead of itself |
-| 3 | Configure Forwarders | ✅ Already satisfied | Forwarders were already correctly set, confirmed in audit |
-| 4 | Reverse Lookup Zones | ✅ Complete | Created 192.168.20.0/24 reverse zone + PTR for the DC |
-| 5 | Conditional Forwarders | ⬜ Deferred (N/A) | No cross-lab domain currently needs one |
-| 6 | DNS Scavenging | ✅ Complete | Enabled scavenging + zone aging on Chongong.local |
-| 7 | Split-Brain DNS | ✅ Complete | Verified internal/external resolution separation |
-| 8 | Break/Fix Exercise | ✅ Complete | One real incident + two documented runbooks |
-| 9 | WIN-DC02 DNS Verification | ⬜ Deferred | Replica DC doesn't exist yet (Project 02 gap) |
-| 10 | Document + Push | ✅ Complete | This document |
+| Phase | Name | Status |
+|-------|------|--------|
+| Phase 1 | Audit Current DNS State | Complete |
+| Phase 2 | Fix DNS Server Addressing | Complete |
+| Phase 3 | Configure Forwarders | Complete - already satisfied |
+| Phase 4 | Reverse Lookup Zones | Complete |
+| Phase 5 | Conditional Forwarders | Deferred - not needed yet |
+| Phase 6 | DNS Scavenging | Complete |
+| Phase 7 | Split-Brain DNS | Complete |
+| Phase 8 | Break/Fix Exercise | Complete |
+| Phase 9 | `WIN-DC02` DNS Verification | Pending - blocked by `WIN-DC02` |
+| Phase 10 | Document + Push | Complete |
 
-## Phase Detail
+Screenshot checklist: [docs/p03-screenshot-plan.md](docs/p03-screenshot-plan.md)
 
-### Phase 1 — DNS Audit (2026-06-23)
+## Phase Details
 
-**Commands run:**
+### Phase 1 - Audit Current DNS State
+
+I audited the current DNS configuration before making changes.
+
+What I did:
+
+- Reviewed DNS server role configuration.
+- Listed all DNS zones.
+- Checked forwarders.
+- Checked scavenging state.
+- Checked DNS client settings on the DC NICs.
+- Found that the LAN NIC was pointing to public DNS instead of itself.
+
+Why it matters: AD depends on DNS. If a Domain Controller sends internal AD
+queries to public DNS first, authentication and service discovery can fail even
+when the DNS zone itself is correct.
+
+PowerShell used/proof:
+
 ```powershell
 Get-DnsServer
 Get-DnsServerZone
 Get-DnsServerForwarder
 Get-DnsServerScavenging
 Get-DnsClientServerAddress -AddressFamily IPv4
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
 ```
 
-**Findings:**
-- Zones present: `_msdcs.Chongong.local`, `Chongong.local` (both AD-integrated primary), default
-  `0/127/255.in-addr.arpa`, `TrustAnchors`. No 192.168.20.0/24 reverse zone existed.
-- Forwarders already correctly set: `8.8.8.8, 1.1.1.1, 8.8.4.4, 9.9.9.9` — Phase 3 satisfied
-  with no action needed.
-- Scavenging disabled (`ScavengingState: False`), zone aging off on all zones.
-- **Found a real bug:** the DC's LAN NIC (`vEthernet (External-VLAN-Trunk)`, 192.168.20.11)
-  had DNS client servers set to `8.8.8.8, 1.1.1.1` directly — see Phase 2.
+Images to insert later:
 
-### Phase 2 — Fix DNS Server Addressing (2026-06-23)
+- `screenshots/phase1-01-dns-zones-and-forwarders.png`
+- `screenshots/phase1-02-dns-client-before-fix.png`
 
-**Before:**
-```
-InterfaceAlias               Interface Address ServerAddresses
-                             Index     Family
---------------               --------- ------- ---------------
-vEthernet (External-VLAN-...         6 IPv4    {8.8.8.8, 1.1.1.1}
-```
+### Phase 2 - Fix DNS Server Addressing
 
-**Commands run:**
+I fixed the real DNS misconfiguration found in Phase 1.
+
+What I did:
+
+- Changed `vEthernet (External-VLAN-Trunk)` from public DNS servers to
+  `127.0.0.1`.
+- Verified internal AD SRV records resolved.
+- Verified external internet names still resolved through forwarders.
+
+Why it matters: a DC should use AD DNS for its own DNS client settings. Public
+DNS belongs in the DNS server forwarder list, not on the DC NIC.
+
+PowerShell used/proof:
+
 ```powershell
 Set-DnsClientServerAddress -InterfaceAlias "vEthernet (External-VLAN-Trunk)" -ServerAddresses 127.0.0.1
-```
 
-**After:**
-```
-InterfaceAlias               Interface Address ServerAddresses
-                             Index     Family
---------------               --------- ------- ---------------
-vEthernet (External-VLAN-...         6 IPv4    {127.0.0.1}
-```
-
-**Verification:**
-```powershell
+Get-DnsClientServerAddress -AddressFamily IPv4
 Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
-# → resolved correctly to win-prqd8tjg04m.chongong.local, priority 0, port 389
-
 Resolve-DnsName google.com
-# → resolved correctly, forwarders unaffected
 ```
 
-Full incident writeup in [troubleshooting/break-fix-log.md](../../troubleshooting/break-fix-log.md) Scenario A.
+Images to insert later:
 
-### Phase 3 — Forwarders (already satisfied)
+- `screenshots/phase2-01-dns-client-after-fix.png`
+- `screenshots/phase2-02-ad-srv-record-resolution.png`
 
-Confirmed in Phase 1 audit — `Get-DnsServerForwarder` showed `8.8.8.8, 1.1.1.1, 8.8.4.4, 9.9.9.9`
-already configured. No change needed.
+Break/fix evidence: [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md)
 
-### Phase 4 — Reverse Lookup Zone (2026-06-23)
+### Phase 3 - Configure Forwarders
 
-**Commands run:**
+I confirmed the forwarders were already configured correctly, so no change was
+needed.
+
+What I did:
+
+- Verified forwarders were already set to `8.8.8.8`, `1.1.1.1`, `8.8.4.4`,
+  and `9.9.9.9`.
+- Verified external DNS still resolved.
+- Did not overwrite the forwarder list.
+
+Why it matters: `Set-DnsServerForwarder` replaces the forwarder list. Since the
+list was already correct, leaving it alone was safer than rewriting it.
+
+PowerShell used/proof:
+
+```powershell
+Get-DnsServerForwarder
+Resolve-DnsName google.com
+```
+
+Images to insert later:
+
+- `screenshots/phase3-01-dns-forwarders.png`
+- `screenshots/phase3-02-external-resolution.png`
+
+### Phase 4 - Reverse Lookup Zones
+
+I created reverse DNS for the Windows subnet.
+
+What I did:
+
+- Created reverse zone `20.168.192.in-addr.arpa` for `192.168.20.0/24`.
+- Created PTR record for `192.168.20.11`.
+- Verified the PTR record by querying the DNS server directly.
+- Identified Docker Desktop `hns` as a local client-side artifact when
+  `Resolve-DnsName` returned `host.docker.internal`.
+
+Why it matters: reverse DNS helps troubleshooting, logging, monitoring, and some
+enterprise tools that expect PTR records for infrastructure hosts.
+
+PowerShell used/proof:
+
 ```powershell
 Add-DnsServerPrimaryZone -NetworkID "192.168.20.0/24" -ReplicationScope Domain -DynamicUpdate Secure
 Add-DnsServerResourceRecordPtr -ZoneName "20.168.192.in-addr.arpa" -Name "11" -PtrDomainName "WIN-PRQD8TJG04M.Chongong.local"
-```
 
-**Verification (direct zone query, bypassing client-side resolver):**
-```powershell
 Get-DnsServerZone -Name "20.168.192.in-addr.arpa"
-# → Primary, IsDsIntegrated True, IsReverseLookupZone True
-
 Get-DnsServerResourceRecord -ZoneName "20.168.192.in-addr.arpa" -RRType Ptr
-# → HostName "11", PTR, RecordData "WIN-PRQD8TJG04M.Chongong.local."
-
 nslookup -type=PTR 192.168.20.11 127.0.0.1
 nslookup -type=PTR 192.168.20.11 192.168.20.11
-# → both correctly returned: name = WIN-PRQD8TJG04M.Chongong.local
 ```
 
-**Note:** `Resolve-DnsName 192.168.20.11` initially returned `host.docker.internal` instead of the
-correct answer. Root-caused to Docker Desktop's `hns` (Host Network Service) hooking the Windows
-DNS *client* resolution path on this box — confirmed via `Get-Process -Name "*docker*"` (running)
-and `Get-NetTCPConnection -LocalPort 53` (port 53 fully owned by the real DNS Server process, no
-conflict). `nslookup` queries sent directly to the DNS server bypass this client-side artifact and
-returned the correct answer both via loopback and the real LAN IP — confirming the zone itself is
-fully correct and any real network client would resolve it properly.
+Images to insert later:
 
-### Phase 5 — Conditional Forwarders (deferred)
+- `screenshots/phase4-01-reverse-zone-created.png`
+- `screenshots/phase4-02-ptr-record-verified.png`
 
-No cross-lab domain (Proxmox, OPNsense, etc.) currently exposes its own DNS zone that
-`Chongong.local` needs to resolve. Documented as N/A rather than forced — revisit when a concrete
-need exists.
+### Phase 5 - Conditional Forwarders
 
-### Phase 6 — DNS Scavenging (2026-06-23)
+This phase is deferred because there is no confirmed cross-lab DNS zone that
+`Chongong.local` needs to forward to yet.
 
-**Before:**
+What I did:
+
+- Checked whether a conditional forwarder was currently needed.
+- Deferred the phase instead of creating an unused forwarder.
+
+Why it matters: DNS forwarding should solve a real name-resolution need. Adding
+unused conditional forwarders creates confusion and future troubleshooting noise.
+
+PowerShell proof to use when this becomes needed:
+
+```powershell
+Get-DnsServerConditionalForwarderZone
 ```
-ScavengingState    : False
-ScavengingInterval : 00:00:00
-AgingEnabled (Chongong.local) : False
-```
 
-**Commands run:**
+Image to insert later: `screenshots/phase5-01-conditional-forwarders-none-needed.png`
+
+### Phase 6 - DNS Scavenging
+
+I enabled stale-record cleanup.
+
+What I did:
+
+- Enabled DNS server scavenging.
+- Enabled aging on the `Chongong.local` zone.
+- Set refresh and no-refresh intervals.
+- Verified the next available scavenging time.
+
+Why it matters: stale DNS records create bad troubleshooting data. Scavenging
+keeps DNS cleaner as clients and VMs change over time.
+
+PowerShell used/proof:
+
 ```powershell
 Set-DnsServerScavenging -ScavengingState $true -ScavengingInterval 7.00:00:00 -ComputerName WIN-PRQD8TJG04M
 Set-DnsServerZoneAging -Name "Chongong.local" -Aging $true -RefreshInterval 4.00:00:00 -NoRefreshInterval 4.00:00:00
+
+Get-DnsServerScavenging
+Get-DnsServerZoneAging -Name "Chongong.local"
 ```
 
-**After:**
-```
-ScavengingState    : True
-ScavengingInterval : 7.00:00:00
-AgingEnabled (Chongong.local) : True
-AvailForScavengeTime : 6/30/2026 5:00:00 PM
-```
+Images to insert later:
 
-### Phase 7 — Split-Brain DNS (2026-06-23)
+- `screenshots/phase6-01-scavenging-enabled.png`
+- `screenshots/phase6-02-zone-aging-enabled.png`
 
-**Verification:**
+### Phase 7 - Split-Brain DNS
+
+I verified internal and external name resolution behaved correctly.
+
+What I did:
+
+- Verified internal host records resolve from AD DNS.
+- Verified internal SRV records resolve from AD DNS.
+- Verified external names resolve through forwarders.
+
+Why it matters: internal AD names must stay private, while normal internet names
+still need to resolve for updates, Microsoft 365, and general network use.
+
+PowerShell used/proof:
+
 ```powershell
-Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local      # → resolves fully (internal, private)
-Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV  # → resolves fully (internal, private)
-Resolve-DnsName google.com                           # → resolves correctly (external, via forwarders)
+Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
+Resolve-DnsName google.com
 ```
 
-Confirms internal AD names resolve completely and privately while external names resolve via
-forwarders — no overlap, which is the definition of split-brain DNS. (A side test querying
-`Chongong.local` against `8.8.8.8` returned an unrelated local-network answer — this is Windows
-intercepting `.local`-suffixed queries for mDNS/Bonjour resolution rather than sending them out to
-the specified server. Known quirk of using `.local` as an AD suffix; not a leak, out of scope to
-change since the domain is already established.)
+Images to insert later:
 
-### Phase 8 — Break/Fix Exercise (2026-06-23)
+- `screenshots/phase7-01-internal-ad-resolution.png`
+- `screenshots/phase7-02-external-forwarder-resolution.png`
 
-One real incident (Scenario A) plus two verified-but-not-staged runbooks (Scenarios B and C —
-deliberately not triggered live to avoid disrupting the production household DC/network). Full
-detail in [troubleshooting/break-fix-log.md](../../troubleshooting/break-fix-log.md).
+### Phase 8 - Break/Fix Exercise
 
-### Phase 9 — WIN-DC02 DNS Verification (deferred)
+I documented DNS troubleshooting using one real incident and two safe runbooks.
 
-Blocked on Project 02's replica DC build. Revisit once `WIN-DC02` is promoted.
+What I did:
 
----
+- Used the real DC NIC DNS issue as Scenario A.
+- Documented the missing `_msdcs` SRV records runbook.
+- Documented the broken/missing forwarder runbook.
+- Avoided intentionally breaking the live household DNS service just to create
+  screenshots.
 
-## ✅ Project Complete (Phases 1–4, 6–8, 10) — 2026-06-23
+Why it matters: this turns a real DNS outage pattern into portfolio evidence and
+future troubleshooting procedure without creating unnecessary downtime.
 
-### What I Built
-- Audited the full DNS environment on the live production DC (zones, forwarders, scavenging, NIC addressing)
-- Found and fixed a real DNS misconfiguration: the DC's own NIC was querying public DNS instead of itself, breaking internal SRV lookups
-- Built the missing 192.168.20.0/24 reverse lookup zone and PTR record
-- Enabled DNS scavenging and zone aging (stale record cleanup)
-- Verified split-brain DNS behavior (internal vs. external resolution separation)
-- Diagnosed and ruled out a false-positive caused by Docker Desktop's `hns` service hooking local DNS client resolution
-- Documented two additional incident-response runbooks (missing SRV records, broken forwarder) without needing to disrupt the live network to prove them
+PowerShell used/proof:
 
-### Key Evidence
-
-| What | Evidence |
-|------|----------|
-| DC NIC misconfiguration found and fixed | Phase 2 detail above — before/after `Get-DnsClientServerAddress` output |
-| Reverse zone + PTR created and verified authoritative | Phase 4 detail above — `Get-DnsServerResourceRecord` + dual `nslookup` confirmation |
-| Scavenging and zone aging enabled | Phase 6 detail above — before/after `Get-DnsServerScavenging`/`Get-DnsServerZoneAging` |
-| Split-brain DNS confirmed | Phase 7 detail above |
-| Real incident response | [break-fix-log.md](../../troubleshooting/break-fix-log.md) |
-
-### Verification Summary
-```
-_ldap._tcp.Chongong.local SRV  → win-prqd8tjg04m.chongong.local:389  (was failing, now resolves)
-192.168.20.11 PTR              → WIN-PRQD8TJG04M.Chongong.local      (zone created, confirmed via nslookup)
-ScavengingState                → True (was False)
-AgingEnabled (Chongong.local)  → True (was False)
-google.com                     → resolves correctly throughout (forwarders never broken)
+```powershell
+Get-DnsClientServerAddress -AddressFamily IPv4
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
+Get-DnsServerForwarder
+Resolve-DnsName google.com
 ```
 
-### Problems Encountered and Fixed
-| Problem | Root Cause | Fix |
-|---------|-----------|-----|
-| DC couldn't resolve its own internal SRV records | NIC DNS pointed at 8.8.8.8/1.1.1.1 instead of itself | `Set-DnsClientServerAddress` → 127.0.0.1 |
-| `Resolve-DnsName` returned wrong PTR answer (host.docker.internal) after creating reverse zone | Docker Desktop's `hns` service intercepts DNS client resolution locally on this box | Confirmed via `nslookup` direct-to-server queries — zone was correct all along, client-side artifact only |
+Images to insert later:
 
-### STAR Result
+- `screenshots/phase8-01-real-dns-incident-fixed.png`
+- `screenshots/phase8-02-break-fix-log.png`
 
-**Situation:** DNS was the single AD-integrated server with no documented forwarder config,
-unknown scavenging state, unverified reverse zones, and no validated secondary DNS on WIN-DC02.
+Break/fix log: [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md)
 
-**Task:** Audit, harden, and fully document DNS. Add break/fix exercises to build real
-troubleshooting skill — DNS failures are the most common cause of AD and network incidents.
+### Phase 9 - `WIN-DC02` DNS Verification
 
-**Action:** Audited the live DC's DNS configuration end-to-end; found and fixed a genuine
-misconfiguration (DC NIC bypassing its own DNS service); built the missing reverse lookup zone;
-enabled scavenging/aging; verified split-brain behavior; diagnosed a false-positive caused by
-third-party software (Docker Desktop) interfering with local DNS client resolution; documented
-two additional incident runbooks without needing to risk live network disruption.
+This phase is pending because `WIN-DC02` has not been built or promoted yet.
 
-**Result:** The DC now correctly resolves its own internal AD records (a real bug fixed, not a
-staged one), has a complete reverse-lookup zone for its subnet, automatically cleans up stale
-DNS records going forward, and has documented, tested runbooks for the two most common DNS
-failure modes in this environment. Project 02's replica DC (WIN-DC02) remains the only blocker
-for full secondary-DNS verification (Phase 9).
+What is needed before I can do it:
 
-### Links
-- [Break/Fix log](../../troubleshooting/break-fix-log.md)
+- `WIN-DC02` VM created.
+- `WIN-DC02` joined to `Chongong.local`.
+- `WIN-DC02` promoted as an additional DC with DNS.
+- Replication healthy between `WIN-PRQD8TJG04M` and `WIN-DC02`.
+
+Why it matters: secondary DNS verification cannot be real until the second DC
+exists.
+
+Future PowerShell proof:
+
+```powershell
+Get-ADDomainController -Filter * |
+  Select-Object HostName, IPv4Address, IsGlobalCatalog
+
+Get-DnsServerZone -ComputerName WIN-DC02
+repadmin /replsummary
+```
+
+Image to insert later: `screenshots/phase9-01-win-dc02-dns-verification.png`
+
+### Phase 10 - Document + Push
+
+I saved the Project 03 evidence and updated the repo.
+
+What I did:
+
+- Updated this Project 03 README.
+- Added the break/fix log.
+- Updated project status references.
+- Added screenshot planning for later image insertion.
+
+Why it matters: the DNS work is repeatable and reviewable, not just a one-time
+live change.
+
+Proof commands:
+
+```bash
+git status --short
+git log --oneline -5
+```
+
+Images to insert later:
+
+- `screenshots/phase10-01-project-03-github-status.png`
+- `screenshots/phase10-02-project-03-files.png`
+
+## Verified State
+
+| Check | Result |
+|-------|--------|
+| Internal AD SRV lookup | `_ldap._tcp.Chongong.local` resolves to `win-prqd8tjg04m.chongong.local:389` |
+| DC DNS client | LAN NIC uses `127.0.0.1` |
+| Forwarders | Public forwarders still resolve external names |
+| Reverse DNS | `192.168.20.11` resolves to `WIN-PRQD8TJG04M.Chongong.local` through direct DNS queries |
+| Scavenging | Enabled |
+| Zone aging | Enabled for `Chongong.local` |
+| Secondary DNS | Pending `WIN-DC02` |
+
+## Technical Links
+
+| Detail | Link |
+|--------|------|
+| Break/fix log | [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md) |
+| Screenshot plan | [docs/p03-screenshot-plan.md](docs/p03-screenshot-plan.md) |
+
+## Portfolio Summary
+
+**Situation:** DNS had not been fully documented, reverse DNS was missing for the
+Windows subnet, scavenging was disabled, and the DC itself was pointing at
+public DNS instead of AD DNS.
+
+**Task:** Audit and harden DNS without breaking the live household domain.
+
+**Action:** I audited zones, forwarders, scavenging, and NIC settings; fixed the
+DC DNS client path; created the reverse zone and PTR record; enabled scavenging;
+verified internal and external resolution; and documented DNS break/fix runbooks.
+
+**Result:** The domain now resolves internal AD records correctly, external
+forwarding still works, reverse DNS exists for the DC, stale record cleanup is
+enabled, and Phase 9 is clearly blocked only by the missing `WIN-DC02` replica
+DC.

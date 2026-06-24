@@ -68,7 +68,7 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 |---|---------|-------|--------|
 | [01](projects/project-01-server-baseline-hardening/) | **Server Baseline, Hardening, and Admin Model** | Role inventory, tiered admin, lockout policy, firewall baseline | ✅ Complete |
 | [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | Managed OUs, delegated admin, AGDLP groups, naming standards | 🔄 AD complete; WIN-DC02 pending |
-| [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, split DNS, forwarders | 🔄 Mostly complete — 2026-06-23 (Phase 5 N/A, Phase 9 blocked on P02) |
+| [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, split DNS, forwarders | 🔄 Mostly complete — 2026-06-23 (Phase 5 N/A, Phase 9 blocked by WIN-DC02) |
 | [04](projects/project-04-dhcp-ipam/) | **DHCP, IPAM, and Network Integration** | Scopes, reservations, VLAN-aware design | ⬜ Planned |
 | [05](projects/project-05-gpo-security-baselines/) | **Group Policy Security Baselines** | Firewall GPO, audit policy, DefaultInboundAction | ⬜ Planned |
 | [06](projects/project-06-file-server-access-governance/) | **File Server, NTFS, and Access Governance** | Dept shares, AGDLP, auditing | ⬜ Planned |

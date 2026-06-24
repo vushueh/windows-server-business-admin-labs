@@ -4,6 +4,40 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-23 (Codex — Project 03 consistency and screenshot plans)
+### What I did
+- Rewrote Project 03 README into the same phase-section style used for Projects 01 and 02.
+- Fixed Project 03 break/fix links so they point to `troubleshooting/break-fix-log.md`.
+- Added a Project 03 screenshot plan with two screenshots for completed phases and one for deferred/pending phases.
+- Updated the Project 02 screenshot plan to explicitly list screenshot counts and add missing second screenshots where useful.
+- Added `screenshots/.gitkeep` folders for Projects 02 and 03.
+- Updated `projects/README.md`, `AGENTS.md`, `docs/execution-roadmap.md`, `CLAUDE-REVIEW.md`, and `skills/winserver-projects.md` so Project 03 status is consistent.
+
+### Files created/modified
+- `projects/project-03-dns-engineering/README.md`
+- `projects/project-03-dns-engineering/docs/p03-screenshot-plan.md`
+- `projects/project-03-dns-engineering/screenshots/.gitkeep`
+- `projects/project-02-ad-architecture/docs/p02-screenshot-plan.md`
+- `projects/project-02-ad-architecture/screenshots/.gitkeep`
+- `projects/README.md`
+- `AGENTS.md`
+- `docs/execution-roadmap.md`
+- `CLAUDE-REVIEW.md`
+- `skills/winserver-projects.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- Project 03 is mostly complete on the current PDC; Phase 5 is deferred until a real conditional-forwarder need exists, and Phase 9 waits for `WIN-DC02`.
+- Completed phases should have two screenshot targets when useful; deferred or pending phases should have one screenshot proving why they are deferred or blocked.
+
+### Cross-family impacts
+- P03 DNS is now documented as the current name-resolution base for Project 04 DHCP/IPAM, OPNsense, NetOps monitoring, and later SOC/M365 work.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-06-23 (Codex — screenshot upload skill clarification)
 ### What I did
 - Updated the Windows Server evidence documentation skill with an explicit screenshot upload workflow.

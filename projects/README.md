@@ -44,7 +44,7 @@ without touching the other families.
 |---------|-------|--------|
 | [project-01-server-baseline-hardening](project-01-server-baseline-hardening/) | Role inventory, secure admin access, firewall posture, privileged account separation | ✅ Complete |
 | [project-02-ad-architecture](project-02-ad-architecture/) | Managed OU design, delegated admin, tiered accounts, AGDLP groups, service accounts, least privilege | 🔄 AD complete; WIN-DC02 pending |
-| [project-03-dns-engineering](project-03-dns-engineering/) | AD-integrated DNS, split DNS, forwarders, conditional forwarders, broken DNS troubleshooting | ⬜ Planned |
+| [project-03-dns-engineering](project-03-dns-engineering/) | AD-integrated DNS, split DNS, forwarders, conditional forwarders, broken DNS troubleshooting | 🔄 Mostly complete — Phase 5 N/A, Phase 9 blocked by WIN-DC02 |
 | [project-04-dhcp-ipam](project-04-dhcp-ipam/) | DHCP scopes, reservations, options, relay, VLAN-aware design, documentation | ⬜ Planned |
 | [project-05-gpo-security-baselines](project-05-gpo-security-baselines/) | Password/lockout policy, Windows Firewall GPO, audit policy, logon restrictions | ⬜ Planned |
 | [project-06-file-server-access-governance](project-06-file-server-access-governance/) | Department shares, AGDLP groups, auditing, access reviews, ransomware-resistant structure | ⬜ Planned |

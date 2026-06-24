@@ -147,13 +147,19 @@ Windows Server 2022 AD DS functional level.
 **Requires:** P02 managed AD architecture complete. `WIN-DC02` replication checks wait until that VM exists.
 **Slash command:** `/winserver-p03`
 
-### Phase 1 — Audit
+### Current State
+
+Current-PDC DNS work is mostly complete. Phase 5 is deferred until a real
+conditional-forwarder need exists. Phase 9 waits for `WIN-DC02`.
+
+### Phase 1 — Audit Current DNS State
 
 ```powershell
 Get-DnsServer
 Get-DnsServerZone
 Get-DnsServerForwarder
 Get-DnsServerScavenging
+Get-DnsClientServerAddress -AddressFamily IPv4
 ```
 
 ### Phase 2 — Fix DNS Server Addressing
@@ -165,15 +171,16 @@ WIN-DC02 NIC later: Primary DNS = WIN-PRQD8TJG04M IP | Secondary = 127.0.0.1
 NEVER set DC NIC DNS to 8.8.8.8 — breaks AD authentication
 ```
 
+Actual P03 result: `vEthernet (External-VLAN-Trunk)` now uses `127.0.0.1`.
+
 ### Phase 3 — Forwarders
 
 ```powershell
 # WARNING: Set-DnsServerForwarder REPLACES the entire forwarder list — it does not append.
 # Audit existing forwarders first:
 Get-DnsServerForwarder
-# Then set (replaces all):
-Set-DnsServerForwarder -IPAddress "8.8.8.8","1.1.1.1"
-# VERIFY: Resolve-DnsName google.com -Server 192.168.20.11 → resolves
+# Actual P03 result: forwarders already existed and were left unchanged.
+Resolve-DnsName google.com
 ```
 
 ### Phase 4 — Reverse Lookup Zones
@@ -184,7 +191,15 @@ Add-DnsServerResourceRecordPtr -ZoneName "20.168.192.in-addr.arpa" `
   -Name "11" -PtrDomainName "WIN-PRQD8TJG04M.Chongong.local"
 ```
 
-### Phase 5 — Scavenging
+### Phase 5 — Conditional Forwarders
+
+Deferred until a concrete cross-lab DNS zone exists.
+
+```powershell
+Get-DnsServerConditionalForwarderZone
+```
+
+### Phase 6 — DNS Scavenging
 
 ```powershell
 Set-DnsServerScavenging -ScavengingState $true -ScavengingInterval 7.00:00:00
@@ -192,7 +207,15 @@ Set-DnsServerZoneAging -Name "Chongong.local" -Aging $true `
   -RefreshInterval 4.00:00:00 -NoRefreshInterval 4.00:00:00
 ```
 
-### Phase 6 — Break/Fix
+### Phase 7 — Split-Brain DNS
+
+```powershell
+Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
+Resolve-DnsName google.com
+```
+
+### Phase 8 — Break/Fix
 
 | Scenario | Symptom | Fix |
 |----------|---------|-----|
@@ -200,11 +223,30 @@ Set-DnsServerZoneAging -Name "Chongong.local" -Aging $true `
 | _msdcs SRV missing | Replication fails | Restart Netlogon: `net stop netlogon && net start netlogon` |
 | Forwarder missing | Internet resolution fails | `Set-DnsServerForwarder -IPAddress 8.8.8.8` |
 
+### Phase 9 — WIN-DC02 DNS Verification
+
+Pending until `WIN-DC02` exists.
+
+```powershell
+Get-ADDomainController -Filter *
+Get-DnsServerZone -ComputerName WIN-DC02
+repadmin /replsummary
+```
+
+### Phase 10 — Document + Push
+
+Update:
+- Project README
+- project screenshot plan
+- troubleshooting break/fix log
+- root/project status rows
+- `CODEX-LOG.md`
+
 ---
 
 ## Project 04 — DHCP and IPAM
 
-**Requires:** P03 complete
+**Requires:** P03 current-PDC DNS work complete; repeat secondary DNS checks after `WIN-DC02` exists.
 **Slash command:** `/winserver-p04`
 
 ### Phase 1 — Audit

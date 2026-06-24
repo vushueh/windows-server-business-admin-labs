@@ -13,13 +13,18 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ## PROJECT 03 EXECUTION LOG — 2026-06-23 (Claude, live session)
 
-### 🟡 IN PROGRESS — Item P03-01: Project 03 (AD DNS Engineering) execution against live DC
+### 🟢 RESOLVED — Item P03-01: Project 03 (AD DNS Engineering) execution against live DC
 
 **Context:** Leonel asked Claude to execute all 10 phases of Project 03 directly against
 the live DC (WIN-PRQD8TJG04M, 192.168.20.11) via SSH (administrator credential, OpenSSH
 Server on the DC, plink.exe as client since local WinRM client requires elevation Claude
 doesn't have). Note: Project 02 prerequisite is not fully closed (WIN-DC02 replica still
 pending) — proceeding against the single DC anyway per Leonel's instruction.
+
+**Resolution (2026-06-23):** Project 03 current-PDC work is mostly complete and documented.
+Phase 5 is deferred because no conditional forwarder is currently needed. Phase 9 remains
+blocked until `WIN-DC02` exists. Documentation was corrected to include proper phase
+sections, screenshot plans, and valid internal links.
 
 **Phase 1 — Audit: DONE (read-only)**
 - Zones: `_msdcs.Chongong.local`, `Chongong.local` (both AD-integrated primary), plus
@@ -38,16 +43,10 @@ pending) — proceeding against the single DC anyway per Leonel's instruction.
 - vSwitch-WAN interface (192.168.10.194) also has `1.1.1.1` on it but is out of scope for
   this project (different subnet/VLAN) — left untouched.
 
-**Phase 2 — Fix NIC DNS addressing: BLOCKED, not yet applied**
-- Leonel approved the fix (`Set-DnsClientServerAddress -InterfaceAlias "vEthernet
-  (External-VLAN-Trunk)" -ServerAddresses 127.0.0.1`) explicitly via AskUserQuestion.
-- Claude's own sandbox (Claude Code "auto mode classifier") is refusing to execute this —
-  flags it as a live-infra write + credential-in-command-line each time, even after
-  Leonel set `defaultMode: bypassPermissions` in `~/.claude/settings.json` (the change may
-  need a full app restart to take effect — untested as of this log entry).
-- This is informational only — execution of any live-DC change still requires Leonel's
-  real-time, in-session approval at the time it runs. Do not treat this log entry as
-  standing authorization to execute the fix in a future session.
+**Phase 2 — Fix NIC DNS addressing: DONE**
+- Fixed `vEthernet (External-VLAN-Trunk)` DNS client settings to use `127.0.0.1`.
+- Verified `_ldap._tcp.Chongong.local` resolves correctly.
+- Verified public resolution still works through forwarders.
 
 **Phases 3, 5, 7, 9 — no action needed / deferred**
 - Phase 3 (forwarders): already correct, nothing to do.
@@ -57,14 +56,11 @@ pending) — proceeding against the single DC anyway per Leonel's instruction.
   forwarders handle public resolution. Document as satisfied, no config change needed.
 - Phase 9 (WIN-DC02 DNS verification): deferred — replica DC doesn't exist yet (P02 gap).
 
-**Phases 4, 6, 8, 10 — not started**
-- Phase 4: create reverse lookup zone for 192.168.20.0/24 + PTR for WIN-PRQD8TJG04M.
-- Phase 6: enable scavenging (`Set-DnsServerScavenging`) + zone aging on `Chongong.local`.
-- Phase 8: break/fix exercise — note Scenario A from the README effectively already
-  happened live (DC NIC pointing at public DNS) so that scenario's troubleshooting write-up
-  can reuse this real incident instead of staging a synthetic one.
-- Phase 10: document everything per `winserver-evidence-documentation` skill, write STAR
-  summary, update main README project index row to reflect actual status.
+**Phases 4, 6, 8, 10 — DONE**
+- Phase 4: created reverse lookup zone for `192.168.20.0/24` and PTR for `WIN-PRQD8TJG04M`.
+- Phase 6: enabled scavenging and zone aging on `Chongong.local`.
+- Phase 8: documented one real DNS incident and two safe runbooks.
+- Phase 10: documented Project 03, status, break/fix evidence, and screenshot plan.
 
 **Credential note:** Administrator password was shared in plaintext in the chat session to
 enable SSH access. Leonel was advised to rotate it once this project's live work is done.

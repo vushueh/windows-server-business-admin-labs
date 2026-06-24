@@ -96,7 +96,8 @@ Never: Codex does not execute live server commands.
 |---------|--------|-------|
 | 01 — Server Baseline + Hardening | ✅ Complete | Password/lockout hardened, tiered admin model created, RDS/IIS/NPS/firewall risk documented |
 | 02 — AD Architecture | 🔄 AD complete; WIN-DC02 pending | Managed OUs, AGDLP groups, disabled staged accounts, AD Recycle Bin, and helpdesk delegation are live |
-| 03–13 | ⬜ Planned | Follow the cross-family execution roadmap |
+| 03 — DNS Engineering | 🔄 Mostly complete; WIN-DC02 DNS check pending | DC DNS client fixed, reverse zone/PTR created, scavenging enabled, split-brain DNS verified |
+| 04–13 | ⬜ Planned | Follow the cross-family execution roadmap |
 
 ## Cross-Family Integration Awareness
 
