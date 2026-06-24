@@ -105,10 +105,11 @@ Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
 Resolve-DnsName google.com
 ```
 
-Images to insert later:
+![DNS client after fix](screenshots/phase2-01-dns-client-after-fix.JPG)
+*LAN NIC DNS client now pointing at `127.0.0.1` instead of public resolvers.*
 
-- `screenshots/phase2-01-dns-client-after-fix.png`
-- `screenshots/phase2-02-ad-srv-record-resolution.png`
+![AD SRV record resolution](screenshots/phase2-02-ad-srv-record-resolution.JPG)
+*`_ldap._tcp.Chongong.local` resolving correctly after the fix.*
 
 Break/fix evidence: [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md)
 
@@ -134,10 +135,11 @@ Get-DnsServerForwarder
 Resolve-DnsName google.com
 ```
 
-Images to insert later:
+![DNS forwarders](screenshots/phase3-01-dns-forwarders.JPG)
+*Configured forwarders: `8.8.8.8`, `1.1.1.1`, `8.8.4.4`, `9.9.9.9`.*
 
-- `screenshots/phase3-01-dns-forwarders.png`
-- `screenshots/phase3-02-external-resolution.png`
+![External resolution](screenshots/phase3-02-external-resolution.JPG)
+*External name resolution confirmed working through the forwarders.*
 
 ### Phase 4 - Reverse Lookup Zones
 
@@ -166,10 +168,11 @@ nslookup -type=PTR 192.168.20.11 127.0.0.1
 nslookup -type=PTR 192.168.20.11 192.168.20.11
 ```
 
-Images to insert later:
+![Reverse zone created](screenshots/phase4-01-reverse-zone-created.JPG)
+*`20.168.192.in-addr.arpa` reverse lookup zone created.*
 
-- `screenshots/phase4-01-reverse-zone-created.png`
-- `screenshots/phase4-02-ptr-record-verified.png`
+![PTR record verified](screenshots/phase4-02-ptr-record-verified.JPG)
+*PTR record for `192.168.20.11` confirmed pointing to `WIN-PRQD8TJG04M.Chongong.local`.*
 
 ### Phase 5 - Conditional Forwarders
 
@@ -190,7 +193,8 @@ PowerShell proof to use when this becomes needed:
 Get-DnsServerConditionalForwarderZone
 ```
 
-Image to insert later: `screenshots/phase5-01-conditional-forwarders-none-needed.png`
+![No conditional forwarders needed](screenshots/phase5-01-conditional-forwarders-none-needed.JPG)
+*Conditional Forwarders list, empty — confirms the phase was intentionally deferred, not forgotten.*
 
 ### Phase 6 - DNS Scavenging
 
@@ -242,10 +246,11 @@ Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
 Resolve-DnsName google.com
 ```
 
-Images to insert later:
+![Internal AD resolution](screenshots/phase7-01-internal-ad-resolution.JPG)
+*Internal AD names (host + SRV) resolving correctly and privately.*
 
-- `screenshots/phase7-01-internal-ad-resolution.png`
-- `screenshots/phase7-02-external-forwarder-resolution.png`
+![External forwarder resolution](screenshots/phase7-02-external-forwarder-resolution.JPG)
+*External public names still resolving correctly via forwarders.*
 
 ### Phase 8 - Break/Fix Exercise
 
@@ -271,10 +276,10 @@ Get-DnsServerForwarder
 Resolve-DnsName google.com
 ```
 
-Images to insert later:
+![Real DNS incident fixed](screenshots/phase8-01-real-dns-incident-fixed.JPG)
+*NIC DNS fix and SRV resolution confirming the real Phase 2 incident is resolved.*
 
-- `screenshots/phase8-01-real-dns-incident-fixed.png`
-- `screenshots/phase8-02-break-fix-log.png`
+Image not yet captured for this phase: `screenshots/phase8-02-break-fix-log.png`
 
 Break/fix log: [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md)
 
