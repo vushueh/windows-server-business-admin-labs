@@ -25,7 +25,7 @@ rest of the Windows family can be trusted.
 | 1 | P01 Server Baseline | Server role inventory, admin model, lockout policy, firewall/RDP posture, and break/fix evidence are documented. | Homelab-management status reflects the DC as a critical identity platform. |
 | 2 | P02 AD Architecture | Managed OU structure, tiered admin/service accounts, AGDLP groups, delegated admin, and replica-DC decision are documented. | NetOps/SOC docs know which AD groups will later control access. |
 | 3 | P03 DNS Engineering | DC DNS, forwarders, reverse zones, stale-record handling, and DNS break/fix tests are documented. | NetOps tools can resolve key Windows, firewall, Proxmox, and SOC hosts by name. |
-| 4 | P04 DHCP/IPAM | Scope design, reservations, options, relay planning, and IPAM records are documented. | OPNsense/NetOps topology uses the same addressing plan. |
+| 4 | P04 DHCP/IPAM Integration | Windows DHCP role state, AD DNS client behavior, Hyper-V VM addressing, and Route10/OPNsense authority handoff are documented. | Route10 owns the full addressing plan; OPNsense/NetOps topology and Windows clients agree with it. |
 | 5 | P05 GPO Baselines | Audit, firewall, lockout/password, workstation restrictions, and Tier 0 logon restrictions are staged and verified. | SOC/Wazuh has the audit events needed for Windows case studies. |
 
 ## Rotation Plan
@@ -35,7 +35,7 @@ Use this as the working rhythm after the starting base.
 | Rotation | Windows focus | Other family to touch | Why |
 |----------|---------------|-----------------------|-----|
 | A | P01-P02 identity foundation | Network Operations / SOC docs | Define who can administer what before wiring more tools into AD. |
-| B | P03-P04 DNS, DHCP, IPAM | OPNsense + NetOps monitoring | Routing, DHCP, DNS, and monitoring must agree on hostnames and subnets. |
+| B | P03-P04 DNS and DHCP/IPAM integration | Route10 + OPNsense + NetOps monitoring | Routing, DHCP authority, DNS, and monitoring must agree on hostnames and subnets. |
 | C | P05-P07 GPO, file access, client lifecycle | SOC / Wazuh | A domain client and audit policy create realistic Windows security events. |
 | D | P08-P09 Hyper-V and PowerShell | Homelab automation / backup workflows | VM lifecycle, backup, and admin scripts become repeatable operations. |
 | E | P10 security monitoring | SOC family | WEF, Wazuh, and incident playbooks become portfolio-ready SOC evidence. |
@@ -64,10 +64,10 @@ Start here:
 1. Use the completed P02 AD structure as the identity base for NetOps/SOC alignment.
 2. Keep `WIN-DC02` as the remaining replica-DC dependency when install media and VM details are ready.
 3. Use the completed Project 03 current-PDC DNS work as the name-resolution base; extend DNS checks to `WIN-DC02` after it exists.
-4. Run Project 04 DHCP/IPAM.
+4. Run Project 04 DHCP/IPAM Integration after the Route10 IP addressing authority repo is in place.
 5. Run Project 05 GPO Security Baselines.
 6. Build Project 07 `WIN-WS01` only after P05 and the required file/share pieces are ready.
 
-This order gives the lab a stable identity, name-resolution, addressing, and
-policy base before the SOC, ServiceNow, FreePBX, and case-study work depends on
-it.
+This order gives the lab a stable identity, name-resolution, addressing
+handoff, and policy base before the SOC, ServiceNow, FreePBX, and case-study
+work depends on it.

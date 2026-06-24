@@ -4,6 +4,37 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-06-24 (Codex — Route10 repo handoff and Project 04 scope correction)
+### What I did
+- Created and pushed the new private Route10 project family repo: `homelab-route10-network-core`.
+- Rewrote Windows Project 04 so it no longer assumes Windows Server should own homelab DHCP.
+- Changed Project 04 into DHCP/IPAM integration and Windows client validation against the real Route10/OPNsense network design.
+- Preserved Windows DHCP as a possible future design-only option for isolated Hyper-V lab scopes.
+- Updated the Windows README, project index, roadmap, and skills so they point to Route10 as the full IP addressing authority source.
+
+### Files created/modified
+- `README.md`
+- `projects/README.md`
+- `projects/project-04-dhcp-ipam/README.md`
+- `docs/execution-roadmap.md`
+- `skills/windows-server-business-admin.md`
+- `skills/winserver-projects.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+- Route10 owns the big homelab IP addressing and DHCP authority topic.
+- Windows Project 04 validates that AD DNS, domain clients, and Hyper-V VMs work with the Route10/OPNsense design.
+- CML DHCP migration to Route10 is possible but remains a future Route10 project, not a current change.
+
+### Cross-family impacts
+- Route10 is now a first-class project family for network core, IPAM, VLAN, routing, VPN, firewall, QoS, and future CML integration work.
+- Windows, OPNsense, PA-220, CML, NetOps, SOC, FreePBX, and future case studies can reference Route10 as the network-core authority model.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-06-23 (Codex — Server World style phase evidence rule)
 ### What I did
 - Reviewed the Server World Windows Server 2022 Active Directory example page Leonel referenced.

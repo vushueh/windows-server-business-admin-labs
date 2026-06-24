@@ -244,41 +244,73 @@ Update:
 
 ---
 
-## Project 04 — DHCP and IPAM
+## Project 04 — DHCP/IPAM Integration and Windows Client Validation
 
 **Requires:** P03 current-PDC DNS work complete; repeat secondary DNS checks after `WIN-DC02` exists.
 **Slash command:** `/winserver-p04`
 
-### Phase 1 — Audit
+Route10 is the main homelab router and long-term DHCP/IPAM authority. OPNsense
+manages selected lab VLANs. P04 must validate that Windows Server, AD DNS, and
+Hyper-V clients work with that real network design. Do not redesign the full
+homelab DHCP model inside the Windows repo.
+
+### Phase 1 — Discover Current DHCP Roles
 
 ```powershell
+Get-WindowsFeature DHCP
+Get-DhcpServerInDC
 Get-DhcpServerv4Scope
-Get-DhcpServerv4Lease -ScopeId 192.168.20.0
-Get-DhcpServerv4Reservation -ScopeId 192.168.20.0
-Get-DhcpServerv4ScopeOptionValue -ScopeId 192.168.20.0
+Get-DhcpServerv4Lease -ScopeId <scope-id>
+Get-DhcpServerv4Reservation -ScopeId <scope-id>
+Get-DhcpServerv4ScopeOptionValue -ScopeId <scope-id>
 ```
 
-### Phase 2 — Redesign Scope
+### Phase 2 — Map Windows Dependencies To Route10/OPNsense IPAM
 
-IP scheme: .1-10 Static infra | .11-30 Static servers | .31-50 Reserved VMs | .100-200 DHCP clients
-
-### Phase 3 — Reservations
+Document each Windows server/client subnet, gateway, DHCP owner, DNS option, and
+whether it is Route10-owned or OPNsense-owned.
 
 ```powershell
-Add-DhcpServerv4Reservation -ScopeId 192.168.20.0 -IPAddress 192.168.20.11 `
-  -ClientId "<MAC-of-WIN-PRQD8TJG04M>" -Description "PDC WIN-PRQD8TJG04M"
+Get-NetIPAddress -AddressFamily IPv4
+Get-DnsClientServerAddress -AddressFamily IPv4
+Get-ADComputer -Filter * -Properties IPv4Address,OperatingSystem |
+  Select-Object Name, IPv4Address, OperatingSystem, DistinguishedName
 ```
 
-### Phase 4 — DHCP Failover
+### Phase 3 — Validate Domain Client DHCP/DNS Behavior
 
 ```powershell
-# HotStandby: WIN-PRQD8TJG04M = active, WIN-DC02 = standby
-# -ServerRole Active is the default in HotStandby mode — omit to keep command cleaner
-Add-DhcpServerv4Failover -Name "LAN-Failover" -PartnerServer WIN-DC02 `
-  -ScopeId 192.168.20.0 -Mode HotStandby `
-  -ReservePercent 5 -AutoStateTransition $true -StateSwitchInterval 00:01:00
-# VERIFY: Get-DhcpServerv4Failover
+ipconfig /all
+Resolve-DnsName Chongong.local
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
+Resolve-DnsName google.com
+nltest /dsgetdc:Chongong.local
 ```
+
+### Phase 4 — Hyper-V VM Addressing Review
+
+```powershell
+Get-VM | Select-Object Name, State
+Get-VMNetworkAdapter -VMName * |
+  Select-Object VMName, SwitchName, MacAddress, IPAddresses
+Get-VMSwitch | Select-Object Name, SwitchType, NetAdapterInterfaceDescription
+```
+
+### Phase 5 — Optional Windows DHCP Design
+
+Windows DHCP can be documented as a future option for an isolated Hyper-V lab
+scope, but do not implement it without a separate approval. It should not
+compete with Route10 for main homelab DHCP.
+
+### Phase 6 — NetOps/IPAM Handoff
+
+Export or document the Windows-side inventory for Route10, NetBox, LibreNMS,
+ntopng, and future case studies.
+
+### Phase 7 — Document + Push
+
+Project README must link to `homelab-route10-network-core` for the full IP
+addressing authority model.
 
 ---
 

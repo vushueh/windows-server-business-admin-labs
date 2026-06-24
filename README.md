@@ -22,7 +22,7 @@ central identity and administration layer.
 | Area | What I am proving |
 |------|-------------------|
 | Identity | I can design and operate Active Directory, admin tiers, groups, and delegated access. |
-| Network services | I can run DNS, DHCP, IPAM, and RADIUS in a way that supports real network operations. |
+| Network services | I can run AD DNS and RADIUS, and validate DHCP/IPAM integration with the real Route10/OPNsense network design. |
 | Security | I can apply GPO baselines, collect Windows logs, and support SOC-style investigations. |
 | Operations | I can document, verify, back up, restore, and troubleshoot Windows infrastructure. |
 | Integration | I can make Windows Server support the rest of the homelab instead of standing alone. |
@@ -58,7 +58,7 @@ ServiceNow/Microsoft 365, and case-study work as each Windows milestone becomes
 useful to another family.
 
 Start with Projects 01-05 as the foundation: server baseline, AD structure, DNS,
-DHCP/IPAM, and GPO baselines. After that, move in smaller cross-family loops so
+DHCP/IPAM integration, and GPO baselines. After that, move in smaller cross-family loops so
 each project proves something real in another part of the homelab.
 
 Detailed order: [execution-roadmap.md](docs/execution-roadmap.md)
@@ -71,7 +71,7 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 
 | Component | Platform | IP | Notes |
 |-----------|----------|----|-------|
-| WIN-PRQD8TJG04M | Windows Server 2022 Datacenter | 192.168.20.11 / Tailscale 100.81.197.116 | PDC for Chongong.local, DHCP, DNS, NPS, RDS farm, IIS, Hyper-V |
+| WIN-PRQD8TJG04M | Windows Server 2022 Datacenter | 192.168.20.11 / Tailscale 100.81.197.116 | PDC for Chongong.local, DNS, NPS, RDS farm, IIS, Hyper-V; DHCP role/state to be verified in P04 |
 | WIN-RDS01 | Hyper-V VM | TBD (Project 08) | Migration target: RD Session Host (moving off DC) |
 | WIN-FS01 | Hyper-V VM | TBD (Project 06) | Dedicated File Server |
 | WIN-WS01 | Hyper-V VM | TBD (Project 07) | Domain-joined test workstation |
@@ -89,7 +89,7 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 | [01](projects/project-01-server-baseline-hardening/) | **Server Baseline, Hardening, and Admin Model** | Role inventory, tiered admin, lockout policy, firewall baseline | ✅ Complete |
 | [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | Managed OUs, delegated admin, AGDLP groups, naming standards | 🔄 AD complete; WIN-DC02 pending |
 | [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, split DNS, forwarders | 🔄 Mostly complete — 2026-06-23 (Phase 5 N/A, Phase 9 blocked by WIN-DC02) |
-| [04](projects/project-04-dhcp-ipam/) | **DHCP, IPAM, and Network Integration** | Scopes, reservations, VLAN-aware design | ⬜ Planned |
+| [04](projects/project-04-dhcp-ipam/) | **DHCP/IPAM Integration and Windows Client Validation** | Route10/OPNsense DHCP authority, AD DNS client validation, Hyper-V addressing | ⬜ Planned |
 | [05](projects/project-05-gpo-security-baselines/) | **Group Policy Security Baselines** | Firewall GPO, audit policy, DefaultInboundAction | ⬜ Planned |
 | [06](projects/project-06-file-server-access-governance/) | **File Server, NTFS, and Access Governance** | Dept shares, AGDLP, auditing | ⬜ Planned |
 | [07](projects/project-07-windows-client-lifecycle/) | **Windows Client Lifecycle** | Domain join, RSAT, workstation hardening | ⬜ Planned |
@@ -130,6 +130,7 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 
 | Family | Repo | Connection |
 |--------|------|------------|
+| Route10 Network Core | homelab-route10-network-core | Project 04 validates Windows against the Route10 DHCP/IPAM authority model |
 | CML Enterprise Labs | enterprise-network-labs | Project 13: CML routers → NPS/RADIUS |
 | CCNA Physical Expansion | Homelab_CCNA | Project 13: Physical Cisco AAA → NPS |
 | OPNsense Labs | homelab-opnsense | Project 13: OPNsense admin RADIUS |
