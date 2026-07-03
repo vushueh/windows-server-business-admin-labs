@@ -12,8 +12,9 @@ I audited and hardened the AD-integrated DNS configuration for `Chongong.local`.
 During the audit I found a real DNS problem: the Domain Controller was using
 public DNS servers on its own LAN NIC instead of querying itself first. I fixed
 that, created the missing reverse lookup zone, enabled scavenging, verified
-internal/external resolution, documented break/fix runbooks, and then completed
-secondary DNS verification after `WIN-DC02` was promoted.
+internal/external resolution, documented break/fix runbooks, completed
+secondary DNS verification after `WIN-DC02` was promoted, and added a real
+conditional forwarder for Route10's `localdomain` zone.
 
 ## Portfolio Summary
 
@@ -25,12 +26,14 @@ public DNS instead of AD DNS.
 
 **Action:** I audited zones, forwarders, scavenging, and NIC settings; fixed the
 DC DNS client path; created the reverse zone and PTR record; enabled scavenging;
-verified internal and external resolution; and documented DNS break/fix runbooks.
+verified internal and external resolution; added a conditional forwarder for
+Route10's `localdomain` zone; and documented DNS break/fix runbooks.
 
 **Result:** The domain now resolves internal AD records correctly, external
-forwarding still works, reverse DNS exists for the DC, stale record cleanup is
-enabled, and `WIN-DC02` is verified as a working secondary DNS server for
-internal AD, reverse, and external name resolution.
+forwarding still works, reverse DNS exists for both DCs, stale record cleanup is
+enabled, `WIN-DC02` is verified as a working secondary DNS server, and AD DNS can
+now resolve Route10-registered household names without leaking `localdomain`
+queries to public DNS.
 
 ## What Changed
 
@@ -41,14 +44,14 @@ internal AD, reverse, and external name resolution.
 | Reverse DNS | Created `20.168.192.in-addr.arpa` and PTR records for both DCs |
 | Scavenging | Enabled server scavenging and zone aging on the PDC; enabled server scavenging on `WIN-DC02` |
 | Split-brain behavior | Internal AD records and external public names both resolve correctly |
+| Conditional forwarder | Added AD-integrated `localdomain` forwarder to Route10 at `192.168.20.1`, replicated to both DCs |
 | Break/fix evidence | One real DNS incident plus two documented runbooks |
 | Secondary DNS | `WIN-DC02` resolves AD names, SRV records, reverse DNS, and external names |
 
 ## Project Phases
 
-Project 03 has 10 phases. All phases are complete. Phase 5 was completed as a
-design decision: I verified there is no current cross-lab DNS zone that needs a
-conditional forwarder, so I did not add a fake or unused forwarding rule.
+Project 03 has 10 phases. All phases are complete. Phase 5 was completed after
+live discovery found a real forwarding target: Route10's `localdomain` DNS zone.
 
 | Phase | Name | Status |
 |-------|------|--------|
@@ -56,7 +59,7 @@ conditional forwarder, so I did not add a fake or unused forwarding rule.
 | Phase 2 | Fix DNS Server Addressing | Complete |
 | Phase 3 | Configure Forwarders | Complete |
 | Phase 4 | Reverse Lookup Zones | Complete |
-| Phase 5 | Conditional Forwarders | Complete - not required in current design |
+| Phase 5 | Conditional Forwarders | Complete - Route10 `localdomain` |
 | Phase 6 | DNS Scavenging | Complete |
 | Phase 7 | Split-Brain DNS | Complete |
 | Phase 8 | Break/Fix Exercise | Complete |
@@ -198,44 +201,85 @@ nslookup -type=PTR 192.168.20.11 192.168.20.11
 
 ### Phase 5 - Conditional Forwarders
 
-This phase is complete as a design decision. I checked whether
-`Chongong.local` currently needs to forward a specific DNS zone to another DNS
-server, and the answer is no.
+This phase is complete. I first deferred conditional forwarding because there
+was no proven target zone. After live discovery, I found a real one:
+Route10 registers household DHCP names under `localdomain`, and both DCs can
+query Route10 at `192.168.20.1`.
 
 What I did:
 
-- Verified there is no confirmed cross-lab DNS zone to forward today.
-- Left the Conditional Forwarders list empty.
-- Documented what information I need before adding one later.
-- Avoided creating a fake forwarder that would make troubleshooting harder.
+- Ruled out OPNsense `internal` because it was not an authoritative zone for
+  lab clients and the DCs could not query OPNsense DNS on VLAN 20.
+- Ruled out Pi-hole at `192.168.10.26` because it did not host a useful local
+  zone for this project.
+- Verified Route10 answered `DESKTOP-QVM6OQN.localdomain` as `192.168.50.28`.
+- Added an AD-integrated conditional forwarder for `localdomain` to Route10 at
+  `192.168.20.1`.
+- Verified the forwarder replicated to both DNS servers and works from both
+  `192.168.20.11` and `192.168.20.12`.
+- Disabled recursion for this forwarded zone so `localdomain` queries stay with
+  Route10 instead of falling through to public DNS.
 
-Why it matters: DNS forwarding should solve a real name-resolution need. Adding
-unused conditional forwarders creates confusion and future troubleshooting noise.
+Why it matters: domain clients use AD DNS. Before this change, a lookup for a
+household device like `DESKTOP-QVM6OQN.localdomain` could fail or be sent to
+public forwarders. Now AD DNS sends only `localdomain` queries to Route10, which
+keeps local names local without changing Route10, routing, DHCP, NAT, or firewall
+behavior.
 
-What I need before adding a future conditional forwarder:
-
-| Need | Example |
-|------|---------|
-| Zone name | `proxmox.lab`, `route10.internal`, or another real zone |
-| Authoritative DNS server | OPNsense, Route10, Proxmox, or another DNS server IP |
-| Reachability | Both DCs must be able to reach that DNS server on TCP/UDP 53 |
-| Test records | At least one hostname in that zone to prove forwarding works |
-| Owner/rollback | Who owns the zone and how to remove the forwarder safely |
-
-PowerShell proof:
+PowerShell used/proof:
 
 ```powershell
-Get-DnsServerConditionalForwarderZone
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.1
 
-# Future pattern only, when a real target exists:
-# Add-DnsServerConditionalForwarderZone `
-#   -Name "example.lab" `
-#   -MasterServers 192.168.x.x `
-#   -ReplicationScope "Forest"
+Add-DnsServerConditionalForwarderZone `
+  -Name "localdomain" `
+  -MasterServers 192.168.20.1 `
+  -ReplicationScope "Forest"
+
+Set-DnsServerConditionalForwarderZone -ComputerName WIN-PRQD8TJG04M -Name "localdomain" -UseRecursion $false
+Set-DnsServerConditionalForwarderZone -ComputerName WIN-DC02 -Name "localdomain" -UseRecursion $false
+
+Get-DnsServerZone -ComputerName WIN-PRQD8TJG04M -Name "localdomain" |
+  Format-List ZoneName,ZoneType,IsDsIntegrated,MasterServers,ReplicationScope,UseRecursion
+
+Get-DnsServerZone -ComputerName WIN-DC02 -Name "localdomain" |
+  Format-List ZoneName,ZoneType,IsDsIntegrated,MasterServers,ReplicationScope,UseRecursion
+
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.11 -DnsOnly -NoHostsFile
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.12 -DnsOnly -NoHostsFile
 ```
 
-<img src="screenshots/phase5-01-conditional-forwarders-none-needed.JPG" width="750" alt="No conditional forwarders needed">
-*Conditional Forwarders list, empty — confirms no conditional forwarder is required in the current DNS design.*
+Final verified state:
+
+| Check | Result |
+|-------|--------|
+| Forwarded zone | `localdomain` |
+| Forwarder target | Route10 at `192.168.20.1` |
+| Replication | Forest-wide, AD-integrated, present on both DCs |
+| Recursion for forwarded zone | Disabled |
+| Test record | `DESKTOP-QVM6OQN.localdomain -> 192.168.50.28` from both DCs |
+
+Rollback if this ever causes a problem:
+
+```powershell
+Remove-DnsServerConditionalForwarderZone -Name "localdomain" -Force
+```
+
+#### Conditional forwarder replicated to both DCs
+
+<img src="screenshots/phase5-01-conditional-forwarder-localdomain.png" width="750" alt="localdomain conditional forwarder on both DCs">
+
+*Both DNS servers have the AD-integrated `localdomain` conditional forwarder.
+The forwarder points to Route10 at `192.168.20.1`, replicates forest-wide, and
+has recursion disabled for that forwarded zone.*
+
+#### Route10 localdomain resolution through both DCs
+
+<img src="screenshots/phase5-02-localdomain-resolution-both-dcs.png" width="750" alt="localdomain resolution through both DCs">
+
+*Both DCs resolve `DESKTOP-QVM6OQN.localdomain` to `192.168.50.28`, and AD SRV
+lookups still return both domain controllers. This proves the Route10 forwarder
+works without breaking AD DNS service discovery.*
 
 ### Phase 6 - DNS Scavenging
 
@@ -403,7 +447,8 @@ What I did:
 - Updated this Project 03 README.
 - Added the break/fix log.
 - Updated project status references.
-- Added screenshot planning for later image insertion.
+- Added screenshot planning and embedded the completed Phase 5 and Phase 9
+  evidence.
 
 Why it matters: the DNS work is repeatable and reviewable, not just a one-time
 live change.
@@ -429,6 +474,7 @@ Final evidence links:
 | PDC DNS client | `vEthernet (External-VLAN-Trunk)` uses `192.168.20.12, 192.168.20.11` |
 | WIN-DC02 DNS client | `Ethernet` uses `192.168.20.11, 192.168.20.12` |
 | Forwarders | Public forwarders still resolve external names |
+| Conditional forwarder | `localdomain` forwards to Route10 `192.168.20.1` from both DCs |
 | Reverse DNS | `192.168.20.11` and `192.168.20.12` have PTR records |
 | Scavenging | Enabled |
 | Zone aging | Enabled for `Chongong.local` |

@@ -80,6 +80,15 @@ computer accounts: `RADIUS01`, `GITEA`, and `WIN-DC02` are domain-joined VMs.
 |---------|--------|---------|-------|
 | Management / LAN | 192.168.20.0/24 | 192.168.20.1 | Windows DHCP scope exists; first 20 addresses excluded/reserved for infrastructure |
 
+## Network DNS And Gateway Dependencies
+
+| Device / service | IP | Role in this Windows project |
+|------------------|----|------------------------------|
+| Route10 | 192.168.20.1 | VLAN 20 gateway and DNS target for the `localdomain` conditional forwarder |
+| Route10 | 192.168.10.1 / 192.168.1.1 | Additional Route10 DNS listener addresses discovered during Phase 5 validation |
+| Pi-hole | 192.168.10.26 | Existing DNS resolver on VLAN 10; discovered but not used as a conditional forwarder target |
+| OPNsense | 192.168.20.253 | VLAN 20 interface discovered during Phase 5 validation; not used for DNS forwarding |
+
 ## DNS Design (Current)
 
 ```
@@ -95,11 +104,17 @@ WIN-DC02 = DNS server (AD-integrated)
   Zone: Chongong.local (Primary, AD-integrated)
   Zone: _msdcs.Chongong.local (Primary, AD-integrated)
   Zone: 20.168.192.in-addr.arpa (Primary, AD-integrated)
+  Conditional forwarder: localdomain -> Route10 192.168.20.1
   Forwarders: 8.8.8.8, 1.1.1.1, 8.8.4.4, 9.9.9.9
 
 DO NOT: set DC DNS to 8.8.8.8
 Correct: DC DNS clients use AD DNS servers. Public resolvers belong only in DNS
 server forwarders.
+
+Route10 localdomain forwarding note:
+  Windows DNS forwards only *.localdomain to Route10 at 192.168.20.1.
+  Route10 DHCP/DNS, routing, NAT, VLAN, and firewall configuration were not
+  changed by Project 03.
 ```
 
 ## Virtual Switch Design (Target — Project 08)

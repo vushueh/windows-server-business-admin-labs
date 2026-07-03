@@ -4,14 +4,51 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-03 (Codex — Project 03 Route10 localdomain conditional forwarder)
+### What I did
+- Documented the completed Project 03 Phase 5 conditional forwarder.
+- Added the two Phase 5 screenshots proving the `localdomain` forwarder exists on both DCs and resolves through both DNS servers.
+- Updated Project 03 evidence, screenshot plan, topology, project indexes, operator notes, and skill guidance.
+- Removed the obsolete screenshot that showed Conditional Forwarders as empty because that is no longer the final design.
+
+### Files created/modified
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE-REVIEW.md`
+- `CODEX-LOG.md`
+- `docs/topology.md`
+- `projects/README.md`
+- `projects/project-03-dns-engineering/README.md`
+- `projects/project-03-dns-engineering/docs/p03-screenshot-plan.md`
+- `projects/project-03-dns-engineering/docs/p03-win-dc02-secondary-dns-evidence.md`
+- `projects/project-03-dns-engineering/screenshots/phase5-01-conditional-forwarder-localdomain.png`
+- `projects/project-03-dns-engineering/screenshots/phase5-02-localdomain-resolution-both-dcs.png`
+- `skills/winserver-projects.md`
+
+### Architecture decisions made
+- `localdomain` is a real forwarding target because Route10 answers DHCP client hostnames under that zone.
+- Windows DNS forwards only `*.localdomain` to Route10 at `192.168.20.1`.
+- Recursion is disabled for the conditional forwarder so `localdomain` queries do not fall through to public DNS if Route10 cannot answer.
+- This was a Windows DNS change only; Route10 routing, DHCP, NAT, VLAN, firewall, and DNS configuration were not changed.
+
+### Cross-family impacts
+- Project 04 can now validate DHCP/IPAM and DNS option behavior knowing that AD DNS can resolve Route10-registered household names.
+- Route10 remains the authority for the `localdomain` records; Windows AD DNS only forwards that namespace.
+- OPNsense `internal` and Pi-hole `192.168.10.26` were documented as discovered but not used as conditional-forwarder targets.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-07-03 (Codex — Portfolio summaries and Project 03 Phase 5 cleanup)
 ### What I did
 - Moved the Portfolio Summary section near the top of every project README.
 - Renamed remaining `STAR Summary` headers to `Portfolio Summary` for consistency.
 - Updated the evidence documentation skill so future project READMEs keep the Portfolio Summary near the top.
 - Cleaned up Project 03 Phase 3 status to simply `Complete`.
-- Changed Project 03 Phase 5 from deferred wording to complete-as-designed: no conditional forwarder is required until a real target zone exists.
-- Documented what information is required before adding a future conditional forwarder.
+- Changed Project 03 Phase 5 from deferred wording to complete-as-designed based on what was known at that point. Superseded later the same day by the Route10 `localdomain` discovery and configuration.
+- Documented what information was required before adding a conditional forwarder; that requirement was later satisfied by Route10 `localdomain`.
 
 ### Files created/modified
 - `README.md`
@@ -39,10 +76,10 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ### Architecture decisions made
 - Conditional forwarders should only be configured when there is a real zone name, authoritative DNS server, reachability on TCP/UDP 53, and a test record.
-- Leaving Conditional Forwarders empty is the correct current design, not an unfinished task.
+- Superseded later the same day: Route10 `localdomain` became the real conditional-forwarder target.
 
 ### Cross-family impacts
-- Future Route10, OPNsense, Proxmox, or NetOps DNS work must provide the target zone and DNS server before Windows AD DNS should add a conditional forwarder.
+- Future OPNsense, Proxmox, or NetOps DNS work must still provide the target zone and DNS server before Windows AD DNS adds more conditional forwarders.
 
 ### Open questions for Claude
 - None.
@@ -91,7 +128,7 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - `WIN-DC02` is the replica DC, DNS server, and Global Catalog at `192.168.20.12`.
 - The PDC DNS service listens only on `192.168.20.11` to avoid publishing non-AD interface addresses.
 - The PDC DNS client uses `192.168.20.12, 192.168.20.11`; `WIN-DC02` uses `192.168.20.11, 192.168.20.12`.
-- Project 03 Phase 5 is complete as a design decision: no conditional forwarder is required until there is a real cross-lab zone to forward.
+- Superseded later on `2026-07-03`: Project 03 Phase 5 is complete with Route10 `localdomain` forwarding to `192.168.20.1`.
 
 ### Cross-family impacts
 - Project 04 can now validate DHCP/IPAM and DNS option design against two working AD DNS servers.
@@ -206,7 +243,7 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - `CODEX-LOG.md`
 
 ### Architecture decisions made
-- Superseded on `2026-07-03`: Project 03 is complete; Phase 5 is complete as no current conditional-forwarder target exists, and Phase 9 was completed after `WIN-DC02` promotion.
+- Superseded again later on `2026-07-03`: Project 03 is complete; Phase 5 is complete with Route10 `localdomain` forwarding, and Phase 9 was completed after `WIN-DC02` promotion.
 - Completed phases should have two screenshot targets when useful; deferred or pending phases should have one screenshot proving why they are deferred or blocked.
 
 ### Cross-family impacts

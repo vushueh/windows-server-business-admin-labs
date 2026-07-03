@@ -25,7 +25,7 @@ deferred or blocked.
 | Phase 2 | Complete | 2 screenshots |
 | Phase 3 | Complete | 2 screenshots |
 | Phase 4 | Complete | 2 screenshots |
-| Phase 5 | Complete - not required in current design | 1 screenshot |
+| Phase 5 | Complete - Route10 `localdomain` forwarder | 2 screenshots |
 | Phase 6 | Complete | 2 screenshots |
 | Phase 7 | Complete | 2 screenshots |
 | Phase 8 | Complete | 2 screenshots |
@@ -132,16 +132,39 @@ nslookup -type=PTR 192.168.20.11 127.0.0.1
 
 ## Phase 5 - Conditional Forwarders
 
-### Image: `phase5-01-conditional-forwarders-none-needed.png`
+### Image: `phase5-01-conditional-forwarder-localdomain.png`
 
-- **What it shows:** No conditional forwarder is currently needed.
-- **Manual check:** DNS Manager -> Conditional Forwarders.
-- **Why:** Proves Phase 5 was completed as a design decision: no real target
-  zone exists, so no conditional forwarder should be configured.
+- **What it shows:** Both DCs have the AD-integrated `localdomain`
+  conditional forwarder pointing to Route10 at `192.168.20.1`.
+- **Manual check:** PowerShell on `WIN-PRQD8TJG04M`, querying both DNS servers.
+- **Why:** Proves the forwarder replicated to `WIN-PRQD8TJG04M` and
+  `WIN-DC02`, and that recursion is disabled for the forwarded zone.
 - **PowerShell equivalent:**
 
 ```powershell
-Get-DnsServerConditionalForwarderZone
+Get-DnsServerZone -ComputerName WIN-PRQD8TJG04M -Name "localdomain" |
+  Format-List ZoneName,ZoneType,IsDsIntegrated,MasterServers,ReplicationScope,UseRecursion
+
+Get-DnsServerZone -ComputerName WIN-DC02 -Name "localdomain" |
+  Format-List ZoneName,ZoneType,IsDsIntegrated,MasterServers,ReplicationScope,UseRecursion
+```
+
+### Image: `phase5-02-localdomain-resolution-both-dcs.png`
+
+- **What it shows:** Both DCs resolve `DESKTOP-QVM6OQN.localdomain` through the
+  Route10 forwarder, and AD SRV lookups still return both DCs.
+- **Manual check:** PowerShell on `WIN-PRQD8TJG04M`, querying `192.168.20.11`
+  and `192.168.20.12` directly.
+- **Why:** Proves the conditional forwarder works in practice and did not break
+  AD DNS service discovery.
+- **PowerShell equivalent:**
+
+```powershell
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.11 -DnsOnly -NoHostsFile
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.12 -DnsOnly -NoHostsFile
+
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.11
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.12
 ```
 
 ## Phase 6 - DNS Scavenging

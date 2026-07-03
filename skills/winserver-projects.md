@@ -150,9 +150,8 @@ Windows Server 2022 AD DS functional level.
 
 ### Current State
 
-Project 03 is complete as of `2026-07-03`. Phase 5 is complete as a design
-decision: no conditional forwarder is required until a real cross-lab zone
-exists.
+Project 03 is complete as of `2026-07-03`. Phase 5 is complete with an
+AD-integrated conditional forwarder for Route10's `localdomain` zone.
 
 ### Phase 1 — Audit Current DNS State
 
@@ -195,12 +194,19 @@ Add-DnsServerResourceRecordPtr -ZoneName "20.168.192.in-addr.arpa" `
 
 ### Phase 5 — Conditional Forwarders
 
-Complete as no current conditional-forwarder target exists. Do not add a
-forwarder until there is a real zone name, authoritative DNS server IP, and test
-record.
+Complete. Windows DNS forwards Route10's `localdomain` zone to Route10 at
+`192.168.20.1`. This was chosen only after live discovery proved that Route10
+answers real `localdomain` records and both DCs can query it.
 
 ```powershell
-Get-DnsServerConditionalForwarderZone
+Get-DnsServerZone -ComputerName WIN-PRQD8TJG04M -Name "localdomain" |
+  Format-List ZoneName,ZoneType,IsDsIntegrated,MasterServers,ReplicationScope,UseRecursion
+
+Get-DnsServerZone -ComputerName WIN-DC02 -Name "localdomain" |
+  Format-List ZoneName,ZoneType,IsDsIntegrated,MasterServers,ReplicationScope,UseRecursion
+
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.11 -DnsOnly -NoHostsFile
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.12 -DnsOnly -NoHostsFile
 ```
 
 ### Phase 6 — DNS Scavenging

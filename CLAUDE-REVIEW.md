@@ -18,8 +18,53 @@ domain controller, DNS server, and Global Catalog. Project 02 Phase 7 and Projec
 03 Phase 9 are complete. `WIN-PRQD8TJG04M` remains the FSMO holder, and direct
 DNS queries now resolve the PDC hostname to `192.168.20.11` only.
 
-Project 03 Phase 5 is complete as a design decision. No conditional forwarder is
-required until there is a real cross-lab zone that needs forwarding.
+Project 03 Phase 5 is now complete with a real conditional forwarder:
+`localdomain` forwards to Route10 at `192.168.20.1`, replicates to both DCs, and
+has recursion disabled for that forwarded zone. Route10 configuration was not
+changed.
+
+---
+
+## P03 PHASE 5 DISCOVERY — 2026-07-03 (Claude read-only, Leonel live execution)
+
+### 🟢 RESOLVED — Item P03-P5-01: Real conditional forwarder found — `localdomain` to Route10
+
+**Context:** Claude verified that OPNsense `internal` was not a viable DNS
+forwarder target, Pi-hole at `192.168.10.26` did not host a useful local zone,
+and Route10 answered Route10-registered names under `localdomain`.
+
+**Decision:** Configure a Windows DNS conditional forwarder for `localdomain`
+to Route10 at `192.168.20.1`. This is a Windows DNS change only. It does not
+modify Route10 DHCP, routing, NAT, VLAN, firewall, or DNS configuration.
+
+**Final configuration:**
+
+```powershell
+Add-DnsServerConditionalForwarderZone `
+  -Name "localdomain" `
+  -MasterServers 192.168.20.1 `
+  -ReplicationScope "Forest"
+
+Set-DnsServerConditionalForwarderZone -ComputerName WIN-PRQD8TJG04M -Name "localdomain" -UseRecursion $false
+Set-DnsServerConditionalForwarderZone -ComputerName WIN-DC02 -Name "localdomain" -UseRecursion $false
+```
+
+**Final verification:**
+
+- `localdomain` exists on both `WIN-PRQD8TJG04M` and `WIN-DC02`.
+- Both DCs show `MasterServers : 192.168.20.1`.
+- Both DCs show `UseRecursion : False`.
+- `DESKTOP-QVM6OQN.localdomain` resolves to `192.168.50.28` through both
+  `192.168.20.11` and `192.168.20.12`.
+- `_ldap._tcp.Chongong.local` still resolves to both DCs after the change.
+
+**Risk and rollback:** Low risk. If Route10 DNS is unavailable, only
+`*.localdomain` lookups are affected. AD DNS and public DNS forwarding remain
+separate. Rollback is:
+
+```powershell
+Remove-DnsServerConditionalForwarderZone -Name "localdomain" -Force
+```
 
 ---
 
@@ -34,11 +79,11 @@ doesn't have). Note: Project 02 prerequisite is not fully closed (WIN-DC02 repli
 pending) — proceeding against the single DC anyway per Leonel's instruction.
 
 **Resolution (2026-06-23):** Project 03 current-PDC work was mostly complete and documented.
-Phase 5 had no conditional-forwarder target, and Phase 9 was blocked until `WIN-DC02`
-existed. **Superseded on 2026-07-03:** `WIN-DC02` now exists, Phase 9 is complete, and
-Phase 5 is documented as complete because no conditional forwarder is required in the
-current design. Documentation was corrected to include proper phase sections, screenshot
-plans, and valid internal links.
+Phase 5 originally had no conditional-forwarder target, and Phase 9 was blocked
+until `WIN-DC02` existed. **Superseded on 2026-07-03:** `WIN-DC02` now exists,
+Phase 9 is complete, and Phase 5 is complete with the Route10 `localdomain`
+conditional forwarder. Documentation was corrected to include proper phase
+sections, screenshot plans, and valid internal links.
 
 **Phase 1 — Audit: DONE (read-only)**
 - Zones: `_msdcs.Chongong.local`, `Chongong.local` (both AD-integrated primary), plus
@@ -63,8 +108,8 @@ plans, and valid internal links.
 
 **Phases 3, 5, 7, 9 — current outcome**
 - Phase 3 (forwarders): complete.
-- Phase 5 (conditional forwarders): complete as a design decision; no cross-lab domain
-  is identified yet to forward to.
+- Phase 5 (conditional forwarders): complete with `localdomain` forwarding to
+  Route10 at `192.168.20.1`.
 - Phase 7 (split-brain DNS): already effectively true — `Chongong.local` is private/internal,
   forwarders handle public resolution. Document as satisfied, no config change needed.
 - Phase 9 (WIN-DC02 DNS verification): complete after `WIN-DC02` promotion on `2026-07-03`.

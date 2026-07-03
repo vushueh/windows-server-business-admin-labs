@@ -102,6 +102,71 @@ Evidence:
 
 - `../screenshots/phase9-03-win-dc02-forwarders.JPG`
 
+## Route10 Conditional Forwarder For localdomain
+
+After Claude's read-only discovery and Leonel's verification, I added one real
+conditional forwarder: `localdomain` to Route10. This did not change Route10,
+DHCP, routing, NAT, VLANs, or firewall policy. It only tells Windows DNS where
+to send queries for Route10-registered household names.
+
+Discovery result:
+
+```powershell
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.1
+```
+
+Expected result: `DESKTOP-QVM6OQN.localdomain` resolves to `192.168.50.28`.
+
+Configuration:
+
+```powershell
+Add-DnsServerConditionalForwarderZone `
+  -Name "localdomain" `
+  -MasterServers 192.168.20.1 `
+  -ReplicationScope "Forest"
+
+Set-DnsServerConditionalForwarderZone -ComputerName WIN-PRQD8TJG04M -Name "localdomain" -UseRecursion $false
+Set-DnsServerConditionalForwarderZone -ComputerName WIN-DC02 -Name "localdomain" -UseRecursion $false
+```
+
+Final forwarder verification:
+
+```powershell
+Get-DnsServerZone -ComputerName WIN-PRQD8TJG04M -Name "localdomain" |
+  Format-List ZoneName,ZoneType,IsDsIntegrated,MasterServers,ReplicationScope,UseRecursion
+
+Get-DnsServerZone -ComputerName WIN-DC02 -Name "localdomain" |
+  Format-List ZoneName,ZoneType,IsDsIntegrated,MasterServers,ReplicationScope,UseRecursion
+```
+
+Expected result: both DNS servers show `ZoneType` as `Forwarder`,
+`IsDsIntegrated` as `True`, `MasterServers` as `192.168.20.1`,
+`ReplicationScope` as `Forest`, and `UseRecursion` as `False`.
+
+Final resolution verification:
+
+```powershell
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.11 -DnsOnly -NoHostsFile
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.12 -DnsOnly -NoHostsFile
+
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.11
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.12
+```
+
+Expected result: both DCs resolve `DESKTOP-QVM6OQN.localdomain` to
+`192.168.50.28`, and AD SRV lookups still return both domain controllers.
+
+Evidence:
+
+- `../screenshots/phase5-01-conditional-forwarder-localdomain.png`
+- `../screenshots/phase5-02-localdomain-resolution-both-dcs.png`
+
+Rollback:
+
+```powershell
+Remove-DnsServerConditionalForwarderZone -Name "localdomain" -Force
+```
+
 ## PTR Record For WIN-DC02
 
 I added the reverse record for the new DC:
@@ -182,12 +247,12 @@ Evidence:
 `WIN-DC02` is now a working secondary DNS server for `Chongong.local`. It
 answers internal AD records, advertises AD SRV records with the original DC,
 resolves external names through the same forwarders, and has a working PTR
-record.
+record. Both DCs also forward `localdomain` queries to Route10 at
+`192.168.20.1`, so Windows domain clients can resolve Route10-registered
+household names through AD DNS.
 
 ## Carried Forward
 
-- Phase 5 is complete as a design decision: no current conditional-forwarder
-  target exists.
 - Project 04 should decide the long-term DHCP authority and DNS option design.
 - If the stale `192.168.20.21` PTR remains after scavenging, remove it during
   cleanup; it is not part of the final DC design.
