@@ -90,7 +90,7 @@ the Hyper-V host. `WIN-DC02` is now the replica DC and secondary DNS server.
 |---|---------|-------|--------|
 | [01](projects/project-01-server-baseline-hardening/) | **Server Baseline, Hardening, and Admin Model** | Role inventory, tiered admin, lockout policy, firewall baseline | ✅ Complete |
 | [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | Managed OUs, delegated admin, AGDLP groups, replica DC | ✅ Complete — 2026-07-03 |
-| [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, split DNS, forwarders, secondary DNS | ✅ Complete — 2026-07-03 (Phase 5 deferred until a real cross-lab zone exists) |
+| [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, split DNS, forwarders, secondary DNS | ✅ Complete — 2026-07-03 |
 | [04](projects/project-04-dhcp-ipam/) | **DHCP/IPAM Integration and Windows Client Validation** | Route10/OPNsense DHCP authority, AD DNS client validation, Hyper-V addressing | ⬜ Planned |
 | [05](projects/project-05-gpo-security-baselines/) | **Group Policy Security Baselines** | Firewall GPO, audit policy, DefaultInboundAction | ⬜ Planned |
 | [06](projects/project-06-file-server-access-governance/) | **File Server, NTFS, and Access Governance** | Dept shares, AGDLP, auditing | ⬜ Planned |

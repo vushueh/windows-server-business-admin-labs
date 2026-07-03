@@ -150,8 +150,9 @@ Windows Server 2022 AD DS functional level.
 
 ### Current State
 
-Project 03 is complete as of `2026-07-03`. Phase 5 is deferred until a real
-conditional-forwarder need exists.
+Project 03 is complete as of `2026-07-03`. Phase 5 is complete as a design
+decision: no conditional forwarder is required until a real cross-lab zone
+exists.
 
 ### Phase 1 — Audit Current DNS State
 
@@ -194,7 +195,9 @@ Add-DnsServerResourceRecordPtr -ZoneName "20.168.192.in-addr.arpa" `
 
 ### Phase 5 — Conditional Forwarders
 
-Deferred until a concrete cross-lab DNS zone exists.
+Complete as no current conditional-forwarder target exists. Do not add a
+forwarder until there is a real zone name, authoritative DNS server IP, and test
+record.
 
 ```powershell
 Get-DnsServerConditionalForwarderZone

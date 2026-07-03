@@ -10,6 +10,13 @@ servers, cloud accounts, and security monitoring across ALL homelab families.
 
 **This proves the entire homelab is one connected enterprise environment.**
 
+## Portfolio Summary
+
+**Situation:** 6 lab families with isolated authentication — network, Windows, Linux, cloud all separate.
+**Task:** Unify authentication under one AD identity source with tested fallback.
+**Action:** _(completed when project runs)_
+**Result:** _(completed when project runs)_
+
 ## Imported Reference
 
 The former `homelab-projects` repo had a full AD/SSSD Linux VM integration
@@ -86,10 +93,3 @@ User `leonel` signs in with one AD identity and can:
 10. End-to-end test: one user, all systems
 11. Break/fix: take AD/NPS offline — verify fallback on every system
 12. Document + push to GitHub
-
-## STAR Summary
-
-**Situation:** 6 lab families with isolated authentication — network, Windows, Linux, cloud all separate.
-**Task:** Unify authentication under one AD identity source with tested fallback.
-**Action:** _(completed when project runs)_
-**Result:** _(completed when project runs)_

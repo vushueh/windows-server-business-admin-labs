@@ -16,6 +16,20 @@ family can later feed ServiceNow and business-service case studies.
 and automated provisioning scripts (P09). It feeds into the capstone (P13) because Entra-synced
 groups control M365 license assignment and can be used in NPS/RADIUS conditional access.
 
+## Portfolio Summary
+
+**Situation:** On-prem AD and M365 are completely separate. Users have no cloud identity.
+Onboarding requires two separate account creation steps. Password resets don't sync.
+The lab has no hybrid identity foundation for M365-dependent projects.
+
+**Task:** Deploy Entra Connect with Password Hash Sync, scope to standard users only,
+enable password writeback, and update the provisioning scripts to manage both AD and M365
+identity in a single workflow.
+
+**Action:** _(completed when project runs)_
+
+**Result:** _(completed when project runs)_
+
 ## Environment Context
 
 - On-prem domain: `Chongong.local` (not routable — cannot be used as M365 UPN)
@@ -137,17 +151,3 @@ Get-ADSyncConnectorStatistics -ConnectorName "Chongong.local"
 Get-ADUser -Filter * -SearchBase "OU=ManagedUsers,DC=Chongong,DC=local" |
   Select-Object SamAccountName, UserPrincipalName
 ```
-
-## STAR Summary
-
-**Situation:** On-prem AD and M365 are completely separate. Users have no cloud identity.
-Onboarding requires two separate account creation steps. Password resets don't sync.
-The lab has no hybrid identity foundation for M365-dependent projects.
-
-**Task:** Deploy Entra Connect with Password Hash Sync, scope to standard users only,
-enable password writeback, and update the provisioning scripts to manage both AD and M365
-identity in a single workflow.
-
-**Action:** _(completed when project runs)_
-
-**Result:** _(completed when project runs)_

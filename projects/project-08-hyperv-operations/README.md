@@ -14,6 +14,20 @@ the 13 existing VMs need to be properly inventoried and organized before more ar
 The RDS migration off the DC is the highest-risk remediation item from P01 — it requires
 proper Hyper-V virtual switch design to execute safely.
 
+## Portfolio Summary
+
+**Situation:** Hyper-V hosts 13 undocumented VMs with no inventory, no formal virtual switch
+design, automatic checkpoints running on production VMs, and the RDS farm on the DC — the
+highest-risk security finding from P01.
+
+**Task:** Inventory and organize all VMs, design proper virtual switch architecture, enforce
+checkpoint policy, migrate the RDS farm off the DC onto dedicated VMs, and establish a tested
+VM backup process.
+
+**Action:** _(completed when project runs)_
+
+**Result:** _(completed when project runs)_
+
 ## Environment Context
 
 - Hyper-V host: WIN-PRQD8TJG04M (also the DC — this is the risk)
@@ -117,17 +131,3 @@ Get-VMNetworkAdapter -VMName * | Select-Object VMName, SwitchName, IPAddresses
 # Confirm checkpoint type
 Get-VM | Select-Object Name, CheckpointType, AutomaticCheckpointsEnabled
 ```
-
-## STAR Summary
-
-**Situation:** Hyper-V hosts 13 undocumented VMs with no inventory, no formal virtual switch
-design, automatic checkpoints running on production VMs, and the RDS farm on the DC — the
-highest-risk security finding from P01.
-
-**Task:** Inventory and organize all VMs, design proper virtual switch architecture, enforce
-checkpoint policy, migrate the RDS farm off the DC onto dedicated VMs, and establish a tested
-VM backup process.
-
-**Action:** _(completed when project runs)_
-
-**Result:** _(completed when project runs)_

@@ -23,9 +23,9 @@ deferred or blocked.
 |-------|--------|------------------------|
 | Phase 1 | Complete | 2 screenshots |
 | Phase 2 | Complete | 2 screenshots |
-| Phase 3 | Complete - already satisfied | 2 screenshots |
+| Phase 3 | Complete | 2 screenshots |
 | Phase 4 | Complete | 2 screenshots |
-| Phase 5 | Deferred - not needed yet | 1 screenshot |
+| Phase 5 | Complete - not required in current design | 1 screenshot |
 | Phase 6 | Complete | 2 screenshots |
 | Phase 7 | Complete | 2 screenshots |
 | Phase 8 | Complete | 2 screenshots |
@@ -136,7 +136,8 @@ nslookup -type=PTR 192.168.20.11 127.0.0.1
 
 - **What it shows:** No conditional forwarder is currently needed.
 - **Manual check:** DNS Manager -> Conditional Forwarders.
-- **Why:** Proves the phase was intentionally deferred, not forgotten.
+- **Why:** Proves Phase 5 was completed as a design decision: no real target
+  zone exists, so no conditional forwarder should be configured.
 - **PowerShell equivalent:**
 
 ```powershell

@@ -1,6 +1,6 @@
 # Project 03 - AD DNS and Name Resolution Engineering
 
-**Status:** Complete on `2026-07-03`; Phase 5 intentionally deferred until a real cross-lab zone exists
+**Status:** Complete on `2026-07-03`
 
 **System:** `WIN-PRQD8TJG04M` (`192.168.20.11`) and `WIN-DC02` (`192.168.20.12`) - AD-integrated DNS
 
@@ -14,6 +14,23 @@ public DNS servers on its own LAN NIC instead of querying itself first. I fixed
 that, created the missing reverse lookup zone, enabled scavenging, verified
 internal/external resolution, documented break/fix runbooks, and then completed
 secondary DNS verification after `WIN-DC02` was promoted.
+
+## Portfolio Summary
+
+**Situation:** DNS had not been fully documented, reverse DNS was missing for the
+Windows subnet, scavenging was disabled, and the DC itself was pointing at
+public DNS instead of AD DNS.
+
+**Task:** Audit and harden DNS without breaking the live household domain.
+
+**Action:** I audited zones, forwarders, scavenging, and NIC settings; fixed the
+DC DNS client path; created the reverse zone and PTR record; enabled scavenging;
+verified internal and external resolution; and documented DNS break/fix runbooks.
+
+**Result:** The domain now resolves internal AD records correctly, external
+forwarding still works, reverse DNS exists for the DC, stale record cleanup is
+enabled, and `WIN-DC02` is verified as a working secondary DNS server for
+internal AD, reverse, and external name resolution.
 
 ## What Changed
 
@@ -29,17 +46,17 @@ secondary DNS verification after `WIN-DC02` was promoted.
 
 ## Project Phases
 
-Project 03 has 10 phases. Phases 1-4 and 6-10 are complete. Phase 5 remains
-deferred because there is still no cross-lab DNS zone that needs conditional
-forwarding.
+Project 03 has 10 phases. All phases are complete. Phase 5 was completed as a
+design decision: I verified there is no current cross-lab DNS zone that needs a
+conditional forwarder, so I did not add a fake or unused forwarding rule.
 
 | Phase | Name | Status |
 |-------|------|--------|
 | Phase 1 | Audit Current DNS State | Complete |
 | Phase 2 | Fix DNS Server Addressing | Complete |
-| Phase 3 | Configure Forwarders | Complete - already satisfied |
+| Phase 3 | Configure Forwarders | Complete |
 | Phase 4 | Reverse Lookup Zones | Complete |
-| Phase 5 | Conditional Forwarders | Deferred - not needed yet |
+| Phase 5 | Conditional Forwarders | Complete - not required in current design |
 | Phase 6 | DNS Scavenging | Complete |
 | Phase 7 | Split-Brain DNS | Complete |
 | Phase 8 | Break/Fix Exercise | Complete |
@@ -181,25 +198,44 @@ nslookup -type=PTR 192.168.20.11 192.168.20.11
 
 ### Phase 5 - Conditional Forwarders
 
-This phase is deferred because there is no confirmed cross-lab DNS zone that
-`Chongong.local` needs to forward to yet.
+This phase is complete as a design decision. I checked whether
+`Chongong.local` currently needs to forward a specific DNS zone to another DNS
+server, and the answer is no.
 
 What I did:
 
-- Checked whether a conditional forwarder was currently needed.
-- Deferred the phase instead of creating an unused forwarder.
+- Verified there is no confirmed cross-lab DNS zone to forward today.
+- Left the Conditional Forwarders list empty.
+- Documented what information I need before adding one later.
+- Avoided creating a fake forwarder that would make troubleshooting harder.
 
 Why it matters: DNS forwarding should solve a real name-resolution need. Adding
 unused conditional forwarders creates confusion and future troubleshooting noise.
 
-PowerShell proof to use when this becomes needed:
+What I need before adding a future conditional forwarder:
+
+| Need | Example |
+|------|---------|
+| Zone name | `proxmox.lab`, `route10.internal`, or another real zone |
+| Authoritative DNS server | OPNsense, Route10, Proxmox, or another DNS server IP |
+| Reachability | Both DCs must be able to reach that DNS server on TCP/UDP 53 |
+| Test records | At least one hostname in that zone to prove forwarding works |
+| Owner/rollback | Who owns the zone and how to remove the forwarder safely |
+
+PowerShell proof:
 
 ```powershell
 Get-DnsServerConditionalForwarderZone
+
+# Future pattern only, when a real target exists:
+# Add-DnsServerConditionalForwarderZone `
+#   -Name "example.lab" `
+#   -MasterServers 192.168.x.x `
+#   -ReplicationScope "Forest"
 ```
 
 <img src="screenshots/phase5-01-conditional-forwarders-none-needed.JPG" width="750" alt="No conditional forwarders needed">
-*Conditional Forwarders list, empty — confirms the phase was intentionally deferred, not forgotten.*
+*Conditional Forwarders list, empty — confirms no conditional forwarder is required in the current DNS design.*
 
 ### Phase 6 - DNS Scavenging
 
@@ -405,20 +441,3 @@ Final evidence links:
 | WIN-DC02 DNS evidence | [docs/p03-win-dc02-secondary-dns-evidence.md](docs/p03-win-dc02-secondary-dns-evidence.md) |
 | Break/fix log | [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md) |
 | Screenshot plan | [docs/p03-screenshot-plan.md](docs/p03-screenshot-plan.md) |
-
-## Portfolio Summary
-
-**Situation:** DNS had not been fully documented, reverse DNS was missing for the
-Windows subnet, scavenging was disabled, and the DC itself was pointing at
-public DNS instead of AD DNS.
-
-**Task:** Audit and harden DNS without breaking the live household domain.
-
-**Action:** I audited zones, forwarders, scavenging, and NIC settings; fixed the
-DC DNS client path; created the reverse zone and PTR record; enabled scavenging;
-verified internal and external resolution; and documented DNS break/fix runbooks.
-
-**Result:** The domain now resolves internal AD records correctly, external
-forwarding still works, reverse DNS exists for the DC, stale record cleanup is
-enabled, and `WIN-DC02` is verified as a working secondary DNS server for
-internal AD, reverse, and external name resolution.

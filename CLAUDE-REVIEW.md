@@ -18,8 +18,8 @@ domain controller, DNS server, and Global Catalog. Project 02 Phase 7 and Projec
 03 Phase 9 are complete. `WIN-PRQD8TJG04M` remains the FSMO holder, and direct
 DNS queries now resolve the PDC hostname to `192.168.20.11` only.
 
-Project 03 Phase 5 remains intentionally deferred until there is a real
-cross-lab zone that needs conditional forwarding.
+Project 03 Phase 5 is complete as a design decision. No conditional forwarder is
+required until there is a real cross-lab zone that needs forwarding.
 
 ---
 
@@ -34,17 +34,17 @@ doesn't have). Note: Project 02 prerequisite is not fully closed (WIN-DC02 repli
 pending) — proceeding against the single DC anyway per Leonel's instruction.
 
 **Resolution (2026-06-23):** Project 03 current-PDC work was mostly complete and documented.
-Phase 5 was deferred because no conditional forwarder was currently needed, and Phase 9 was
-blocked until `WIN-DC02` existed. **Superseded on 2026-07-03:** `WIN-DC02` now exists and
-Phase 9 is complete. Documentation was corrected to include proper phase sections,
-screenshot plans, and valid internal links.
+Phase 5 had no conditional-forwarder target, and Phase 9 was blocked until `WIN-DC02`
+existed. **Superseded on 2026-07-03:** `WIN-DC02` now exists, Phase 9 is complete, and
+Phase 5 is documented as complete because no conditional forwarder is required in the
+current design. Documentation was corrected to include proper phase sections, screenshot
+plans, and valid internal links.
 
 **Phase 1 — Audit: DONE (read-only)**
 - Zones: `_msdcs.Chongong.local`, `Chongong.local` (both AD-integrated primary), plus
   default `0/127/255.in-addr.arpa` and `TrustAnchors`. **No 192.168.20.0/24 reverse zone
   exists yet** — Phase 4 gap confirmed.
-- Forwarders: already correctly set to `8.8.8.8, 1.1.1.1, 8.8.4.4, 9.9.9.9` — Phase 3
-  already satisfied, no action needed.
+- Forwarders: correctly set to `8.8.8.8`, `1.1.1.1`, `8.8.4.4`, and `9.9.9.9`.
 - Scavenging: disabled (`ScavengingState: False`, interval `00:00:00`). Zone aging off on
   all zones. Phase 6 gap confirmed.
 - **Real bug found (not a staged exercise):** DC's LAN NIC `vEthernet (External-VLAN-Trunk)`
@@ -61,13 +61,13 @@ screenshot plans, and valid internal links.
 - Verified `_ldap._tcp.Chongong.local` resolves correctly.
 - Verified public resolution still works through forwarders.
 
-**Phases 3, 5, 7, 9 — no action needed / deferred**
-- Phase 3 (forwarders): already correct, nothing to do.
-- Phase 5 (conditional forwarders): no cross-lab domain identified yet to forward to — skip
-  until a concrete need exists (e.g. Proxmox internal zone).
+**Phases 3, 5, 7, 9 — current outcome**
+- Phase 3 (forwarders): complete.
+- Phase 5 (conditional forwarders): complete as a design decision; no cross-lab domain
+  is identified yet to forward to.
 - Phase 7 (split-brain DNS): already effectively true — `Chongong.local` is private/internal,
   forwarders handle public resolution. Document as satisfied, no config change needed.
-- Phase 9 (WIN-DC02 DNS verification): deferred — replica DC doesn't exist yet (P02 gap).
+- Phase 9 (WIN-DC02 DNS verification): complete after `WIN-DC02` promotion on `2026-07-03`.
 
 **Phases 4, 6, 8, 10 — DONE**
 - Phase 4: created reverse lookup zone for `192.168.20.0/24` and PTR for `WIN-PRQD8TJG04M`.

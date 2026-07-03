@@ -82,15 +82,15 @@ Required section order:
 
 1. Title, status, completion date if complete, system or scope
 2. Short plain-language summary that includes why it matters
-3. Starting point or problem found
-4. What I changed
-5. What I proved
-6. Simple phase/status table
-7. Phase sections with explanation, commands, and screenshot evidence
-8. Evidence links for deeper technical proof
-9. Decisions intentionally deferred or not changed
-10. Next project impact or carried-forward items
-11. Portfolio STAR summary
+3. Portfolio Summary with Situation, Task, Action, and Result
+4. Starting point or problem found
+5. What I changed
+6. What I proved
+7. Simple phase/status table
+8. Phase sections with explanation, commands, and screenshot evidence
+9. Evidence links for deeper technical proof
+10. Decisions intentionally deferred or not changed
+11. Next project impact or carried-forward items
 
 Every phase section must include:
 

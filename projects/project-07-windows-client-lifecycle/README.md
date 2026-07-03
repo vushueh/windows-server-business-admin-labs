@@ -13,6 +13,19 @@ for admin tooling, and verify the tiered admin model works correctly from the cl
 before a client is domain-joined — the workstation picks them up at join time. WIN-WS01 is
 the test client for every GPO, share permission, and user account created in P02–P06.
 
+## Portfolio Summary
+
+**Situation:** Existing DESKTOP-* machines are already domain joined, but there is no
+dedicated, controlled lab workstation for repeatable evidence. Every GPO, share
+permission, and tiered admin rule needs to be verified from a known client state.
+
+**Task:** Build WIN-WS01, domain-join it, run every GPO and account scenario, and prove
+the admin model, drive maps, and offboarding process work exactly as designed.
+
+**Action:** _(completed when project runs)_
+
+**Result:** _(completed when project runs)_
+
 ## Environment Context
 
 - Dedicated lab workstation VM: WIN-WS01 (Hyper-V VM — Windows 11 Pro/Enterprise, 2 vCPU, 4GB RAM, 60GB disk)
@@ -117,16 +130,3 @@ net use
 dsa.msc   # AD Users and Computers (opens against DC)
 gpmc.msc  # Group Policy Management
 ```
-
-## STAR Summary
-
-**Situation:** Existing DESKTOP-* machines are already domain joined, but there is no
-dedicated, controlled lab workstation for repeatable evidence. Every GPO, share
-permission, and tiered admin rule needs to be verified from a known client state.
-
-**Task:** Build WIN-WS01, domain-join it, run every GPO and account scenario, and prove
-the admin model, drive maps, and offboarding process work exactly as designed.
-
-**Action:** _(completed when project runs)_
-
-**Result:** _(completed when project runs)_

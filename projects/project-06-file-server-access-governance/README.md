@@ -13,6 +13,19 @@ a repeatable access review process. Implement ransomware-resistant folder struct
 share = a compromised DC). WIN-FS01 isolates this risk. AGDLP groups from P02 and GPOs
 from P05 must exist before NTFS permission assignments make sense.
 
+## Portfolio Summary
+
+**Situation:** File Server role runs on the DC — a compromised share grants DC-level access.
+No department share structure, no AGDLP permissions, no file auditing, no shadow copies.
+Access is undocumented with no review process.
+
+**Task:** Stand up WIN-FS01 as a dedicated VM, move file serving off the DC, implement AGDLP
+permissions, enable auditing and shadow copies, and create a repeatable access review process.
+
+**Action:** _(completed when project runs)_
+
+**Result:** _(completed when project runs)_
+
 ## Environment Context
 
 - DC: WIN-PRQD8TJG04M (file server role currently on DC — to be offloaded)
@@ -103,16 +116,3 @@ Get-WmiObject Win32_ShadowCopy -ComputerName WIN-FS01
 # Confirm audit policy active
 auditpol /get /subcategory:"File System"
 ```
-
-## STAR Summary
-
-**Situation:** File Server role runs on the DC — a compromised share grants DC-level access.
-No department share structure, no AGDLP permissions, no file auditing, no shadow copies.
-Access is undocumented with no review process.
-
-**Task:** Stand up WIN-FS01 as a dedicated VM, move file serving off the DC, implement AGDLP
-permissions, enable auditing and shadow copies, and create a repeatable access review process.
-
-**Action:** _(completed when project runs)_
-
-**Result:** _(completed when project runs)_

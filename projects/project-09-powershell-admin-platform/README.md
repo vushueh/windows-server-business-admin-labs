@@ -14,6 +14,20 @@ and Hyper-V inventory — then schedule them as automated tasks.
 Hyper-V). This project automates the day-to-day admin tasks and provides a unified management
 experience via Windows Admin Center — the skill that ties everything together.
 
+## Portfolio Summary
+
+**Situation:** All infrastructure is running but administration is entirely manual with no
+scripts, no WAC GUI, no scheduled reporting, and no documented provisioning/offboarding process.
+Each admin task requires someone to remember the correct commands.
+
+**Task:** Build a PowerShell script library for all routine admin tasks, deploy Windows Admin
+Center as the unified management GUI, and schedule automated reports so account hygiene is
+maintained without manual effort.
+
+**Action:** _(completed when project runs)_
+
+**Result:** _(completed when project runs)_
+
 ## Environment Context
 
 - Script library location: `C:\AdminScripts\` on WIN-PRQD8TJG04M
@@ -137,17 +151,3 @@ Get-ScheduledTask | Where-Object TaskName -like "*Stale*" | Select-Object TaskNa
 # Test provisioning script (dry run)
 .\New-LabUser.ps1 -FirstName "Test" -LastName "User" -Department IT -Title "Test Account"
 ```
-
-## STAR Summary
-
-**Situation:** All infrastructure is running but administration is entirely manual with no
-scripts, no WAC GUI, no scheduled reporting, and no documented provisioning/offboarding process.
-Each admin task requires someone to remember the correct commands.
-
-**Task:** Build a PowerShell script library for all routine admin tasks, deploy Windows Admin
-Center as the unified management GUI, and schedule automated reports so account hygiene is
-maintained without manual effort.
-
-**Action:** _(completed when project runs)_
-
-**Result:** _(completed when project runs)_

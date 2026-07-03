@@ -186,7 +186,8 @@ record.
 
 ## Carried Forward
 
-- Phase 5 stays deferred until there is a real conditional-forwarder target.
+- Phase 5 is complete as a design decision: no current conditional-forwarder
+  target exists.
 - Project 04 should decide the long-term DHCP authority and DNS option design.
 - If the stale `192.168.20.21` PTR remains after scavenging, remove it during
   cleanup; it is not part of the final DC design.

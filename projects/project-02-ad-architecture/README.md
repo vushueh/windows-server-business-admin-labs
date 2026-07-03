@@ -30,6 +30,26 @@ Project 02 now provides:
 
 No AD objects were deleted.
 
+## Portfolio Summary
+
+**Situation:** The domain had users, computers, and groups spread across default
+containers and root-level department OUs, which made future GPOs, file shares,
+RADIUS policies, and SOC logging harder to manage.
+
+**Task:** Build a predictable AD structure without deleting objects or breaking
+the live primary domain controller.
+
+**Action:** I created managed user/computer OUs, moved existing objects into the
+right places, created AGDLP groups, staged disabled service/admin accounts,
+enabled AD Recycle Bin, delegated helpdesk reset/unlock rights, created a
+system-state/bare-metal-capable backup, cleaned the DC DNS registration problem,
+and promoted `WIN-DC02` as a DNS-enabled replica domain controller.
+
+**Result:** The domain now has a clean identity structure ready for DNS, DHCP,
+GPO, file server, SOC, and NPS/RADIUS projects. It also has two working domain
+controllers with clean replication and FSMO roles still anchored on the original
+PDC.
+
 ## Project Phases
 
 Project 02 has 9 phases. All phases are complete. The final infrastructure gap
@@ -528,23 +548,3 @@ is:
   use them.
 - Use AD Recycle Bin for accidental deletions after this point.
 - Restore from system state backup for domain-wide failure.
-
-## STAR Summary
-
-**Situation:** The domain had users, computers, and groups spread across default
-containers and root-level department OUs, which made future GPOs, file shares,
-RADIUS policies, and SOC logging harder to manage.
-
-**Task:** Build a predictable AD structure without deleting objects or breaking
-the live primary domain controller.
-
-**Action:** I created managed user/computer OUs, moved existing objects into the
-right places, created AGDLP groups, staged disabled service/admin accounts,
-enabled AD Recycle Bin, delegated helpdesk reset/unlock rights, created a
-system-state/bare-metal-capable backup, cleaned the DC DNS registration problem,
-and promoted `WIN-DC02` as a DNS-enabled replica domain controller.
-
-**Result:** The domain now has a clean identity structure ready for DNS, DHCP,
-GPO, file server, SOC, and NPS/RADIUS projects. It also has two working domain
-controllers with clean replication and FSMO roles still anchored on the original
-PDC.

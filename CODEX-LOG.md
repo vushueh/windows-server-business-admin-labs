@@ -4,6 +4,51 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-03 (Codex — Portfolio summaries and Project 03 Phase 5 cleanup)
+### What I did
+- Moved the Portfolio Summary section near the top of every project README.
+- Renamed remaining `STAR Summary` headers to `Portfolio Summary` for consistency.
+- Updated the evidence documentation skill so future project READMEs keep the Portfolio Summary near the top.
+- Cleaned up Project 03 Phase 3 status to simply `Complete`.
+- Changed Project 03 Phase 5 from deferred wording to complete-as-designed: no conditional forwarder is required until a real target zone exists.
+- Documented what information is required before adding a future conditional forwarder.
+
+### Files created/modified
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE-REVIEW.md`
+- `CODEX-LOG.md`
+- `projects/README.md`
+- `projects/project-01-server-baseline-hardening/README.md`
+- `projects/project-02-ad-architecture/README.md`
+- `projects/project-03-dns-engineering/README.md`
+- `projects/project-03-dns-engineering/docs/p03-screenshot-plan.md`
+- `projects/project-03-dns-engineering/docs/p03-win-dc02-secondary-dns-evidence.md`
+- `projects/project-04-dhcp-ipam/README.md`
+- `projects/project-05-gpo-security-baselines/README.md`
+- `projects/project-06-file-server-access-governance/README.md`
+- `projects/project-07-windows-client-lifecycle/README.md`
+- `projects/project-08-hyperv-operations/README.md`
+- `projects/project-09-powershell-admin-platform/README.md`
+- `projects/project-10-security-monitoring-ir/README.md`
+- `projects/project-11-backup-disaster-recovery/README.md`
+- `projects/project-12-m365-entra-hybrid-identity/README.md`
+- `projects/project-13-enterprise-identity-integration/README.md`
+- `skills/winserver-evidence-documentation/SKILL.md`
+- `skills/winserver-projects.md`
+
+### Architecture decisions made
+- Conditional forwarders should only be configured when there is a real zone name, authoritative DNS server, reachability on TCP/UDP 53, and a test record.
+- Leaving Conditional Forwarders empty is the correct current design, not an unfinished task.
+
+### Cross-family impacts
+- Future Route10, OPNsense, Proxmox, or NetOps DNS work must provide the target zone and DNS server before Windows AD DNS should add a conditional forwarder.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-07-03 (Codex — WIN-DC02 replica DC and secondary DNS evidence)
 ### What I did
 - Documented the `WIN-DC02` build and promotion as the Project 02 replica domain controller.
@@ -46,7 +91,7 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - `WIN-DC02` is the replica DC, DNS server, and Global Catalog at `192.168.20.12`.
 - The PDC DNS service listens only on `192.168.20.11` to avoid publishing non-AD interface addresses.
 - The PDC DNS client uses `192.168.20.12, 192.168.20.11`; `WIN-DC02` uses `192.168.20.11, 192.168.20.12`.
-- Phase 5 conditional forwarders in Project 03 stay deferred until there is a real cross-lab zone to forward.
+- Project 03 Phase 5 is complete as a design decision: no conditional forwarder is required until there is a real cross-lab zone to forward.
 
 ### Cross-family impacts
 - Project 04 can now validate DHCP/IPAM and DNS option design against two working AD DNS servers.
@@ -161,7 +206,7 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - `CODEX-LOG.md`
 
 ### Architecture decisions made
-- Project 03 is mostly complete on the current PDC; Phase 5 is deferred until a real conditional-forwarder need exists, and Phase 9 waits for `WIN-DC02`.
+- Superseded on `2026-07-03`: Project 03 is complete; Phase 5 is complete as no current conditional-forwarder target exists, and Phase 9 was completed after `WIN-DC02` promotion.
 - Completed phases should have two screenshot targets when useful; deferred or pending phases should have one screenshot proving why they are deferred or blocked.
 
 ### Cross-family impacts

@@ -11,6 +11,16 @@
 
 I audited the live Domain Controller, fixed the critical identity gaps, documented risky services, and left larger migrations for the right future projects.
 
+## Portfolio Summary
+
+**Situation:** The Domain Controller had weak account policy, too many Domain Admins, and undocumented services.
+
+**Task:** Secure the foundation without breaking the live Windows environment.
+
+**Action:** I backed up policy, hardened passwords and lockout, built tiered admin accounts, cleaned Domain Admins, documented RDS/IIS/NPS, captured the firewall baseline, and tested lockout with `testuser`.
+
+**Result:** Project 01 is complete. The Windows identity foundation is safer, verified, and ready for Project 02.
+
 ## Starting Problems
 
 | Area | Finding |
@@ -349,13 +359,3 @@ Full screenshots: [screenshots/](screenshots/)
 | Lockout break/fix | [docs/p01-phase6-lockout-breakfix.md](docs/p01-phase6-lockout-breakfix.md) |
 | Final state | [docs/p01-verified-final-state.md](docs/p01-verified-final-state.md) |
 | Scripts | [scripts/](scripts/) |
-
-## Portfolio Summary
-
-**Situation:** The Domain Controller had weak account policy, too many Domain Admins, and undocumented services.
-
-**Task:** Secure the foundation without breaking the live Windows environment.
-
-**Action:** I backed up policy, hardened passwords and lockout, built tiered admin accounts, cleaned Domain Admins, documented RDS/IIS/NPS, captured the firewall baseline, and tested lockout with `testuser`.
-
-**Result:** Project 01 is complete. The Windows identity foundation is safer, verified, and ready for Project 02.

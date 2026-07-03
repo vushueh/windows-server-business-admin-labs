@@ -13,6 +13,19 @@ Write DR runbooks that prove recovery is possible, not just planned.
 is running and the risk of loss is real. This project proves the lab can survive failures
 before the M365 and cross-family integrations in P12–P13 make recovery even more complex.
 
+## Portfolio Summary
+
+**Situation:** No documented backup strategy exists. System state is not backed up. File server
+data (from P06) has shadow copies but no off-box backup. No DR runbook exists. A DC failure
+or ransomware event would cause extended outage with uncertain recovery.
+
+**Task:** Implement daily system state backups on both DCs, file server backup, and VM export.
+Execute all five restore tests to prove recovery works. Write DR runbooks with real time estimates.
+
+**Action:** _(completed when project runs)_
+
+**Result:** _(completed when project runs)_
+
 ## Backup Targets
 
 | What | Tool | Frequency | Location |
@@ -135,16 +148,3 @@ Get-WmiObject Win32_ShadowCopy -ComputerName WIN-FS01 |
 # Confirm AD Recycle Bin scope
 Get-ADOptionalFeature "Recycle Bin Feature" | Select-Object EnabledScopes
 ```
-
-## STAR Summary
-
-**Situation:** No documented backup strategy exists. System state is not backed up. File server
-data (from P06) has shadow copies but no off-box backup. No DR runbook exists. A DC failure
-or ransomware event would cause extended outage with uncertain recovery.
-
-**Task:** Implement daily system state backups on both DCs, file server backup, and VM export.
-Execute all five restore tests to prove recovery works. Write DR runbooks with real time estimates.
-
-**Action:** _(completed when project runs)_
-
-**Result:** _(completed when project runs)_

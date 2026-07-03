@@ -13,6 +13,19 @@ correctly to domain, servers, and workstations.
 Every GPO must be created and tested before workstations and servers join in later projects —
 GPO gets applied at domain join, not after.
 
+## Portfolio Summary
+
+**Situation:** Only Default Domain Policy and Default Domain Controllers Policy exist.
+No custom GPOs for audit, firewall, workstation restrictions, or tiered admin logon control.
+Security settings are undocumented and unverified across servers and workstations.
+
+**Task:** Build a complete custom GPO set, stage in test OU before production link, and
+prove every policy with gpresult. Replace ad-hoc security with repeatable, documented baselines.
+
+**Action:** _(completed when project runs)_
+
+**Result:** _(completed when project runs)_
+
 ## Environment Context
 
 - DC: WIN-PRQD8TJG04M (PDC); WIN-DC02 replica pending
@@ -111,16 +124,3 @@ Get-ADDefaultDomainPasswordPolicy
 # Confirm audit settings applied
 auditpol /get /category:* /r | ConvertFrom-Csv
 ```
-
-## STAR Summary
-
-**Situation:** Only Default Domain Policy and Default Domain Controllers Policy exist.
-No custom GPOs for audit, firewall, workstation restrictions, or tiered admin logon control.
-Security settings are undocumented and unverified across servers and workstations.
-
-**Task:** Build a complete custom GPO set, stage in test OU before production link, and
-prove every policy with gpresult. Replace ad-hoc security with repeatable, documented baselines.
-
-**Action:** _(completed when project runs)_
-
-**Result:** _(completed when project runs)_

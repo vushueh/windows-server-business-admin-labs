@@ -14,6 +14,19 @@ for account lockout and privilege escalation scenarios.
 before centralized event collection makes sense. Security monitoring is the feedback
 loop that proves every security control from P01–P09 actually works.
 
+## Portfolio Summary
+
+**Situation:** Security events are generated (audit policy in P05) but not collected
+centrally, not forwarded to SIEM, and no IR playbooks exist. A lockout or privilege
+escalation would require manual log hunting across multiple servers.
+
+**Task:** Deploy WEF to centralize logs, connect Wazuh agent for SIEM integration,
+and build + test IR playbooks for the two most common AD security incidents.
+
+**Action:** _(completed when project runs)_
+
+**Result:** _(completed when project runs)_
+
 ## Environment Context
 
 - Log source servers: WIN-PRQD8TJG04M (PDC), WIN-DC02, WIN-FS01, WIN-RDS01, WIN-WS01
@@ -154,16 +167,3 @@ if (-not (Get-ADUser -Filter "SamAccountName -eq 'test-lockout-p10'")) {
 # Confirm Event 4740 appears in Security log and ForwardedEvents
 Get-WinEvent -FilterHashtable @{LogName='Security';Id=4740} -MaxEvents 5
 ```
-
-## STAR Summary
-
-**Situation:** Security events are generated (audit policy in P05) but not collected
-centrally, not forwarded to SIEM, and no IR playbooks exist. A lockout or privilege
-escalation would require manual log hunting across multiple servers.
-
-**Task:** Deploy WEF to centralize logs, connect Wazuh agent for SIEM integration,
-and build + test IR playbooks for the two most common AD security incidents.
-
-**Action:** _(completed when project runs)_
-
-**Result:** _(completed when project runs)_

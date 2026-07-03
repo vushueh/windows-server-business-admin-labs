@@ -19,6 +19,19 @@ The full homelab IP addressing design now belongs in the Route10 project family:
 - Route10 Project 02: Homelab IP Addressing and DHCP Authority
 - Route10 Project 11: CML Integration and DHCP Migration Options
 
+## Portfolio Summary
+
+**Situation:** The original Windows Project 04 assumed Windows Server would own
+homelab DHCP, but the real network design uses Route10 as the main router and
+long-term DHCP/IP authority, with OPNsense managing selected lab VLANs.
+
+**Task:** Correct the Windows project so it validates AD/DNS/client behavior
+against the real network design instead of replacing Route10.
+
+**Action:** _(completed when project runs)_
+
+**Result:** _(completed when project runs)_
+
 ## Why This Project Still Belongs In Windows
 
 Windows Server depends on correct IP addressing even when it does not own DHCP.
@@ -245,16 +258,3 @@ Project 04 is done when:
 - Hyper-V VM addressing is documented.
 - Optional Windows DHCP use is documented as design-only unless separately approved.
 - The full homelab IP addressing strategy is linked to the Route10 repo.
-
-## STAR Summary
-
-**Situation:** The original Windows Project 04 assumed Windows Server would own
-homelab DHCP, but the real network design uses Route10 as the main router and
-long-term DHCP/IP authority, with OPNsense managing selected lab VLANs.
-
-**Task:** Correct the Windows project so it validates AD/DNS/client behavior
-against the real network design instead of replacing Route10.
-
-**Action:** _(completed when project runs)_
-
-**Result:** _(completed when project runs)_
