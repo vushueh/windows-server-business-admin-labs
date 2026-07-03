@@ -99,7 +99,8 @@ Never: Codex does not execute live server commands.
 | 01 — Server Baseline + Hardening | ✅ Complete | Password/lockout hardened, tiered admin model created, RDS/IIS/NPS/firewall risk documented |
 | 02 — AD Architecture | ✅ Complete | Managed OUs, AGDLP groups, disabled staged accounts, AD Recycle Bin, helpdesk delegation, and `WIN-DC02` replica DC are live |
 | 03 — DNS Engineering | ✅ Complete | DC DNS client fixed, reverse zone/PTR records created, scavenging enabled, split-brain DNS and `WIN-DC02` secondary DNS verified; Route10 `localdomain` conditional forwarder added |
-| 04–13 | ⬜ Planned | Follow the cross-family execution roadmap |
+| 04 — DHCP/IPAM Integration | ✅ Complete | Windows DHCP documented, option 6 corrected to both DCs, Route10/OPNsense authority model preserved, Hyper-V addressing captured |
+| 05–13 | ⬜ Planned | Follow the cross-family execution roadmap |
 
 ## Cross-Family Integration Awareness
 

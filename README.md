@@ -72,7 +72,7 @@ the Hyper-V host. `WIN-DC02` is now the replica DC and secondary DNS server.
 
 | Component | Platform | IP | Notes |
 |-----------|----------|----|-------|
-| WIN-PRQD8TJG04M | Windows Server 2022 Datacenter | 192.168.20.11 / Tailscale 100.81.197.116 | PDC for Chongong.local, DNS, NPS, RDS farm, IIS, Hyper-V; DHCP role/state to be verified in P04 |
+| WIN-PRQD8TJG04M | Windows Server 2022 Datacenter | 192.168.20.11 / Tailscale 100.81.197.116 | PDC for Chongong.local, DNS, NPS, RDS farm, IIS, Hyper-V; Windows DHCP scope documented in P04 |
 | WIN-DC02 | Windows Server 2022 Standard | 192.168.20.12 | Replica DC, DNS, Global Catalog |
 | WIN-RDS01 | Hyper-V VM | TBD (Project 08) | Migration target: RD Session Host (moving off DC) |
 | WIN-FS01 | Hyper-V VM | TBD (Project 06) | Dedicated File Server |
@@ -91,7 +91,7 @@ the Hyper-V host. `WIN-DC02` is now the replica DC and secondary DNS server.
 | [01](projects/project-01-server-baseline-hardening/) | **Server Baseline, Hardening, and Admin Model** | Role inventory, tiered admin, lockout policy, firewall baseline | ✅ Complete |
 | [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | Managed OUs, delegated admin, AGDLP groups, replica DC | ✅ Complete — 2026-07-03 |
 | [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, Route10 `localdomain` forwarding, split DNS, secondary DNS | ✅ Complete — 2026-07-03 |
-| [04](projects/project-04-dhcp-ipam/) | **DHCP/IPAM Integration and Windows Client Validation** | Route10/OPNsense DHCP authority, AD DNS client validation, Hyper-V addressing | ⬜ Planned |
+| [04](projects/project-04-dhcp-ipam/) | **DHCP/IPAM Integration and Windows Client Validation** | Route10/OPNsense DHCP authority, AD DNS client validation, Hyper-V addressing | ✅ Complete — 2026-07-03 |
 | [05](projects/project-05-gpo-security-baselines/) | **Group Policy Security Baselines** | Firewall GPO, audit policy, DefaultInboundAction | ⬜ Planned |
 | [06](projects/project-06-file-server-access-governance/) | **File Server, NTFS, and Access Governance** | Dept shares, AGDLP, auditing | ⬜ Planned |
 | [07](projects/project-07-windows-client-lifecycle/) | **Windows Client Lifecycle** | Domain join, RSAT, workstation hardening | ⬜ Planned |

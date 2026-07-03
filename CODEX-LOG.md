@@ -4,6 +4,49 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-03 (Codex — Project 04 DHCP/IPAM completion)
+### What I did
+- Connected to `WIN-PRQD8TJG04M` over SSH as `CHONGONG\adm-leonel`.
+- Collected Project 04 read-only DHCP/IPAM discovery output.
+- Verified Windows DHCP is installed, AD-authorized, and has an active `192.168.20.0/24` scope.
+- Updated Windows DHCP option 6 for scope `192.168.20.0/24` so it advertises both AD DNS servers: `192.168.20.11` and `192.168.20.12`.
+- Verified AD DNS, Route10 `localdomain`, and external DNS through both DCs.
+- Documented Hyper-V switch/VM addressing and created the Windows-side IPAM handoff.
+
+### Files created/modified
+- `README.md`
+- `AGENTS.md`
+- `CLAUDE-REVIEW.md`
+- `CODEX-LOG.md`
+- `docs/execution-roadmap.md`
+- `docs/topology.md`
+- `projects/README.md`
+- `projects/project-04-dhcp-ipam/README.md`
+- `projects/project-04-dhcp-ipam/docs/p04-dhcp-ipam-evidence.md`
+- `projects/project-04-dhcp-ipam/docs/p04-ipam-handoff.md`
+- `projects/project-04-dhcp-ipam/docs/p04-live-discovery-raw.txt`
+- `projects/project-04-dhcp-ipam/docs/p04-post-change-verification.txt`
+- `projects/project-04-dhcp-ipam/docs/p04-screenshot-plan.md`
+- `projects/project-04-dhcp-ipam/screenshots/.gitkeep`
+- `skills/windows-server-business-admin.md`
+- `skills/winserver-projects.md`
+
+### Architecture decisions made
+- Route10 remains the main homelab DHCP/IPAM authority.
+- Windows DHCP was not disabled because it is active and still has a lease; disabling it needs a separate maintenance decision after Route10 VLAN 20 ownership is fully documented.
+- The only live configuration change was scope option 6, which is low-risk and aligns DHCP clients with the two-DC DNS design.
+- The stale `192.168.20.21` lease and DHCP bindings on WSL/VirtualBox interfaces are cleanup candidates, not Project 04 blockers.
+
+### Cross-family impacts
+- Route10 and NetOps now have a Windows-side IPAM handoff with reservation candidates and Hyper-V VM addressing.
+- SOC/Wazuh planning can use the captured VM/IP inventory.
+- Project 05 can proceed with GPO security baselines.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-07-03 (Codex — Project 03 Route10 localdomain conditional forwarder)
 ### What I did
 - Documented the completed Project 03 Phase 5 conditional forwarder.

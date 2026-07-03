@@ -63,7 +63,8 @@ Start here:
 
 1. Use the completed P02 AD structure as the identity base for NetOps/SOC alignment.
 2. Use the completed Project 03 two-DC DNS work as the name-resolution base.
-3. Run Project 04 DHCP/IPAM Integration after the Route10 IP addressing authority repo is in place.
+3. Project 04 DHCP/IPAM Integration is complete; use its handoff for Route10,
+   OPNsense, NetOps, and monitoring inventory.
 4. Run Project 05 GPO Security Baselines.
 5. Build Project 07 `WIN-WS01` only after P05 and the required file/share pieces are ready.
 

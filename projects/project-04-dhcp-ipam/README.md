@@ -1,260 +1,277 @@
 # Project 04 - DHCP/IPAM Integration and Windows Client Validation
 
-**Status:** Planned - scope corrected for Route10 ownership
-**Skill:** `/winserver-p04` - written when this project starts
+**Status:** Complete on `2026-07-03`
+
+**System:** `WIN-PRQD8TJG04M`, `WIN-DC02`, Route10, OPNsense, and Hyper-V VM
+network inventory
+
+**Skill:** `/winserver-p04`
 
 ## Summary
 
-I am using this project to verify that Windows Server, Active Directory DNS, and
-Hyper-V clients work correctly with the real homelab IP addressing design.
+I completed Project 04 by validating how Windows Server fits into the real
+homelab IP addressing model. I did not make Windows Server the main DHCP
+authority. Route10 remains the main router and long-term DHCP/IPAM authority,
+with OPNsense handling selected lab VLANs.
 
-This project does **not** make Windows Server the main DHCP authority for the
-homelab. Route10 is the main router and long-term DHCP/IP addressing authority.
-OPNsense manages selected lab VLANs. Windows Server provides AD DNS, identity,
-and validation that domain clients receive the correct network settings.
-
-The full homelab IP addressing design now belongs in the Route10 project family:
-
-- `homelab-route10-network-core`
-- Route10 Project 02: Homelab IP Addressing and DHCP Authority
-- Route10 Project 11: CML Integration and DHCP Migration Options
+The live work was intentionally conservative. I discovered the current Windows
+DHCP state, verified AD DNS behavior across both DCs, reviewed Hyper-V VM
+addressing, and made one safe Windows-side DHCP correction: VLAN 20 DHCP option
+6 now advertises both AD DNS servers, `192.168.20.11` and `192.168.20.12`.
 
 ## Portfolio Summary
 
-**Situation:** The original Windows Project 04 assumed Windows Server would own
-homelab DHCP, but the real network design uses Route10 as the main router and
-long-term DHCP/IP authority, with OPNsense managing selected lab VLANs.
+**Situation:** The earlier Project 04 design assumed Windows Server might own
+homelab DHCP, but the live network uses Route10 and OPNsense for the real
+addressing model.
 
-**Task:** Correct the Windows project so it validates AD/DNS/client behavior
-against the real network design instead of replacing Route10.
+**Task:** Validate DHCP/IPAM and DNS behavior without breaking working routing,
+Route10, OPNsense, or current Hyper-V lab networks.
 
-**Action:** _(completed when project runs)_
+**Action:** I connected to `WIN-PRQD8TJG04M`, audited the Windows DHCP role,
+scope, bindings, leases, exclusions, and options; mapped Windows and Hyper-V IP
+dependencies; verified AD DNS and Route10 `localdomain` forwarding through both
+DCs; and updated the Windows DHCP scope DNS option to include both DCs.
 
-**Result:** _(completed when project runs)_
+**Result:** Windows DHCP is documented instead of assumed, AD DNS redundancy is
+included in the Windows DHCP scope, Route10 remains untouched, and the project
+now has a Windows-side IPAM handoff for future Route10, NetOps, SOC, and Hyper-V
+work.
 
-## Why This Project Still Belongs In Windows
+## What Changed
 
-Windows Server depends on correct IP addressing even when it does not own DHCP.
-This project proves that:
-
-- AD clients receive DNS settings that can resolve `Chongong.local`.
-- Hyper-V VMs land on the correct network and can reach AD services.
-- Any Windows DHCP role currently installed is understood before it is changed.
-- Windows DHCP remains available as an optional future tool for isolated Hyper-V
-  lab scopes, if that design is ever useful.
+| Area | Result |
+|------|--------|
+| Windows DHCP role | Installed, AD-authorized, and active on `WIN-PRQD8TJG04M` |
+| Windows DHCP scope | `192.168.20.0/24`, named `Lan-Network`, still active |
+| DHCP option 6 | Updated from `192.168.20.11` only to `192.168.20.11, 192.168.20.12` |
+| DHCP exclusions | `192.168.20.1-10` and `192.168.20.11-20` reserved/excluded |
+| Current leases | One temporary lease remains: `192.168.20.21` from the original `WIN-DC02` install name |
+| Route10 | No configuration changed; remains gateway/IPAM authority |
+| OPNsense | No configuration changed; VLAN 20 interface documented as `192.168.20.253` |
+| Hyper-V addressing | VM switch and VM IP inventory captured |
 
 ## Authority Model
 
-| Area | Owner | Windows Project 04 role |
-|------|-------|-------------------------|
-| Main homelab routing | Route10 | Validate Windows reachability through the real network core. |
-| Main homelab DHCP/IPAM | Route10 | Consume and verify correct DHCP options, not replace Route10. |
-| Selected lab VLANs | OPNsense | Verify Windows/SOC/NetOps reachability where those VLANs interact with AD. |
-| AD DNS and identity | Windows Server | Provide `Chongong.local`, SRV records, domain services, and verification. |
-| CML isolated DHCP | CML lab | Leave as-is unless a future Route10 project intentionally changes it. |
-| Optional isolated Hyper-V DHCP | Windows Server, future only | Document how it could be done for a lab-only vSwitch, not production. |
+| Area | Owner | Project 04 result |
+|------|-------|-------------------|
+| Main homelab routing | Route10 | Left unchanged |
+| Main homelab DHCP/IPAM | Route10 | Left unchanged and linked as the authority family |
+| Selected lab VLANs | OPNsense | Left unchanged; interface/IP placement documented |
+| AD DNS and identity | Windows Server | Verified through both DCs |
+| Windows DHCP scope | Windows Server | Documented and corrected to advertise both AD DNS servers |
+| Optional isolated Hyper-V DHCP | Future design only | Documented as possible but not implemented |
 
 ## Project Phases
 
 | Phase | Name | Status |
 |-------|------|--------|
-| Phase 1 | Discover Current DHCP Roles | Planned |
-| Phase 2 | Map Windows Dependencies To Route10/OPNsense IPAM | Planned |
-| Phase 3 | Validate Domain Client DHCP/DNS Behavior | Planned |
-| Phase 4 | Hyper-V VM Addressing Review | Planned |
-| Phase 5 | Optional Windows DHCP Use Case Design | Planned - design only |
-| Phase 6 | NetOps/IPAM Handoff | Planned |
-| Phase 7 | Document Evidence And Push | Planned |
+| Phase 1 | Discover Current DHCP Roles | Complete |
+| Phase 2 | Map Windows Dependencies To Route10/OPNsense IPAM | Complete |
+| Phase 3 | Validate Domain Client DHCP/DNS Behavior | Complete |
+| Phase 4 | Hyper-V VM Addressing Review | Complete |
+| Phase 5 | Optional Windows DHCP Use Case Design | Complete - design only |
+| Phase 6 | NetOps/IPAM Handoff | Complete |
+| Phase 7 | Document Evidence And Push | Complete |
+
+Technical evidence:
+
+- DHCP/IPAM evidence: [docs/p04-dhcp-ipam-evidence.md](docs/p04-dhcp-ipam-evidence.md)
+- IPAM handoff: [docs/p04-ipam-handoff.md](docs/p04-ipam-handoff.md)
+- Raw discovery output: [docs/p04-live-discovery-raw.txt](docs/p04-live-discovery-raw.txt)
+- Post-change verification: [docs/p04-post-change-verification.txt](docs/p04-post-change-verification.txt)
+- Screenshot plan: [docs/p04-screenshot-plan.md](docs/p04-screenshot-plan.md)
 
 ## Phase Details
 
 ### Phase 1 - Discover Current DHCP Roles
 
-I will verify whether `WIN-PRQD8TJG04M` is currently authorized as a DHCP server
-and whether it is serving any scopes or leases.
+I verified the Windows DHCP role before changing anything.
 
-This is discovery only. I will not disable or redesign DHCP in this phase.
+What I found:
 
-PowerShell / verification:
+- DHCP Server is installed on `WIN-PRQD8TJG04M`.
+- The server is AD-authorized as `win-prqd8tjg04m.chongong.local` at
+  `192.168.20.11`.
+- The active scope is `192.168.20.0/24`, named `Lan-Network`.
+- The scope had one active lease: `192.168.20.21`, tied to the temporary
+  `WIN-DC02` install hostname.
+
+Why it matters: Windows DHCP exists and is active, so it must be documented
+before any future cleanup. I did not disable it because that would be a broader
+maintenance decision.
+
+PowerShell proof:
 
 ```powershell
-# show whether the DHCP role is installed
 Get-WindowsFeature DHCP
-
-# show authorized DHCP servers in AD
 Get-DhcpServerInDC
-
-# show local IPv4 scopes if the DHCP role is present
 Get-DhcpServerv4Scope
-
-# show leases, reservations, exclusions, and options for any discovered scope
-Get-DhcpServerv4Lease -ScopeId <scope-id>
-Get-DhcpServerv4Reservation -ScopeId <scope-id>
-Get-DhcpServerv4ExclusionRange -ScopeId <scope-id>
-Get-DhcpServerv4ScopeOptionValue -ScopeId <scope-id>
+Get-DhcpServerv4Lease -ScopeId 192.168.20.0
+Get-DhcpServerv4ExclusionRange -ScopeId 192.168.20.0
+Get-DhcpServerv4OptionValue -ScopeId 192.168.20.0
 ```
 
-Screenshots to capture:
-
-- DHCP console or PowerShell output showing whether Windows DHCP is active.
-- Any discovered scope/lease page, if Windows DHCP is serving something.
+Optional screenshot if GUI evidence is added:
+`screenshots/phase1-01-windows-dhcp-scope-discovery.png`
 
 ### Phase 2 - Map Windows Dependencies To Route10/OPNsense IPAM
 
-I will map the Windows systems to the real network authority model instead of
-assuming Windows owns DHCP.
+I mapped the Windows dependencies to the real network authority model.
 
-What I need to document:
+What I found:
 
-- which subnet each Windows server/client lives on
-- which device provides gateway/DHCP for that subnet
-- which DNS servers clients receive
-- whether the subnet is Route10-owned or OPNsense-owned
-- which addresses should be static or reserved
+- VLAN 20 gateway is Route10 at `192.168.20.1`.
+- `WIN-PRQD8TJG04M` is static at `192.168.20.11`.
+- `WIN-DC02` is static at `192.168.20.12`.
+- OPNsense has a VLAN 20 interface at `192.168.20.253`.
+- Route10 `localdomain` DNS works through AD DNS after Project 03 Phase 5.
 
-PowerShell / verification:
+Why it matters: this keeps Windows aligned with the real network instead of
+creating a competing DHCP/IPAM design.
+
+PowerShell proof:
 
 ```powershell
 Get-NetIPAddress -AddressFamily IPv4
+Get-NetRoute -DestinationPrefix "0.0.0.0/0"
 Get-DnsClientServerAddress -AddressFamily IPv4
-Get-ADComputer -Filter * -Properties IPv4Address,OperatingSystem |
-  Select-Object Name, IPv4Address, OperatingSystem, DistinguishedName
+Get-ADComputer -Filter * -Properties IPv4Address,OperatingSystem,LastLogonDate
 ```
 
-Screenshots to capture:
-
-- Windows network adapter IP/DNS settings.
-- Route10 or OPNsense DHCP/IPAM page that owns the matching subnet.
+Optional screenshot if GUI evidence is added:
+`screenshots/phase2-01-windows-ipam-dependencies.png`
 
 ### Phase 3 - Validate Domain Client DHCP/DNS Behavior
 
-I will verify that domain clients receive network settings that support Active
-Directory.
+I validated the DNS path clients need after receiving network settings.
 
-What I need to prove:
+What I proved:
 
-- the client gets an IP from the correct authority
-- the client can resolve `Chongong.local`
-- the client can resolve AD SRV records
-- the client can still resolve public internet names through the approved DNS path
+- `Chongong.local` resolves through both DCs.
+- `_ldap._tcp.Chongong.local` returns both domain controllers.
+- `DESKTOP-QVM6OQN.localdomain` resolves through AD DNS to Route10's
+  `localdomain` record.
+- External DNS still resolves through both DCs.
 
-PowerShell / verification:
+I also corrected the Windows DHCP scope so any future client that receives a
+lease from the Windows scope gets both AD DNS servers.
+
+PowerShell change:
 
 ```powershell
-ipconfig /all
-Resolve-DnsName Chongong.local
-Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
-Resolve-DnsName google.com
-nltest /dsgetdc:Chongong.local
+Set-DhcpServerv4OptionValue `
+  -ScopeId 192.168.20.0 `
+  -DnsServer 192.168.20.11,192.168.20.12
 ```
 
-Screenshots to capture:
+PowerShell verification:
 
-- `ipconfig /all` from a domain client.
-- PowerShell DNS/SRV/DC locator verification.
+```powershell
+Get-DhcpServerv4OptionValue -ScopeId 192.168.20.0 -OptionId 6
+Resolve-DnsName Chongong.local -Server 192.168.20.11 -DnsOnly -NoHostsFile
+Resolve-DnsName Chongong.local -Server 192.168.20.12 -DnsOnly -NoHostsFile
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.11
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.12
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.11 -DnsOnly -NoHostsFile
+Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.12 -DnsOnly -NoHostsFile
+```
+
+Optional screenshot if GUI evidence is added:
+`screenshots/phase3-01-dhcp-option6-and-dns-validation.png`
 
 ### Phase 4 - Hyper-V VM Addressing Review
 
-I will check how Hyper-V VMs are currently getting addresses and whether any VM
-network should stay static, use Route10 reservations, use OPNsense DHCP, or use
-a future isolated Windows DHCP scope.
+I reviewed the Hyper-V switch layout and VM IP inventory.
 
-PowerShell / verification:
+What I found:
+
+- `External-VLAN-Trunk` carries the Windows DC VLAN 20 path.
+- `vSwitch-LAN` carries multiple lab VLAN workloads.
+- `vSwitch-WAN` carries VLAN 10/WAN-side lab workloads.
+- `WIN-DC02` is attached to `External-VLAN-Trunk` at `192.168.20.12`.
+- OPNsense has adapters on `External-VLAN-Trunk`, `vSwitch-LAN`, and
+  `vSwitch-WAN`.
+
+Why it matters: future DHCP/IPAM, monitoring, and reservation work needs to know
+which Hyper-V networks each VM uses before moving or reserving addresses.
+
+PowerShell proof:
 
 ```powershell
-Get-VM | Select-Object Name, State
-Get-VMNetworkAdapter -VMName * |
-  Select-Object VMName, SwitchName, MacAddress, IPAddresses
-Get-VMSwitch | Select-Object Name, SwitchType, NetAdapterInterfaceDescription
+Get-VMSwitch
+Get-VM
+Get-VMNetworkAdapter -VMName *
 ```
 
-Screenshots to capture:
-
-- Hyper-V Manager showing VM network placement.
-- PowerShell output showing VM switch and adapter information.
+Optional screenshot if GUI evidence is added:
+`screenshots/phase4-01-hyperv-addressing-review.png`
 
 ### Phase 5 - Optional Windows DHCP Use Case Design
 
-This is design-only unless Leonel explicitly approves a future implementation.
+I documented Windows DHCP as an optional future design, not as the main homelab
+DHCP authority.
 
-Windows DHCP could still be useful for a small isolated Hyper-V lab network, for
-example:
+Appropriate future use cases:
 
-- an internal-only vSwitch used for Windows testing
-- a temporary classroom-style lab
-- a disconnected training subnet
-- a recovery/test environment that should not depend on Route10 or OPNsense
+- isolated Hyper-V training subnet
+- disconnected recovery lab
+- temporary classroom subnet
+- lab-only network that should not depend on Route10 or OPNsense
 
-If we ever build that, it should be separate from the main homelab DHCP model.
-It should not compete with Route10.
-
-Example design pattern:
-
-```powershell
-# example only - do not run without an approved future phase
-Add-DhcpServerv4Scope -Name "HyperV-Isolated-Lab" `
-  -StartRange 172.20.40.100 `
-  -EndRange 172.20.40.200 `
-  -SubnetMask 255.255.255.0 `
-  -Description "Optional isolated Hyper-V lab DHCP scope"
-```
-
-Screenshots to capture:
-
-- Design diagram or table showing where an isolated Hyper-V DHCP scope would sit.
-- No live scope screenshot unless a future approved implementation creates one.
+Decision: I did not create a new scope. Any future Windows DHCP scope should be
+isolated from the production/home VLANs and approved separately.
 
 ### Phase 6 - NetOps/IPAM Handoff
 
-I will turn the Windows-side findings into data that Route10, NetBox, LibreNMS,
-ntopng, and future case studies can use.
+I created the Windows-side IPAM handoff for Route10, NetOps, monitoring, and
+future case-study work.
 
-What I need to produce:
+Handoff file:
 
-- Windows server/client IP list
-- DNS dependency list
-- DHCP authority per subnet
-- reservation candidates
-- monitoring names and IPs
-- cross-link to the Route10 IP addressing authority project
+- [docs/p04-ipam-handoff.md](docs/p04-ipam-handoff.md)
 
-PowerShell / verification:
-
-```powershell
-Get-ADComputer -Filter * -Properties IPv4Address,OperatingSystem |
-  Select-Object Name, IPv4Address, OperatingSystem, DistinguishedName |
-  Export-Csv C:\Audit\windows-ipam-inventory.csv -NoTypeInformation
-```
-
-Screenshots to capture:
-
-- Export command result or inventory table.
-- Route10/NetOps handoff document once created.
+It lists static infrastructure addresses, discovered Hyper-V VM addresses,
+reservation candidates, and cleanup candidates.
 
 ### Phase 7 - Document Evidence And Push
 
-I will document the final state without overstating Windows ownership of DHCP.
+I documented the final state without overstating Windows ownership of DHCP.
 
-The final documentation should show:
+What I documented:
 
-- Windows DHCP discovery result
-- real DHCP/IP authority map
-- client DNS verification
-- Hyper-V VM addressing review
-- optional Windows DHCP design note
-- links to the Route10 project family for the full IPAM strategy
+- Windows DHCP role and scope state.
+- The DNS option correction from one DC to both DCs.
+- Route10/OPNsense authority model.
+- Domain DNS verification.
+- Hyper-V addressing inventory.
+- Optional isolated Windows DHCP design.
 
-Screenshots to capture:
+## Verified State
 
-- Project 04 README/evidence page after documentation is complete.
-- GitHub project folder showing docs, scripts, and screenshots.
+| Check | Result |
+|-------|--------|
+| Windows DHCP role | Installed and AD-authorized |
+| Windows DHCP scope | `192.168.20.0/24`, active, documented |
+| DHCP option 6 | `192.168.20.11, 192.168.20.12` |
+| DHCP exclusions | `.1-.10` and `.11-.20` reserved |
+| Route10 gateway | `192.168.20.1` |
+| AD DNS | Both DCs resolve AD names, SRV records, external names, and Route10 `localdomain` |
+| Hyper-V addressing | Switches and VM IPs documented |
+| Route10 configuration | Not changed |
+| OPNsense configuration | Not changed |
 
-## Done Criteria
+## Decisions Not Changed
 
-Project 04 is done when:
+- I did not disable Windows DHCP because it is active and still has a lease.
+- I did not delete the temporary `192.168.20.21` lease.
+- I did not change Route10 DHCP/IPAM, routing, NAT, VLAN, or firewall settings.
+- I did not change OPNsense DHCP/DNS settings.
+- I did not unbind DHCP from non-production adapters yet; that is a cleanup
+  candidate after a maintenance review.
 
-- We know whether Windows DHCP is active and for what.
-- Windows clients are proven to work with the Route10/OPNsense DHCP design.
-- Hyper-V VM addressing is documented.
-- Optional Windows DHCP use is documented as design-only unless separately approved.
-- The full homelab IP addressing strategy is linked to the Route10 repo.
+## Next Project Impact
+
+Project 05 can proceed with GPO security baselines. Project 04 also gives
+Route10/NetOps a Windows-side inventory for future reservation and monitoring
+work.

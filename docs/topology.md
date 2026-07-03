@@ -21,7 +21,7 @@ holder and primary operations DC, but the domain now has a second DC:
 |------|---------|-------|
 | AD-Domain-Services | AD DS (PDC/FSMO holder) | Chongong.local domain |
 | DNS | AD-integrated | Zones replicated to `WIN-DC02` |
-| DHCP | Active scope | Lan-Network: 192.168.20.0/24, range .1–.254 |
+| DHCP | Active scope | Lan-Network: 192.168.20.0/24, option 6 now advertises both DCs |
 | NPAS | NPS / RADIUS | radius-service account exists; purpose under investigation |
 | FS-FileServer | File Server | Active |
 | Hyper-V | VM inventory to refresh in Project 08; `WIN-DC02` added on 2026-07-03 | This host IS the Hyper-V server |
@@ -78,7 +78,21 @@ computer accounts: `RADIUS01`, `GITEA`, and `WIN-DC02` are domain-joined VMs.
 
 | Segment | Subnet | Gateway | Notes |
 |---------|--------|---------|-------|
-| Management / LAN | 192.168.20.0/24 | 192.168.20.1 | Windows DHCP scope exists; first 20 addresses excluded/reserved for infrastructure |
+| Management / LAN | 192.168.20.0/24 | 192.168.20.1 | Windows DHCP scope exists; first 20 addresses excluded/reserved for infrastructure; DHCP option 6 = 192.168.20.11, 192.168.20.12 |
+
+## DHCP/IPAM State (Project 04)
+
+| Item | Current state |
+|------|---------------|
+| Windows DHCP server | `WIN-PRQD8TJG04M` / `192.168.20.11`, AD-authorized |
+| Windows DHCP scope | `192.168.20.0/24`, `Lan-Network`, active |
+| Scope range | `192.168.20.1-192.168.20.254` |
+| Exclusions | `192.168.20.1-10`, `192.168.20.11-20` |
+| Router option | `192.168.20.1` |
+| DNS option | `192.168.20.11`, `192.168.20.12` |
+| DNS suffix option | `Chongong.local` |
+| Active lease noted during P04 | `192.168.20.21` temporary `WIN-DC02` install hostname; cleanup candidate |
+| Authority decision | Route10 remains main homelab DHCP/IPAM authority; Windows DHCP is documented and left active |
 
 ## Network DNS And Gateway Dependencies
 

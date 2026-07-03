@@ -1,0 +1,365 @@
+
+===== Session identity =====
+
+Date                ComputerName    User
+----                ------------    ----
+7/3/2026 2:26:06 PM WIN-PRQD8TJG04M CHONGONG\adm-leonel
+
+
+
+
+===== DHCP role and service =====
+
+Name       DisplayName InstallState
+----       ----------- ------------
+DHCP       DHCP Server    Installed
+DHCPServer
+
+
+
+
+===== Authorized DHCP servers in AD =====
+
+DnsName                        IPAddress
+-------                        ---------
+win-prqd8tjg04m.chongong.local 192.168.20.11
+
+
+
+
+===== DHCP bindings =====
+
+InterfaceAlias                  IPAddress     SubnetMask    BindingState
+--------------                  ---------     ----------    ------------
+vEthernet (WSL)                 172.30.144.1  255.255.240.0         True
+Ethernet 4                      192.168.56.1  255.255.255.0         True
+Ethernet 3                      172.28.128.1  255.255.255.0         True
+vEthernet (External-VLAN-Trunk) 192.168.20.11 255.255.255.0         True
+
+
+
+
+===== DHCP scopes =====
+
+
+ScopeId       : 192.168.20.0
+Name          : Lan-Network
+State         : Active
+StartRange    : 192.168.20.1
+EndRange      : 192.168.20.254
+SubnetMask    : 255.255.255.0
+LeaseDuration : 24.00:00:00
+
+
+
+
+
+===== DHCP scope details =====
+--- Scope 192.168.20.0 Lan-Network ---
+Leases:
+
+IPAddress     HostName                       ClientId          AddressState LeaseExpiryTime
+---------     --------                       --------          ------------ ---------------
+192.168.20.21 WIN-6QVR2H91AU4.Chongong.local 00-15-5d-14-0b-3c Active       7/27/2026 8:30:32 AM
+
+
+Reservations:
+Exclusions:
+
+ScopeId      StartRange    EndRange
+-------      ----------    --------
+192.168.20.0 192.168.20.1  192.168.20.10
+192.168.20.0 192.168.20.11 192.168.20.20
+
+
+Options:
+
+OptionId Name                  Value
+-------- ----                  -----
+      66 Boot Server Host Name {192.168.20.15}
+      67 Bootfile Name         {netboot.xyz.efi}
+      51 Lease                 {2073600}
+       3 Router                {192.168.20.1}
+      15 DNS Domain Name       {Chongong.local}
+       6 DNS Servers           {192.168.20.11}
+
+
+
+
+===== Recent DHCP audit log summary =====
+
+Name               LastWriteTime         Length
+----               -------------         ------
+DhcpSrvLog-Fri.log 7/3/2026 1:30:57 PM     7314
+DhcpSrvLog-Thu.log 7/2/2026 11:30:55 PM    7270
+DhcpSrvLog-Wed.log 7/1/2026 11:30:51 PM    7270
+DhcpSrvLog-Tue.log 6/30/2026 11:30:47 PM   7270
+DhcpSrvLog-Mon.log 6/29/2026 11:30:43 PM   7270
+DhcpSrvLog-Sun.log 6/28/2026 11:30:39 PM   7270
+DhcpSrvLog-Sat.log 6/27/2026 11:30:34 PM   7270
+
+
+
+
+===== Network adapters IPv4 =====
+
+
+InterfaceAlias     : Ethernet 3
+IPv4Address        : {172.28.128.1}
+IPv4DefaultGateway :
+DNSServer          : {MSFT_DNSClientServerAddress (Name = "25", CreationClassName = "", SystemCreationClassName = "", SystemName = "23"), MSFT_DNSClientServerAddress (Name = "25", CreationClassName = "",
+                     SystemCreationClassName = "", SystemName = "2")}
+
+InterfaceAlias     : Ethernet 4
+IPv4Address        : {192.168.56.1}
+IPv4DefaultGateway :
+DNSServer          : {MSFT_DNSClientServerAddress (Name = "28", CreationClassName = "", SystemCreationClassName = "", SystemName = "23"), MSFT_DNSClientServerAddress (Name = "28", CreationClassName = "",
+                     SystemCreationClassName = "", SystemName = "2")}
+
+InterfaceAlias     : vEthernet (OPNsense-LAN)
+IPv4Address        : {169.254.67.11}
+IPv4DefaultGateway :
+DNSServer          : {MSFT_DNSClientServerAddress (Name = "36", CreationClassName = "", SystemCreationClassName = "", SystemName = "23"), MSFT_DNSClientServerAddress (Name = "36", CreationClassName = "",
+                     SystemCreationClassName = "", SystemName = "2")}
+
+InterfaceAlias     : vEthernet (External-VLAN-Trunk)
+IPv4Address        : {192.168.20.11}
+IPv4DefaultGateway : {MSFT_NetRoute (InstanceID = ":8:8:8:9:55@55;C?8;@B8?:8;55;")}
+DNSServer          : {MSFT_DNSClientServerAddress (Name = "6", CreationClassName = "", SystemCreationClassName = "", SystemName = "23"), MSFT_DNSClientServerAddress (Name = "6", CreationClassName = "",
+                     SystemCreationClassName = "", SystemName = "2")}
+
+InterfaceAlias     : vEthernet (vSwitch-LAN)
+IPv4Address        : {169.254.7.146}
+IPv4DefaultGateway :
+DNSServer          : {MSFT_DNSClientServerAddress (Name = "8", CreationClassName = "", SystemCreationClassName = "", SystemName = "23"), MSFT_DNSClientServerAddress (Name = "8", CreationClassName = "",
+                     SystemCreationClassName = "", SystemName = "2")}
+
+InterfaceAlias     : vEthernet (vSwitch-WAN)
+IPv4Address        : {192.168.10.194}
+IPv4DefaultGateway : {MSFT_NetRoute (InstanceID = ":8:8:8:9:55C55;C?8;@B8;:8;55;")}
+DNSServer          : {MSFT_DNSClientServerAddress (Name = "9", CreationClassName = "", SystemCreationClassName = "", SystemName = "23"), MSFT_DNSClientServerAddress (Name = "9", CreationClassName = "",
+                     SystemCreationClassName = "", SystemName = "2")}
+
+InterfaceAlias     : vEthernet (WSL)
+IPv4Address        : {172.30.144.1}
+IPv4DefaultGateway :
+DNSServer          : {MSFT_DNSClientServerAddress (Name = "91", CreationClassName = "", SystemCreationClassName = "", SystemName = "23"), MSFT_DNSClientServerAddress (Name = "91", CreationClassName = "",
+                     SystemCreationClassName = "", SystemName = "2")}
+
+InterfaceAlias     : Tailscale
+IPv4Address        : {100.81.197.116}
+IPv4DefaultGateway :
+DNSServer          : {MSFT_DNSClientServerAddress (Name = "87", CreationClassName = "", SystemCreationClassName = "", SystemName = "23"), MSFT_DNSClientServerAddress (Name = "87", CreationClassName = "",
+                     SystemCreationClassName = "", SystemName = "2")}
+
+
+
+
+
+===== IPv4 addresses and routes =====
+
+InterfaceAlias                  IPAddress      PrefixLength AddressState PrefixOrigin SuffixOrigin
+--------------                  ---------      ------------ ------------ ------------ ------------
+Ethernet 4                      192.168.56.1             24    Preferred       Manual       Manual
+Ethernet 3                      172.28.128.1             24    Preferred       Manual       Manual
+vEthernet (vSwitch-WAN)         192.168.10.194           24    Preferred         Dhcp         Dhcp
+vEthernet (External-VLAN-Trunk) 192.168.20.11            24    Preferred       Manual       Manual
+vEthernet (WSL)                 172.30.144.1             20    Preferred       Manual       Manual
+Tailscale                       100.81.197.116           32    Preferred       Manual       Manual
+Loopback Pseudo-Interface 1     127.0.0.1                 8    Preferred    WellKnown    WellKnown
+
+
+
+InterfaceAlias                  NextHop      RouteMetric InterfaceMetric
+--------------                  -------      ----------- ---------------
+vEthernet (vSwitch-WAN)         192.168.10.1          50              50
+vEthernet (External-VLAN-Trunk) 192.168.20.1         256               5
+
+
+
+
+===== DNS client servers and registration =====
+
+InterfaceAlias                  ServerAddresses
+--------------                  ---------------
+vEthernet (External-VLAN-Trunk) {192.168.20.12, 192.168.20.11}
+Tailscale                       {}
+vEthernet (OPNsense-LAN)        {}
+vEthernet (vSwitch-LAN)         {}
+vEthernet (vSwitch-WAN)         {192.168.10.26, 1.1.1.1}
+Ethernet 3                      {}
+Ethernet 4                      {}
+Loopback Pseudo-Interface 1     {}
+vEthernet (WSL)                 {}
+
+
+
+InterfaceAlias                  RegisterThisConnectionsAddress
+--------------                  ------------------------------
+Ethernet 3                                               False
+Ethernet 4                                               False
+Loopback Pseudo-Interface 1                              False
+Tailscale                                                False
+vEthernet (External-VLAN-Trunk)                          False
+vEthernet (OPNsense-LAN)                                 False
+vEthernet (vSwitch-LAN)                                  False
+vEthernet (vSwitch-WAN)                                  False
+vEthernet (WSL)                                          False
+
+
+
+
+===== DNS validation from DC =====
+
+Name                                           Type   TTL   Section    IPAddress
+----                                           ----   ---   -------    ---------
+Chongong.local                                 A      600   Answer     192.168.20.11
+Chongong.local                                 A      600   Answer     192.168.20.12
+Chongong.local                                 A      600   Answer     192.168.20.12
+Chongong.local                                 A      600   Answer     192.168.20.11
+
+Name       : _ldap._tcp.Chongong.local
+QueryType  : SRV
+TTL        : 600
+Section    : Answer
+NameTarget : win-dc02.chongong.local
+Priority   : 0
+Weight     : 100
+Port       : 389
+
+
+Name       : _ldap._tcp.Chongong.local
+QueryType  : SRV
+TTL        : 600
+Section    : Answer
+NameTarget : win-prqd8tjg04m.chongong.local
+Priority   : 0
+Weight     : 100
+Port       : 389
+
+win-dc02.chongong.local                        A      3600  Additional 192.168.20.12
+win-prqd8tjg04m.chongong.local                 A      3600  Additional 192.168.20.11
+
+Name       : _ldap._tcp.Chongong.local
+QueryType  : SRV
+TTL        : 600
+Section    : Answer
+NameTarget : win-dc02.chongong.local
+Priority   : 0
+Weight     : 100
+Port       : 389
+
+
+Name       : _ldap._tcp.Chongong.local
+QueryType  : SRV
+TTL        : 600
+Section    : Answer
+NameTarget : win-prqd8tjg04m.chongong.local
+Priority   : 0
+Weight     : 100
+Port       : 389
+
+win-dc02.chongong.local                        A      3600  Additional 192.168.20.12
+win-prqd8tjg04m.chongong.local                 A      3600  Additional 192.168.20.11
+DESKTOP-QVM6OQN.localdomain                    A      0     Answer     192.168.50.28
+DESKTOP-QVM6OQN.localdomain                    A      0     Answer     192.168.50.28
+google.com                                     AAAA   300   Answer     2607:f8b0:4007:808::200e
+google.com                                     A      300   Answer     142.251.45.14
+google.com                                     AAAA   300   Answer     2607:f8b0:4007:808::200e
+google.com                                     A      300   Answer     142.251.45.14
+
+
+
+
+===== Domain controller and AD computer inventory =====
+
+HostName                       IPv4Address   IsGlobalCatalog Site                    OperationMasterRoles
+--------                       -----------   --------------- ----                    --------------------
+WIN-PRQD8TJG04M.Chongong.local 192.168.20.11            True Default-First-Site-Name {SchemaMaster, DomainNamingMaster, PDCEmulator, RIDMaster...}
+WIN-DC02.Chongong.local        192.168.20.12            True Default-First-Site-Name {}
+
+
+
+Name            IPv4Address   OperatingSystem                  LastLogonDate         DistinguishedName
+----            -----------   ---------------                  -------------         -----------------
+DESKTOP-576LPTN               Windows 11 Enterprise            9/13/2025 2:36:50 AM  CN=DESKTOP-576LPTN,OU=Workstations,OU=ManagedComputers,DC=Chongong,DC=local
+DESKTOP-5ISQOPR               Windows 10 Enterprise Evaluation 3/6/2026 3:14:59 PM   CN=DESKTOP-5ISQOPR,OU=Workstations,OU=ManagedComputers,DC=Chongong,DC=local
+DESKTOP-HD87LV2               Windows 10 Enterprise Evaluation 3/6/2026 3:11:34 PM   CN=DESKTOP-HD87LV2,OU=Workstations,OU=ManagedComputers,DC=Chongong,DC=local
+DESKTOP-PGMHP9F               Windows 10 Enterprise Evaluation 3/6/2026 3:11:27 PM   CN=DESKTOP-PGMHP9F,OU=Workstations,OU=ManagedComputers,DC=Chongong,DC=local
+DESKTOP-QVM6OQN 192.168.50.28 Windows 11 Enterprise            6/23/2026 10:55:44 AM CN=DESKTOP-QVM6OQN,OU=Workstations,OU=ManagedComputers,DC=Chongong,DC=local
+DESKTOP-VHPSR2K               Windows 10 Enterprise Evaluation 3/6/2026 3:15:32 PM   CN=DESKTOP-VHPSR2K,OU=Workstations,OU=ManagedComputers,DC=Chongong,DC=local
+GITEA                         pc-linux-gnu                     8/13/2025 9:35:45 PM  CN=GITEA,OU=Servers,OU=ManagedComputers,DC=Chongong,DC=local
+RADIUS01                                                       6/27/2026 2:03:05 PM  CN=RADIUS01,OU=Servers,OU=ManagedComputers,DC=Chongong,DC=local
+WIN-DC02        192.168.20.12 Windows Server 2022 Datacenter   7/3/2026 10:40:45 AM  CN=WIN-DC02,OU=Domain Controllers,DC=Chongong,DC=local
+WIN-PRQD8TJG04M 192.168.20.11 Windows Server 2022 Datacenter   6/23/2026 4:28:43 PM  CN=WIN-PRQD8TJG04M,OU=Domain Controllers,DC=Chongong,DC=local
+
+
+
+
+===== Hyper-V switches =====
+
+Name                SwitchType NetAdapterInterfaceDescription              AllowManagementOS
+----                ---------- ------------------------------              -----------------
+vSwitch-WAN           External Intel(R) I350 Gigabit Network Connection                 True
+OPNsense-LAN          Internal                                                          True
+External-VLAN-Trunk   External Intel(R) Ethernet Connection I217-LM                     True
+vSwitch-LAN           External Intel(R) I350 Gigabit Network Connection #2              True
+WSL                   Internal                                                          True
+
+
+
+
+===== Hyper-V VM state =====
+
+Name                  State Generation ProcessorCount MemoryAssigned Uptime
+----                  ----- ---------- -------------- -------------- ------
+DMZ-WebApps-VLAN200 Running          2              4     2147483648 30.21:57:44.6410000
+DVWA-VLAN250        Running          2              2     2147483648 30.21:57:44.8480000
+HQ-Wazuh-SIEM       Running          2              8     8589934592 22.07:09:16.5310000
+hyperv-test-01      Running          2              2     2147483648 22.14:07:16.2310000
+hyperv-test-02      Running          2              2     2147483648 22.13:56:29.5230000
+Kali-VLAN40         Running          2              4     2147483648 30.21:57:45.2790000
+lab-vlan10-01       Running          2              2     2147483648 24.01:51:05.8000000
+netflow01           Running          2              4     8589934592 12.23:07:41.9460000
+OpenCTI             Running          2              4    12884901888 30.21:57:39.5360000
+OPNsense            Running          1              4     4294967296 30.21:57:47.9560000
+rhel10-vlan10       Running          2              2     4294967296 12.09:55:35.5290000
+SecurityOnion       Running          2              8    17179869184 29.14:59:12.5490000
+Test-LAN            Running          2              1      536870912 30.21:57:46.8370000
+Wazuh-Ingest-VM     Running          2              2     1725956096 22.13:25:06.9480000
+WIN10-CLIENT            Off          2              2              0 00:00:00
+WIN10-COMMANDO          Off          2              4              0 00:00:00
+WIN10-FLARE             Off          2              4              0 00:00:00
+WIN10-VULN              Off          2              2              0 00:00:00
+WIN-DC02            Running          2              2     8589934592 03:09:19.1470000
+
+
+
+
+===== Hyper-V VM network adapters =====
+
+VMName              Name            SwitchName          MacAddress   Status IPAddresses
+------              ----            ----------          ----------   ------ -----------
+DMZ-WebApps-VLAN200 Network Adapter vSwitch-LAN         00155D140B2F {Ok}   {}
+DVWA-VLAN250        Network Adapter vSwitch-LAN         00155D140B34 {Ok}   {}
+HQ-Wazuh-SIEM       Network Adapter vSwitch-WAN         00155D140B0A {Ok}   {}
+hyperv-test-01      Network Adapter vSwitch-LAN         00155D140B39 {Ok}   {192.168.10.213, fe80::215:5dff:fe14:b39}
+hyperv-test-02      Network Adapter vSwitch-LAN         00155D140B3A {Ok}   {192.168.10.214, fe80::215:5dff:fe14:b3a}
+Kali-VLAN40         Network Adapter vSwitch-LAN         00155D140B2E {Ok}   {192.168.40.124, fe80::215:5dff:fe14:b2e}
+lab-vlan10-01       Network Adapter vSwitch-LAN         00155D140B37 {Ok}   {}
+netflow01           Network Adapter vSwitch-LAN         00155D140B3B {Ok}   {192.168.10.216, fe80::215:5dff:fe14:b3b}
+OpenCTI             Network Adapter vSwitch-LAN         00155D140B2C {Ok}   {}
+OPNsense            Management      External-VLAN-Trunk 00155D140B23 {Ok}   {192.168.20.253}
+OPNsense            LAN             vSwitch-LAN         00155D140B24 {Ok}   {}
+OPNsense            WAN             vSwitch-WAN         00155D140B25 {Ok}   {192.168.10.32}
+rhel10-vlan10       Network Adapter vSwitch-LAN         00155D140B36 {Ok}   {192.168.10.211, fe80::215:5dff:fe14:b36}
+rhel10-vlan10       Network Adapter                     00155D140B35 {Ok}   {}
+SecurityOnion       Monitoring      vSwitch-LAN         00155D140B29 {Ok}   {}
+SecurityOnion       Network Adapter vSwitch-LAN         00155D140B28 {Ok}   {}
+Test-LAN            Network Adapter vSwitch-LAN         00155D140B27 {Ok}   {}
+Wazuh-Ingest-VM     Network Adapter vSwitch-WAN         00155D140B0B {Ok}   {}
+WIN10-CLIENT        Network Adapter vSwitch-LAN         00155D140B30        {}
+WIN10-COMMANDO      Network Adapter vSwitch-LAN         00155D140B32        {}
+WIN10-FLARE         Network Adapter vSwitch-LAN         00155D140B33        {}
+WIN10-VULN          Network Adapter vSwitch-LAN         00155D140B31        {}
+WIN-DC02            Network Adapter External-VLAN-Trunk 00155D140B3C {Ok}   {192.168.20.12, fe80::842d:b4e2:41b3:c8c6}

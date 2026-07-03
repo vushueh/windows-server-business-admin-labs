@@ -23,6 +23,10 @@ Project 03 Phase 5 is now complete with a real conditional forwarder:
 has recursion disabled for that forwarded zone. Route10 configuration was not
 changed.
 
+Project 04 is complete. Windows DHCP remains active and documented, and scope
+`192.168.20.0/24` now advertises both AD DNS servers (`192.168.20.11` and
+`192.168.20.12`). Route10 and OPNsense configuration were not changed.
+
 ---
 
 ## P03 PHASE 5 DISCOVERY — 2026-07-03 (Claude read-only, Leonel live execution)

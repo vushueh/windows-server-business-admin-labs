@@ -262,10 +262,10 @@ Update:
 **Requires:** P03 two-DC DNS work complete.
 **Slash command:** `/winserver-p04`
 
-Route10 is the main homelab router and long-term DHCP/IPAM authority. OPNsense
-manages selected lab VLANs. P04 must validate that Windows Server, AD DNS, and
-Hyper-V clients work with that real network design. Do not redesign the full
-homelab DHCP model inside the Windows repo.
+Project 04 is complete as of `2026-07-03`. Route10 remains the main homelab
+router and long-term DHCP/IPAM authority. OPNsense manages selected lab VLANs.
+Windows DHCP was documented, and the Windows VLAN 20 scope was corrected to
+advertise both AD DNS servers: `192.168.20.11, 192.168.20.12`.
 
 ### Phase 1 — Discover Current DHCP Roles
 

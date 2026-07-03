@@ -54,7 +54,7 @@ audit policy, tested DR, and hybrid identity.
 | 01 | Server Baseline + Hardening | Secure server foundation, admin model | None yet — foundation |
 | 02 | Active Directory Architecture | OU design, account tiers, AGDLP | Users available for cross-family auth |
 | 03 | DNS Engineering | AD DNS, split DNS, forwarders | DNS available for all VMs |
-| 04 | DHCP/IPAM Integration | Route10/OPNsense DHCP authority, AD DNS client validation, Hyper-V addressing | Network design supports Windows correctly |
+| 04 | DHCP/IPAM Integration | Route10/OPNsense DHCP authority, AD DNS client validation, Hyper-V addressing | ✅ Complete - network design supports Windows correctly |
 | 05 | GPO Security Baselines | Password policy, firewall GPO, audit | Security baseline for all joined devices |
 | 06 | File Server + Access Governance | Dept shares, AGDLP, auditing | File access for domain users |
 | 07 | Windows Client Lifecycle | Domain join, RSAT, workstation hardening | Test user auth from workstations |

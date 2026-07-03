@@ -1,0 +1,167 @@
+
+===== Session identity =====
+
+Date                ComputerName    User
+----                ------------    ----
+7/3/2026 2:29:45 PM WIN-PRQD8TJG04M CHONGONG\adm-leonel
+
+
+
+
+===== Windows DHCP scope and DNS option after fix =====
+
+
+ScopeId       : 192.168.20.0
+Name          : Lan-Network
+State         : Active
+StartRange    : 192.168.20.1
+EndRange      : 192.168.20.254
+SubnetMask    : 255.255.255.0
+LeaseDuration : 24.00:00:00
+
+OptionId : 3
+Name     : Router
+Value    : {192.168.20.1}
+
+OptionId : 15
+Name     : DNS Domain Name
+Value    : {Chongong.local}
+
+OptionId : 6
+Name     : DNS Servers
+Value    : {192.168.20.11, 192.168.20.12}
+
+IPAddress       : 192.168.20.21
+HostName        : WIN-6QVR2H91AU4.Chongong.local
+ClientId        : 00-15-5d-14-0b-3c
+AddressState    : Active
+LeaseExpiryTime : 7/27/2026 8:30:32 AM
+
+ScopeId    : 192.168.20.0
+StartRange : 192.168.20.1
+EndRange   : 192.168.20.10
+
+ScopeId    : 192.168.20.0
+StartRange : 192.168.20.11
+EndRange   : 192.168.20.20
+
+
+
+
+
+===== DHCP bindings still discovered but not changed =====
+
+InterfaceAlias                  IPAddress     SubnetMask    BindingState
+--------------                  ---------     ----------    ------------
+vEthernet (WSL)                 172.30.144.1  255.255.240.0         True
+Ethernet 4                      192.168.56.1  255.255.255.0         True
+Ethernet 3                      172.28.128.1  255.255.255.0         True
+vEthernet (External-VLAN-Trunk) 192.168.20.11 255.255.255.0         True
+
+
+
+
+===== AD DNS validation through both DCs =====
+
+Name                                           Type   TTL   Section    IPAddress
+----                                           ----   ---   -------    ---------
+Chongong.local                                 A      600   Answer     192.168.20.11
+Chongong.local                                 A      600   Answer     192.168.20.12
+Chongong.local                                 A      600   Answer     192.168.20.11
+Chongong.local                                 A      600   Answer     192.168.20.12
+
+Name       : _ldap._tcp.Chongong.local
+QueryType  : SRV
+TTL        : 600
+Section    : Answer
+NameTarget : win-prqd8tjg04m.chongong.local
+Priority   : 0
+Weight     : 100
+Port       : 389
+
+
+Name       : _ldap._tcp.Chongong.local
+QueryType  : SRV
+TTL        : 600
+Section    : Answer
+NameTarget : win-dc02.chongong.local
+Priority   : 0
+Weight     : 100
+Port       : 389
+
+win-prqd8tjg04m.chongong.local                 A      3600  Additional 192.168.20.11
+win-dc02.chongong.local                        A      3600  Additional 192.168.20.12
+
+Name       : _ldap._tcp.Chongong.local
+QueryType  : SRV
+TTL        : 600
+Section    : Answer
+NameTarget : win-prqd8tjg04m.chongong.local
+Priority   : 0
+Weight     : 100
+Port       : 389
+
+
+Name       : _ldap._tcp.Chongong.local
+QueryType  : SRV
+TTL        : 600
+Section    : Answer
+NameTarget : win-dc02.chongong.local
+Priority   : 0
+Weight     : 100
+Port       : 389
+
+win-prqd8tjg04m.chongong.local                 A      3600  Additional 192.168.20.11
+win-dc02.chongong.local                        A      3600  Additional 192.168.20.12
+DESKTOP-QVM6OQN.localdomain                    A      0     Answer     192.168.50.28
+DESKTOP-QVM6OQN.localdomain                    A      0     Answer     192.168.50.28
+google.com                                     AAAA   89    Answer     2607:f8b0:4007:808::200e
+google.com                                     A      89    Answer     142.251.45.14
+google.com                                     AAAA   88    Answer     2607:f8b0:4007:808::200e
+google.com                                     A      88    Answer     142.251.45.14
+
+
+
+
+===== Domain client and Hyper-V addressing summary =====
+
+Name            IPv4Address   OperatingSystem                  LastLogonDate
+----            -----------   ---------------                  -------------
+DESKTOP-576LPTN               Windows 11 Enterprise            9/13/2025 2:36:50 AM
+DESKTOP-5ISQOPR               Windows 10 Enterprise Evaluation 3/6/2026 3:14:59 PM
+DESKTOP-HD87LV2               Windows 10 Enterprise Evaluation 3/6/2026 3:11:34 PM
+DESKTOP-PGMHP9F               Windows 10 Enterprise Evaluation 3/6/2026 3:11:27 PM
+DESKTOP-QVM6OQN 192.168.50.28 Windows 11 Enterprise            6/23/2026 10:55:44 AM
+DESKTOP-VHPSR2K               Windows 10 Enterprise Evaluation 3/6/2026 3:15:32 PM
+GITEA                         pc-linux-gnu                     8/13/2025 9:35:45 PM
+RADIUS01                                                       6/27/2026 2:03:05 PM
+WIN-DC02        192.168.20.12 Windows Server 2022 Datacenter   7/3/2026 10:40:45 AM
+WIN-PRQD8TJG04M 192.168.20.11 Windows Server 2022 Datacenter   6/23/2026 4:28:43 PM
+
+
+
+VMName              SwitchName          MacAddress   IPAddresses
+------              ----------          ----------   -----------
+DMZ-WebApps-VLAN200 vSwitch-LAN         00155D140B2F {}
+DVWA-VLAN250        vSwitch-LAN         00155D140B34 {}
+HQ-Wazuh-SIEM       vSwitch-WAN         00155D140B0A {}
+hyperv-test-01      vSwitch-LAN         00155D140B39 {192.168.10.213, fe80::215:5dff:fe14:b39}
+hyperv-test-02      vSwitch-LAN         00155D140B3A {192.168.10.214, fe80::215:5dff:fe14:b3a}
+Kali-VLAN40         vSwitch-LAN         00155D140B2E {192.168.40.124, fe80::215:5dff:fe14:b2e}
+lab-vlan10-01       vSwitch-LAN         00155D140B37 {}
+netflow01           vSwitch-LAN         00155D140B3B {192.168.10.216, fe80::215:5dff:fe14:b3b}
+OpenCTI             vSwitch-LAN         00155D140B2C {}
+OPNsense            External-VLAN-Trunk 00155D140B23 {192.168.20.253}
+OPNsense            vSwitch-LAN         00155D140B24 {}
+OPNsense            vSwitch-WAN         00155D140B25 {192.168.10.32}
+rhel10-vlan10       vSwitch-LAN         00155D140B36 {192.168.10.211, fe80::215:5dff:fe14:b36}
+rhel10-vlan10                           00155D140B35 {}
+SecurityOnion       vSwitch-LAN         00155D140B29 {}
+SecurityOnion       vSwitch-LAN         00155D140B28 {}
+Test-LAN            vSwitch-LAN         00155D140B27 {}
+Wazuh-Ingest-VM     vSwitch-WAN         00155D140B0B {}
+WIN10-CLIENT        vSwitch-LAN         00155D140B30 {}
+WIN10-COMMANDO      vSwitch-LAN         00155D140B32 {}
+WIN10-FLARE         vSwitch-LAN         00155D140B33 {}
+WIN10-VULN          vSwitch-LAN         00155D140B31 {}
+WIN-DC02            External-VLAN-Trunk 00155D140B3C {192.168.20.12, fe80::842d:b4e2:41b3:c8c6}
