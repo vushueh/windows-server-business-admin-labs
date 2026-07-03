@@ -11,6 +11,18 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ---
 
+## CURRENT UPDATE — 2026-07-03
+
+`WIN-DC02` now exists at `192.168.20.12` and has been promoted as a replica
+domain controller, DNS server, and Global Catalog. Project 02 Phase 7 and Project
+03 Phase 9 are complete. `WIN-PRQD8TJG04M` remains the FSMO holder, and direct
+DNS queries now resolve the PDC hostname to `192.168.20.11` only.
+
+Project 03 Phase 5 remains intentionally deferred until there is a real
+cross-lab zone that needs conditional forwarding.
+
+---
+
 ## PROJECT 03 EXECUTION LOG — 2026-06-23 (Claude, live session)
 
 ### 🟢 RESOLVED — Item P03-01: Project 03 (AD DNS Engineering) execution against live DC
@@ -21,10 +33,11 @@ Server on the DC, plink.exe as client since local WinRM client requires elevatio
 doesn't have). Note: Project 02 prerequisite is not fully closed (WIN-DC02 replica still
 pending) — proceeding against the single DC anyway per Leonel's instruction.
 
-**Resolution (2026-06-23):** Project 03 current-PDC work is mostly complete and documented.
-Phase 5 is deferred because no conditional forwarder is currently needed. Phase 9 remains
-blocked until `WIN-DC02` exists. Documentation was corrected to include proper phase
-sections, screenshot plans, and valid internal links.
+**Resolution (2026-06-23):** Project 03 current-PDC work was mostly complete and documented.
+Phase 5 was deferred because no conditional forwarder was currently needed, and Phase 9 was
+blocked until `WIN-DC02` existed. **Superseded on 2026-07-03:** `WIN-DC02` now exists and
+Phase 9 is complete. Documentation was corrected to include proper phase sections,
+screenshot plans, and valid internal links.
 
 **Phase 1 — Audit: DONE (read-only)**
 - Zones: `_msdcs.Chongong.local`, `Chongong.local` (both AD-integrated primary), plus

@@ -4,6 +4,60 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-03 (Codex — WIN-DC02 replica DC and secondary DNS evidence)
+### What I did
+- Documented the `WIN-DC02` build and promotion as the Project 02 replica domain controller.
+- Documented the Project 03 secondary DNS verification on `WIN-DC02`.
+- Added reviewed screenshot evidence under the matching Project 02 Phase 7 and Project 03 Phase 9 sections.
+- Captured the live troubleshooting path: system backup, DHCP exclusion, multihomed PDC DNS cleanup, DNS listen-address correction, DC promotion, replication checks, and final DNS verification.
+- Updated root, project, topology, roadmap, operator, and skill status files so they no longer show `WIN-DC02` as pending.
+
+### Files created/modified
+- `README.md`
+- `AGENTS.md`
+- `CODEX-LOG.md`
+- `docs/topology.md`
+- `docs/execution-roadmap.md`
+- `projects/README.md`
+- `projects/project-02-ad-architecture/README.md`
+- `projects/project-02-ad-architecture/docs/p02-screenshot-plan.md`
+- `projects/project-02-ad-architecture/docs/p02-win-dc02-build-evidence.md`
+- `projects/project-02-ad-architecture/screenshots/phase7-00-win-dc02-prejoin-network-check.png`
+- `projects/project-02-ad-architecture/screenshots/phase7-01-win-dc02-hyperv-vm.png`
+- `projects/project-02-ad-architecture/screenshots/phase7-02-win-dc02-domain-controllers-ou.JPG`
+- `projects/project-02-ad-architecture/screenshots/phase7-03-replication-healthy.JPG`
+- `projects/project-02-ad-architecture/screenshots/phase7-04-sysvol-netlogon-shares.JPG`
+- `projects/project-02-ad-architecture/screenshots/phase7-05-fsmo-roles-remain-on-pdc.JPG`
+- `projects/project-03-dns-engineering/README.md`
+- `projects/project-03-dns-engineering/docs/p03-screenshot-plan.md`
+- `projects/project-03-dns-engineering/docs/p03-win-dc02-secondary-dns-evidence.md`
+- `projects/project-03-dns-engineering/screenshots/phase9-00-pdc-hostname-clean-after-fix.png`
+- `projects/project-03-dns-engineering/screenshots/phase9-00-pdc-multihomed-dns-before-cleanup.png`
+- `projects/project-03-dns-engineering/screenshots/phase9-01-win-dc02-dns-zones.JPG`
+- `projects/project-03-dns-engineering/screenshots/phase9-02-win-dc02-dns-resolution.png`
+- `projects/project-03-dns-engineering/screenshots/phase9-03-win-dc02-forwarders.JPG`
+- `projects/project-03-dns-engineering/screenshots/phase9-04-win-dc02-ptr-record.png`
+- `projects/project-03-dns-engineering/screenshots/phase9-05-pdc-dns-client-now-uses-dc02.png`
+- `skills/windows-server-business-admin.md`
+- `skills/winserver-projects.md`
+
+### Architecture decisions made
+- `WIN-PRQD8TJG04M` remains the FSMO holder and PDC operations anchor.
+- `WIN-DC02` is the replica DC, DNS server, and Global Catalog at `192.168.20.12`.
+- The PDC DNS service listens only on `192.168.20.11` to avoid publishing non-AD interface addresses.
+- The PDC DNS client uses `192.168.20.12, 192.168.20.11`; `WIN-DC02` uses `192.168.20.11, 192.168.20.12`.
+- Phase 5 conditional forwarders in Project 03 stay deferred until there is a real cross-lab zone to forward.
+
+### Cross-family impacts
+- Project 04 can now validate DHCP/IPAM and DNS option design against two working AD DNS servers.
+- NetOps, SOC, Proxmox, OPNsense, and future NPS/RADIUS work can reference a two-DC identity and DNS base.
+- The stale temporary `192.168.20.21` PTR seen in DNS Manager can be cleaned later if scavenging does not remove it.
+
+### Open questions for Claude
+- None.
+
+---
+
 ## Session — 2026-06-24 (Codex — Route10 repo handoff and Project 04 scope correction)
 ### What I did
 - Created and pushed the new private Route10 project family repo: `homelab-route10-network-core`.

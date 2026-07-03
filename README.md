@@ -67,11 +67,13 @@ Detailed order: [execution-roadmap.md](docs/execution-roadmap.md)
 
 ## Actual Environment (Discovered 2026-06-05)
 
-WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hyper-V host.
+WIN-PRQD8TJG04M is already live. It is the original DC and FSMO holder, not just
+the Hyper-V host. `WIN-DC02` is now the replica DC and secondary DNS server.
 
 | Component | Platform | IP | Notes |
 |-----------|----------|----|-------|
 | WIN-PRQD8TJG04M | Windows Server 2022 Datacenter | 192.168.20.11 / Tailscale 100.81.197.116 | PDC for Chongong.local, DNS, NPS, RDS farm, IIS, Hyper-V; DHCP role/state to be verified in P04 |
+| WIN-DC02 | Windows Server 2022 Standard | 192.168.20.12 | Replica DC, DNS, Global Catalog |
 | WIN-RDS01 | Hyper-V VM | TBD (Project 08) | Migration target: RD Session Host (moving off DC) |
 | WIN-FS01 | Hyper-V VM | TBD (Project 06) | Dedicated File Server |
 | WIN-WS01 | Hyper-V VM | TBD (Project 07) | Domain-joined test workstation |
@@ -87,8 +89,8 @@ WIN-PRQD8TJG04M is already live. It IS the Domain Controller — not just the Hy
 | # | Project | Focus | Status |
 |---|---------|-------|--------|
 | [01](projects/project-01-server-baseline-hardening/) | **Server Baseline, Hardening, and Admin Model** | Role inventory, tiered admin, lockout policy, firewall baseline | ✅ Complete |
-| [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | Managed OUs, delegated admin, AGDLP groups, naming standards | 🔄 AD complete; WIN-DC02 pending |
-| [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, split DNS, forwarders | 🔄 Mostly complete — 2026-06-23 (Phase 5 N/A, Phase 9 blocked by WIN-DC02) |
+| [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | Managed OUs, delegated admin, AGDLP groups, replica DC | ✅ Complete — 2026-07-03 |
+| [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, split DNS, forwarders, secondary DNS | ✅ Complete — 2026-07-03 (Phase 5 deferred until a real cross-lab zone exists) |
 | [04](projects/project-04-dhcp-ipam/) | **DHCP/IPAM Integration and Windows Client Validation** | Route10/OPNsense DHCP authority, AD DNS client validation, Hyper-V addressing | ⬜ Planned |
 | [05](projects/project-05-gpo-security-baselines/) | **Group Policy Security Baselines** | Firewall GPO, audit policy, DefaultInboundAction | ⬜ Planned |
 | [06](projects/project-06-file-server-access-governance/) | **File Server, NTFS, and Access Governance** | Dept shares, AGDLP, auditing | ⬜ Planned |

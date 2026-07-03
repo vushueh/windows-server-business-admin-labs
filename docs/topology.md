@@ -1,9 +1,10 @@
 # Network Topology — Windows Server Lab
 
-## Actual Server State (Discovered 2026-06-05; P02 updated 2026-06-23)
+## Actual Server State (Discovered 2026-06-05; P02/P03 updated 2026-07-03)
 
-WIN-PRQD8TJG04M is a single physical/bare-metal host that currently runs EVERYTHING.
-It is not just a Hyper-V host — it IS the Domain Controller.
+WIN-PRQD8TJG04M is the original physical/bare-metal host. It is still the FSMO
+holder and primary operations DC, but the domain now has a second DC:
+`WIN-DC02`.
 
 | Component | Value |
 |-----------|-------|
@@ -11,19 +12,19 @@ It is not just a Hyper-V host — it IS the Domain Controller.
 | LAN IP | 192.168.20.11 |
 | Tailscale IP | 100.81.197.116 |
 | OS | Windows Server 2022 Datacenter |
-| Domain role | Primary Domain Controller (DomainRole=5) |
+| Domain role | PDC/FSMO holder |
 | Domain | Chongong.local / CHONGONG / Windows2016Domain |
 
 ## Roles Running on WIN-PRQD8TJG04M (All Active)
 
 | Role | Service | Notes |
 |------|---------|-------|
-| AD-Domain-Services | AD DS (PDC) | Chongong.local domain |
-| DNS | AD-integrated | Zone: Chongong.local |
+| AD-Domain-Services | AD DS (PDC/FSMO holder) | Chongong.local domain |
+| DNS | AD-integrated | Zones replicated to `WIN-DC02` |
 | DHCP | Active scope | Lan-Network: 192.168.20.0/24, range .1–.254 |
 | NPAS | NPS / RADIUS | radius-service account exists; purpose under investigation |
 | FS-FileServer | File Server | Active |
-| Hyper-V | 18 VMs inventoried on 2026-06-23 | This host IS the Hyper-V server |
+| Hyper-V | VM inventory to refresh in Project 08; `WIN-DC02` added on 2026-07-03 | This host IS the Hyper-V server |
 | RDS (full farm) | Connection Broker, Gateway, Licensing, Session Host, Web Access | ⚠️ On DC — risk documented in P01 |
 | IIS | Full install, ASP.NET, Windows Auth | ⚠️ On DC — likely serving RDS Web Access |
 
@@ -32,6 +33,7 @@ It is not just a Hyper-V host — it IS the Domain Controller.
 | Computer account | Type | Notes |
 |-----------------|------|-------|
 | WIN-PRQD8TJG04M | DC | The server itself |
+| WIN-DC02 | DC | Replica DC, DNS, Global Catalog |
 | RADIUS01 | Server/VM | Unknown VM — investigate in P13 |
 | GITEA | Server/VM | Gitea instance |
 | DESKTOP-QVM6OQN | Workstation | Domain-joined client |
@@ -51,10 +53,17 @@ It is not just a Hyper-V host — it IS the Domain Controller.
 | Global groups | `OU=GlobalGroups,OU=Groups,DC=Chongong,DC=local` |
 | Domain local groups | `OU=DomainLocalGroups,OU=Groups,DC=Chongong,DC=local` |
 
-## Hyper-V VM Inventory (18 VMs — details finalized in Project 08)
+## Hyper-V VM Inventory (Details finalized in Project 08)
 
-Inventory to be documented in Project 08 (Hyper-V Operations).
-Known from AD computer accounts: RADIUS01, GITEA are domain-joined VMs.
+Inventory to be documented in Project 08 (Hyper-V Operations). Known from AD
+computer accounts: `RADIUS01`, `GITEA`, and `WIN-DC02` are domain-joined VMs.
+
+## Domain Controllers
+
+| DC | IP | Roles |
+|----|----|-------|
+| WIN-PRQD8TJG04M | 192.168.20.11 | FSMO holder, AD DS, DNS, Global Catalog |
+| WIN-DC02 | 192.168.20.12 | Replica DC, AD DS, DNS, Global Catalog |
 
 ## Planned Migration VMs (Future Projects)
 
@@ -62,7 +71,6 @@ Known from AD computer accounts: RADIUS01, GITEA are domain-joined VMs.
 |----|---------|--------|
 | WIN-RDS01 | Project 08 | RD Session Host (migrate from DC) |
 | WIN-RDWEB01 | Project 08 | RD Gateway + Web Access + Broker + Licensing (optional) |
-| WIN-DC02 | Project 02 follow-up | Replica Domain Controller; VM not present as of 2026-06-23 |
 | WIN-FS01 | Project 06 | Dedicated File Server |
 | WIN-WS01 | Project 07 | Test Workstation (Win 11) |
 
@@ -70,18 +78,28 @@ Known from AD computer accounts: RADIUS01, GITEA are domain-joined VMs.
 
 | Segment | Subnet | Gateway | Notes |
 |---------|--------|---------|-------|
-| Management / LAN | 192.168.20.0/24 | TBD | DHCP scope active |
+| Management / LAN | 192.168.20.0/24 | 192.168.20.1 | Windows DHCP scope exists; first 20 addresses excluded/reserved for infrastructure |
 
 ## DNS Design (Current)
 
 ```
 WIN-PRQD8TJG04M = DNS server (AD-integrated)
+  IP: 192.168.20.11
+  DNS service listens on: 192.168.20.11
+  DNS client order: 192.168.20.12, 192.168.20.11
+
+WIN-DC02 = DNS server (AD-integrated)
+  IP: 192.168.20.12
+  DNS client order: 192.168.20.11, 192.168.20.12
+
   Zone: Chongong.local (Primary, AD-integrated)
   Zone: _msdcs.Chongong.local (Primary, AD-integrated)
-  Standard reverse lookup zones
+  Zone: 20.168.192.in-addr.arpa (Primary, AD-integrated)
+  Forwarders: 8.8.8.8, 1.1.1.1, 8.8.4.4, 9.9.9.9
 
 DO NOT: set DC DNS to 8.8.8.8
-Correct: DC DNS = 127.0.0.1 (loopback) + forwarders to 8.8.8.8 / 1.1.1.1 for public resolution
+Correct: DC DNS clients use AD DNS servers. Public resolvers belong only in DNS
+server forwarders.
 ```
 
 ## Virtual Switch Design (Target — Project 08)

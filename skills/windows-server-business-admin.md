@@ -35,8 +35,8 @@ audit policy, tested DR, and hybrid identity.
 
 | Component | IP | Platform | Notes |
 |-----------|----|----------|-------|
-| WIN-PRQD8TJG04M | 192.168.20.11 | Physical / Hyper-V Host | Existing PDC for Chongong.local; runs all Windows Server VMs |
-| WIN-DC02 | TBD | Hyper-V VM | Planned replica DC; VM not present as of P02 live AD architecture completion |
+| WIN-PRQD8TJG04M | 192.168.20.11 | Physical / Hyper-V Host | Original PDC/FSMO holder for Chongong.local; runs Windows Server VMs |
+| WIN-DC02 | 192.168.20.12 | Hyper-V VM | Replica DC, DNS, Global Catalog |
 | WIN-FS01 | TBD (Project 06) | Hyper-V VM | File Server |
 | WIN-WS01 | TBD (Project 07) | Hyper-V VM | Test workstation |
 | OPNsense | 192.168.20.x | Hyper-V VM | Firewall — RADIUS auth in Project 13 |

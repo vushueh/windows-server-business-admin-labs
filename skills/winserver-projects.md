@@ -19,7 +19,7 @@ description: >
 |-----------|-------|
 | PDC | WIN-PRQD8TJG04M — 192.168.20.11 / Tailscale 100.81.197.116 |
 | Domain | Chongong.local / CHONGONG |
-| Replica DC | WIN-DC02 (planned; VM not present after P02 AD architecture work) |
+| Replica DC | WIN-DC02 — 192.168.20.12 |
 | File Server | WIN-FS01 (created in P06) |
 | Workstation | WIN-WS01 (created in P07) |
 | RDS farm | WIN-RDS01 + WIN-RDWEB01 (created in P08) |
@@ -105,19 +105,20 @@ Key manual GUI checks:
 
 ### Phase 3 — Replica DC Decision
 
-`WIN-DC02` is still pending because the VM does not exist yet. Treat it as a
-separate VM build before promotion. Do not pretend the domain has redundancy
-until `repadmin /replsummary` and `repadmin /showrepl` confirm it.
+`WIN-DC02` was built and promoted on `2026-07-03`. Treat the domain as a
+two-DC design only after checking current replication health with `repadmin`.
 
 ### Phase 4 — Replica DC Build (WIN-DC02)
 
 ```powershell
-# On WIN-DC02 Hyper-V VM (2 vCPU, 4GB, 80GB) — after Windows Server 2022 install
+# On WIN-DC02 Hyper-V VM (8GB static RAM, 80GB) — after Windows Server 2022 install
 Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
 Import-Module ADDSDeployment
 Install-ADDSDomainController `
   -DomainName "Chongong.local" `
   -InstallDns:$true `
+  -NoGlobalCatalog:$false `
+  -ReplicationSourceDC "WIN-PRQD8TJG04M.Chongong.local" `
   -Credential (Get-Credential "CHONGONG\adm-leonel") `
   -SafeModeAdministratorPassword (Read-Host -AsSecureString "DSRM password") `
   -Force:$true
@@ -144,13 +145,13 @@ Windows Server 2022 AD DS functional level.
 
 ## Project 03 — AD DNS Engineering
 
-**Requires:** P02 managed AD architecture complete. `WIN-DC02` replication checks wait until that VM exists.
+**Requires:** P02 managed AD architecture and `WIN-DC02` replica DC complete.
 **Slash command:** `/winserver-p03`
 
 ### Current State
 
-Current-PDC DNS work is mostly complete. Phase 5 is deferred until a real
-conditional-forwarder need exists. Phase 9 waits for `WIN-DC02`.
+Project 03 is complete as of `2026-07-03`. Phase 5 is deferred until a real
+conditional-forwarder need exists.
 
 ### Phase 1 — Audit Current DNS State
 
@@ -165,13 +166,13 @@ Get-DnsClientServerAddress -AddressFamily IPv4
 ### Phase 2 — Fix DNS Server Addressing
 
 ```
-WIN-PRQD8TJG04M NIC now: Primary DNS = 127.0.0.1
-After WIN-DC02 exists: add WIN-DC02 IP as secondary DNS on WIN-PRQD8TJG04M
-WIN-DC02 NIC later: Primary DNS = WIN-PRQD8TJG04M IP | Secondary = 127.0.0.1
+WIN-PRQD8TJG04M NIC now: DNS = 192.168.20.12, 192.168.20.11
+WIN-DC02 NIC now: DNS = 192.168.20.11, 192.168.20.12
 NEVER set DC NIC DNS to 8.8.8.8 — breaks AD authentication
 ```
 
-Actual P03 result: `vEthernet (External-VLAN-Trunk)` now uses `127.0.0.1`.
+Actual P03 result: both DCs use AD DNS servers. Public resolvers are forwarders
+only.
 
 ### Phase 3 — Forwarders
 
@@ -225,12 +226,15 @@ Resolve-DnsName google.com
 
 ### Phase 9 — WIN-DC02 DNS Verification
 
-Pending until `WIN-DC02` exists.
+Complete on `2026-07-03`.
 
 ```powershell
 Get-ADDomainController -Filter *
 Get-DnsServerZone -ComputerName WIN-DC02
 repadmin /replsummary
+Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local -Server 192.168.20.12 -DnsOnly -NoHostsFile
+Resolve-DnsName WIN-DC02.Chongong.local -Server 192.168.20.12 -DnsOnly -NoHostsFile
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.12
 ```
 
 ### Phase 10 — Document + Push
@@ -246,7 +250,7 @@ Update:
 
 ## Project 04 — DHCP/IPAM Integration and Windows Client Validation
 
-**Requires:** P03 current-PDC DNS work complete; repeat secondary DNS checks after `WIN-DC02` exists.
+**Requires:** P03 two-DC DNS work complete.
 **Slash command:** `/winserver-p04`
 
 Route10 is the main homelab router and long-term DHCP/IPAM authority. OPNsense

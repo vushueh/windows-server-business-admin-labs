@@ -11,7 +11,8 @@ Advanced Windows Server 2022 lab. Goal: build a real small-business Microsoft en
 and integrate it as the identity backbone for all other homelab families.
 
 **Platform:** Hyper-V host WIN-PRQD8TJG04M (192.168.20.11, Tailscale 100.81.197.116).
-**Important:** This machine IS already the Primary Domain Controller for Chongong.local.
+**Important:** This machine is the original Primary Domain Controller and FSMO holder for Chongong.local.
+`WIN-DC02` (192.168.20.12) is now the replica DC and secondary DNS server.
 It is not a fresh server — see `projects/project-01-server-baseline-hardening/README.md`
 for the complete live audit findings.
 
@@ -82,7 +83,8 @@ Never: Codex does not execute live server commands.
 
 | Component | IP / Location | Notes |
 |-----------|--------------|-------|
-| WIN-PRQD8TJG04M | 192.168.20.11 / Tailscale 100.81.197.116 | PDC for Chongong.local, also Hyper-V host for 13 VMs |
+| WIN-PRQD8TJG04M | 192.168.20.11 / Tailscale 100.81.197.116 | PDC/FSMO holder for Chongong.local, also Hyper-V host |
+| WIN-DC02 | 192.168.20.12 | Replica DC, DNS, Global Catalog |
 | SSH access | `ssh -i claude_winserver_2022_ed25519 Administrator@100.81.197.116` | Ed25519 key |
 | Domain | Chongong.local / CHONGONG | Windows2016Domain functional level |
 | Joined computers | RADIUS01, GITEA, 5× DESKTOP machines | Already domain-joined |
@@ -95,8 +97,8 @@ Never: Codex does not execute live server commands.
 | Project | Status | Notes |
 |---------|--------|-------|
 | 01 — Server Baseline + Hardening | ✅ Complete | Password/lockout hardened, tiered admin model created, RDS/IIS/NPS/firewall risk documented |
-| 02 — AD Architecture | 🔄 AD complete; WIN-DC02 pending | Managed OUs, AGDLP groups, disabled staged accounts, AD Recycle Bin, and helpdesk delegation are live |
-| 03 — DNS Engineering | 🔄 Mostly complete; WIN-DC02 DNS check pending | DC DNS client fixed, reverse zone/PTR created, scavenging enabled, split-brain DNS verified |
+| 02 — AD Architecture | ✅ Complete | Managed OUs, AGDLP groups, disabled staged accounts, AD Recycle Bin, helpdesk delegation, and `WIN-DC02` replica DC are live |
+| 03 — DNS Engineering | ✅ Complete | DC DNS client fixed, reverse zone/PTR records created, scavenging enabled, split-brain DNS and `WIN-DC02` secondary DNS verified; Phase 5 deferred until a real cross-lab zone exists |
 | 04–13 | ⬜ Planned | Follow the cross-family execution roadmap |
 
 ## Cross-Family Integration Awareness

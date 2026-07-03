@@ -29,7 +29,7 @@ deferred or blocked.
 | Phase 6 | Complete | 2 screenshots |
 | Phase 7 | Complete | 2 screenshots |
 | Phase 8 | Complete | 2 screenshots |
-| Phase 9 | Pending - blocked by `WIN-DC02` | 1 screenshot |
+| Phase 9 | Complete | 7 screenshots |
 | Phase 10 | Complete | 2 screenshots |
 
 ## Phase 1 - Audit Current DNS State
@@ -61,9 +61,9 @@ Get-DnsClientServerAddress -AddressFamily IPv4
 
 ### Image: `phase2-01-dns-client-after-fix.png`
 
-- **What it shows:** The LAN NIC now points to `127.0.0.1`.
+- **What it shows:** The LAN NIC moved off public DNS and now uses AD DNS.
 - **Manual check:** Network adapter IPv4 DNS settings.
-- **Why:** Proves the DC now queries its own AD DNS service.
+- **Why:** Proves the DC no longer uses public resolvers for AD DNS lookups.
 - **PowerShell equivalent:**
 
 ```powershell
@@ -215,16 +215,91 @@ Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
 
 ## Phase 9 - `WIN-DC02` DNS Verification
 
-### Image: `phase9-01-win-dc02-dns-verification-pending.png`
+### Image: `phase9-00-pdc-multihomed-dns-before-cleanup.png`
 
-- **What it shows:** `WIN-DC02` does not exist yet, so secondary DNS verification is pending.
-- **Manual check:** Hyper-V Manager and ADUC Domain Controllers OU.
-- **Why:** Proves the phase is blocked by the missing replica DC, not by DNS work.
+- **What it shows:** `WIN-PRQD8TJG04M` had multiple A/AAAA records from non-AD
+  interfaces before the cleanup.
+- **Manual check:** PowerShell direct DNS query against `192.168.20.11`.
+- **Why:** Proves why DNS cleanup was required before adding a replica DC.
 - **PowerShell equivalent:**
 
 ```powershell
-Get-VM WIN-DC02
-Get-ADComputer -LDAPFilter '(name=WIN-DC02)'
+Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local -Server 192.168.20.11 -DnsOnly -NoHostsFile
+```
+
+### Image: `phase9-00-pdc-hostname-clean-after-fix.png`
+
+- **What it shows:** `WIN-PRQD8TJG04M` resolves only to `192.168.20.11` after
+  cleanup.
+- **Manual check:** PowerShell direct DNS query against `192.168.20.11`.
+- **Why:** Proves the new DC would contact the correct PDC address.
+- **PowerShell equivalent:**
+
+```powershell
+Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local -Server 192.168.20.11 -DnsOnly -NoHostsFile
+```
+
+### Image: `phase9-01-win-dc02-dns-zones.JPG`
+
+- **What it shows:** AD-integrated DNS zones are present on `WIN-DC02`.
+- **Manual check:** DNS Manager -> `WIN-DC02`.
+- **Why:** Proves DNS zones replicated to the new DC.
+- **PowerShell equivalent:**
+
+```powershell
+Get-DnsServerZone -ComputerName WIN-DC02
+```
+
+### Image: `phase9-02-win-dc02-dns-resolution.png`
+
+- **What it shows:** `WIN-DC02` resolves both DC names, AD SRV records,
+  external names, and the `192.168.20.12` PTR.
+- **Manual check:** PowerShell querying `192.168.20.12`.
+- **Why:** This is the strongest final secondary DNS proof.
+- **PowerShell equivalent:**
+
+```powershell
+Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local -Server 192.168.20.12 -DnsOnly -NoHostsFile
+Resolve-DnsName WIN-DC02.Chongong.local -Server 192.168.20.12 -DnsOnly -NoHostsFile
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.12
+Resolve-DnsName google.com -Server 192.168.20.12
+Resolve-DnsName 192.168.20.12 -Server 192.168.20.12
+```
+
+### Image: `phase9-03-win-dc02-forwarders.JPG`
+
+- **What it shows:** `WIN-DC02` has the same public forwarders as the PDC.
+- **Manual check:** DNS Manager -> `WIN-DC02` properties -> Forwarders.
+- **Why:** Proves external lookups can work if clients use `WIN-DC02`.
+- **PowerShell equivalent:**
+
+```powershell
+Get-DnsServerForwarder -ComputerName WIN-DC02
+```
+
+### Image: `phase9-04-win-dc02-ptr-record.png`
+
+- **What it shows:** Reverse lookup zone includes the `192.168.20.12` PTR for
+  `WIN-DC02`.
+- **Manual check:** DNS Manager -> Reverse Lookup Zones ->
+  `20.168.192.in-addr.arpa`.
+- **Why:** Proves reverse DNS exists for the new DC.
+- **PowerShell equivalent:**
+
+```powershell
+Resolve-DnsName 192.168.20.12 -Server 192.168.20.12
+```
+
+### Image: `phase9-05-pdc-dns-client-now-uses-dc02.png`
+
+- **What it shows:** The PDC DNS client now uses `192.168.20.12` first and
+  `192.168.20.11` second.
+- **Manual check:** Windows Admin Center PowerShell on `WIN-PRQD8TJG04M`.
+- **Why:** Proves the original DC can use the new DNS server.
+- **PowerShell equivalent:**
+
+```powershell
+Get-DnsClientServerAddress -InterfaceAlias "vEthernet (External-VLAN-Trunk)" -AddressFamily IPv4
 ```
 
 ## Phase 10 - Document And Push

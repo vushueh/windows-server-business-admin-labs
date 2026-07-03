@@ -18,10 +18,10 @@ If you only want a clean portfolio page, use these first:
 
 | Image | Why it belongs in the README |
 |-------|-------------------------------|
-| `phase1-01-managed-ou-layout.png` | Shows the final AD structure at a glance |
-| `phase4-01-global-and-domain-local-groups.png` | Shows the AGDLP model exists |
-| `phase6-01-ad-recycle-bin-enabled.png` | Shows recovery protection is enabled |
-| `phase9-01-p02-verification-output.png` | Shows the final verification result |
+| `phase1-01-managed-ou-layout.JPG` | Shows the final AD structure at a glance |
+| `phase4-01-global-and-domain-local-groups.JPG` | Shows the AGDLP model exists |
+| `phase6-01-ad-recycle-bin-enabled.JPG` | Shows recovery protection is enabled |
+| `phase7-03-replication-healthy.JPG` | Shows the second DC is replicating cleanly |
 
 ## Phase Screenshot Outline
 
@@ -37,7 +37,7 @@ complete yet.
 | Phase 4 | Complete | 2 screenshots |
 | Phase 5 | Complete | 2 screenshots |
 | Phase 6 | Complete | 2 screenshots |
-| Phase 7 | Pending - blocked by `WIN-DC02` | 1 screenshot now, 3 future screenshots after build |
+| Phase 7 | Complete | 6 screenshots |
 | Phase 8 | Complete | 2 screenshots |
 | Phase 9 | Complete | 2 screenshots |
 
@@ -224,36 +224,28 @@ dsacls "OU=ManagedUsers,DC=Chongong,DC=local" | findstr /i "GG-Helpdesk Reset pw
 
 ## Phase 7 - Replica DC Deployment
 
-Phase 7 is pending. I cannot complete it until `WIN-DC02` exists as a Windows
-Server VM.
+Phase 7 is complete. `WIN-DC02` now exists as a Windows Server 2022 VM and is
+promoted as a DNS-enabled Global Catalog.
 
-### What I Need Before Phase 7
+### Image: `phase7-00-win-dc02-prejoin-network-check.png`
 
-| Need | Why |
-|------|-----|
-| Windows Server 2022 ISO or prepared source VM | To install the replica DC operating system |
-| Hyper-V switch/VLAN decision | The DC must land on the correct network segment |
-| Static IP for `WIN-DC02` | AD DS and DNS need stable addressing |
-| DNS pointed to `192.168.20.11` before domain join | Domain join and promotion depend on AD DNS |
-| DSRM password typed by Leonel | Do not put this password in chat or the repo |
-| Approval before promotion | Promoting a DC changes live domain replication |
-| System state backup plan | DC changes should have a recovery path |
-
-### Current Image: `phase7-00-win-dc02-not-present.png`
-
-- **What it shows:** `WIN-DC02` is not present yet.
-- **Manual check:** Hyper-V Manager and ADUC Domain Controllers OU.
-- **Why:** Proves Phase 7 is pending because the VM does not exist.
+- **What it shows:** `WIN-DC02` has static IP `192.168.20.12`, gateway
+  `192.168.20.1`, and clean pre-join DNS to `WIN-PRQD8TJG04M`.
+- **Manual check:** PowerShell inside `WIN-DC02`.
+- **Why:** Proves the VM was on the correct network before domain join and
+  promotion.
 - **PowerShell equivalent:**
 
 ```powershell
-Get-VM WIN-DC02
-Get-ADComputer -LDAPFilter '(name=WIN-DC02)'
+ipconfig
+Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local -Server 192.168.20.11 -DnsOnly -NoHostsFile
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.11
 ```
 
-### Future Image: `phase7-01-win-dc02-hyperv-vm.png`
+### Image: `phase7-01-win-dc02-hyperv-vm.png`
 
-- **What it will show:** `WIN-DC02` VM exists in Hyper-V.
+- **What it shows:** `WIN-DC02` VM exists in Hyper-V with 8 GB memory and no
+  checkpoints.
 - **Manual check:** Hyper-V Manager -> `WIN-DC02`.
 - **Why:** This proves the replica DC has a real VM before AD promotion.
 - **PowerShell equivalent:**
@@ -262,9 +254,10 @@ Get-ADComputer -LDAPFilter '(name=WIN-DC02)'
 Get-VM WIN-DC02 | Select-Object Name, State, Generation, MemoryStartup
 ```
 
-### Future Image: `phase7-02-win-dc02-domain-controllers-ou.png`
+### Image: `phase7-02-win-dc02-domain-controllers-ou.JPG`
 
-- **What it will show:** `WIN-DC02` appears in the `Domain Controllers` OU.
+- **What it shows:** `WIN-DC02` appears in the `Domain Controllers` OU as a
+  Global Catalog.
 - **Manual check:** ADUC -> `Domain Controllers`.
 - **Why:** This proves promotion created a real domain controller computer
   object.
@@ -275,10 +268,10 @@ Get-ADDomainController -Filter * |
   Select-Object HostName, Site, IPv4Address, IsGlobalCatalog
 ```
 
-### Future Image: `phase7-03-replication-healthy.png`
+### Image: `phase7-03-replication-healthy.JPG`
 
-- **What it will show:** Replication between `WIN-PRQD8TJG04M` and `WIN-DC02`
-  is healthy.
+- **What it shows:** Replication between `WIN-PRQD8TJG04M` and `WIN-DC02` is
+  healthy.
 - **Manual check:** PowerShell or Command Prompt output from `repadmin`.
 - **Why:** A second DC is only useful if replication works.
 - **PowerShell equivalent:**
@@ -286,6 +279,29 @@ Get-ADDomainController -Filter * |
 ```powershell
 repadmin /replsummary
 repadmin /showrepl
+```
+
+### Image: `phase7-04-sysvol-netlogon-shares.JPG`
+
+- **What it shows:** `SYSVOL` and `NETLOGON` shares exist on `WIN-DC02`.
+- **Manual check:** PowerShell on `WIN-DC02`.
+- **Why:** Proves the new DC can support Group Policy and logon script
+  distribution.
+- **PowerShell equivalent:**
+
+```powershell
+Get-SmbShare -Name SYSVOL,NETLOGON
+```
+
+### Image: `phase7-05-fsmo-roles-remain-on-pdc.JPG`
+
+- **What it shows:** FSMO roles remain on `WIN-PRQD8TJG04M`.
+- **Manual check:** Command Prompt or PowerShell on either DC.
+- **Why:** Proves Project 02 added a replica DC without changing role ownership.
+- **PowerShell equivalent:**
+
+```powershell
+netdom query fsmo
 ```
 
 ## Phase 8 - Functional Level Verification
@@ -321,7 +337,7 @@ netdom query fsmo
 
 - **What it shows:** The read-only Project 02 verification script completed and
   displayed the managed OUs, groups, computers, Recycle Bin, FSMO roles, and
-  pending `WIN-DC02` status.
+  replica DC state.
 - **Manual check:** PowerShell running the verification script.
 - **Why:** This is the final proof that the documented state matches the live
   domain.

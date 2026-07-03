@@ -1,10 +1,12 @@
 # Project 02 - Active Directory Architecture
 
-**Status:** AD architecture complete on `2026-06-23`; replica DC build pending
+**Status:** Complete on `2026-07-03`; replica DC deployed
 
 **Domain:** `Chongong.local` / `CHONGONG`
 
 **Primary DC:** `WIN-PRQD8TJG04M` (`192.168.20.11`)
+
+**Replica DC:** `WIN-DC02` (`192.168.20.12`)
 
 ## What I Built
 
@@ -23,14 +25,16 @@ Project 02 now provides:
 | Admin/service accounts | `ws-leonel`, `svc-backup`, and `svc-sync` staged disabled |
 | Helpdesk delegation | `GG-Helpdesk` can reset passwords, force password change, and unlock users under `ManagedUsers` |
 | AD Recycle Bin | Enabled for the forest |
+| Replica DC | `WIN-DC02` deployed as a DNS-enabled Global Catalog |
 | FSMO roles | Still on `WIN-PRQD8TJG04M` |
 
 No AD objects were deleted.
 
 ## Project Phases
 
-Project 02 has 9 phases. Phases 1-6 and 8-9 are complete. Phase 7 is pending
-because the `WIN-DC02` VM does not exist yet.
+Project 02 has 9 phases. All phases are complete. The final infrastructure gap
+was closed on `2026-07-03` when I built and promoted `WIN-DC02` as a replica
+domain controller.
 
 | Phase | Name | Status |
 |-------|------|--------|
@@ -40,7 +44,7 @@ because the `WIN-DC02` VM does not exist yet.
 | Phase 4 | AGDLP Group Model | Complete |
 | Phase 5 | Service Account Provisioning | Complete |
 | Phase 6 | Delegated Administration + AD Recycle Bin | Complete |
-| Phase 7 | Replica DC Deployment | Pending |
+| Phase 7 | Replica DC Deployment | Complete |
 | Phase 8 | Functional Level Verification | Complete |
 | Phase 9 | Document + Verify | Complete |
 
@@ -247,60 +251,64 @@ dsacls "OU=ManagedUsers,DC=Chongong,DC=local" | findstr /i "GG-Helpdesk Reset pw
 
 ### Phase 7 - Replica DC Deployment
 
-This phase is pending. I did not complete it because `WIN-DC02` does not exist
-as a Hyper-V VM yet.
+I built `WIN-DC02` as the second domain controller so the domain no longer
+depends on a single DC for AD DS and DNS. I kept the deployment conservative:
+static memory, no Hyper-V checkpoints, no FSMO transfer, and a system-state /
+bare-metal-capable backup before changing the live domain.
 
-What is needed before I can do it:
+What I did:
 
-- Windows Server 2022 ISO or prepared source VM.
-- Hyper-V switch/VLAN decision.
-- Static IP address for `WIN-DC02`.
-- DNS on `WIN-DC02` pointed to `192.168.20.11` before domain join.
-- DSRM password typed by Leonel only.
-- Explicit approval before promoting it as a domain controller.
-- System state backup plan before changing DC replication.
+- Built `WIN-DC02` as a Generation 2 Hyper-V VM on `External-VLAN-Trunk`.
+- Used `192.168.20.12/24`, gateway `192.168.20.1`, and DNS `192.168.20.11`
+  before domain join.
+- Cleaned multihomed DNS records on `WIN-PRQD8TJG04M` so the new DC would find
+  the PDC at `192.168.20.11`, not host-only or VM-network addresses.
+- Joined `WIN-DC02` to `Chongong.local`.
+- Promoted it as an additional domain controller with DNS and Global Catalog.
+- Verified SYSVOL, NETLOGON, replication, and FSMO placement.
 
-What I will do when ready:
+Why it matters: this removes a major single point of failure from the Windows
+identity base. Later projects can now validate DNS redundancy, DHCP/IPAM design,
+GPO behavior, backup/recovery, and service authentication against two DCs.
 
-- Create or prepare the `WIN-DC02` VM.
-- Join it to `Chongong.local`.
-- Promote it as an additional domain controller with DNS.
-- Verify replication with `repadmin /replsummary` and `repadmin /showrepl`.
-- Keep FSMO roles on `WIN-PRQD8TJG04M` unless a later DR project approves a
-  transfer.
-
-Current proof that Phase 7 is pending:
+PowerShell used/proof:
 
 ```powershell
-Get-VM WIN-DC02
-
-Get-ADComputer -LDAPFilter '(name=WIN-DC02)'
-```
-
-<img src="screenshots/phase7-00-win-dc02-not-present.JPG" width="750" alt="WIN-DC02 not present">
-*`WIN-DC02` does not exist yet in Hyper-V or the `Domain Controllers` OU — proves Phase 7 is genuinely pending, not skipped.*
-
-Future PowerShell commands:
-
-```powershell
-Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+Install-WindowsFeature AD-Domain-Services,DNS -IncludeManagementTools
 
 Install-ADDSDomainController `
   -DomainName "Chongong.local" `
-  -InstallDns `
+  -InstallDns:$true `
   -NoGlobalCatalog:$false `
+  -ReplicationSourceDC "WIN-PRQD8TJG04M.Chongong.local" `
   -SafeModeAdministratorPassword (Read-Host -AsSecureString "DSRM password") `
   -Force
 
 repadmin /replsummary
 repadmin /showrepl
+Get-SmbShare -Name SYSVOL,NETLOGON
+netdom query fsmo
 ```
 
-Future images to insert:
+Detailed build evidence: [docs/p02-win-dc02-build-evidence.md](docs/p02-win-dc02-build-evidence.md)
 
-- `screenshots/phase7-01-win-dc02-hyperv-vm.png`
-- `screenshots/phase7-02-win-dc02-domain-controllers-ou.png`
-- `screenshots/phase7-03-replication-healthy.png`
+<img src="screenshots/phase7-00-win-dc02-prejoin-network-check.png" width="750" alt="WIN-DC02 pre-join network check">
+*Before domain join, `WIN-DC02` had the planned static IP `192.168.20.12`, gateway `192.168.20.1`, and clean DNS resolution to the existing DC at `192.168.20.11`.*
+
+<img src="screenshots/phase7-01-win-dc02-hyperv-vm.png" width="750" alt="WIN-DC02 Hyper-V VM">
+*Hyper-V Manager showing `WIN-DC02` running with 8 GB static memory and no checkpoints.*
+
+<img src="screenshots/phase7-02-win-dc02-domain-controllers-ou.JPG" width="750" alt="WIN-DC02 in Domain Controllers OU">
+*Active Directory Users and Computers showing both `WIN-DC02` and `WIN-PRQD8TJG04M` in the `Domain Controllers` OU as Global Catalogs.*
+
+<img src="screenshots/phase7-03-replication-healthy.JPG" width="750" alt="Replication healthy">
+*`repadmin /replsummary` showing zero replication failures between `WIN-DC02` and `WIN-PRQD8TJG04M`.*
+
+<img src="screenshots/phase7-04-sysvol-netlogon-shares.JPG" width="750" alt="SYSVOL and NETLOGON shares">
+*`WIN-DC02` sharing `SYSVOL` and `NETLOGON`, which proves Group Policy and logon script replication reached the new DC.*
+
+<img src="screenshots/phase7-05-fsmo-roles-remain-on-pdc.JPG" width="750" alt="FSMO roles remain on PDC">
+*All five FSMO roles remain on `WIN-PRQD8TJG04M`; I added redundancy without changing role ownership.*
 
 ### Phase 8 - Functional Level Verification
 
@@ -350,7 +358,10 @@ PowerShell used/proof:
 .\scripts\p02-verify-ad-architecture.ps1
 ```
 
-Screenshots not yet captured for this phase (`phase9-01-p02-verification-output.png`, `phase9-02-project-02-github-files.png`).
+Final evidence links:
+
+- WIN-DC02 build evidence: [docs/p02-win-dc02-build-evidence.md](docs/p02-win-dc02-build-evidence.md)
+- Screenshot plan: [docs/p02-screenshot-plan.md](docs/p02-screenshot-plan.md)
 
 ## Why The OU Names Are ManagedUsers And ManagedComputers
 
@@ -474,7 +485,7 @@ Get-ADOptionalFeature "Recycle Bin Feature" |
 netdom query fsmo
 ```
 
-Verified results on `2026-06-23`:
+Verified results on `2026-07-03`:
 
 | Check | Result |
 |-------|--------|
@@ -483,34 +494,25 @@ Verified results on `2026-06-23`:
 | Staged accounts | `ws-leonel`, `svc-backup`, and `svc-sync` exist and are disabled |
 | Recycle Bin | Enabled |
 | FSMO roles | All five roles remain on `WIN-PRQD8TJG04M` |
+| Replica DC | `WIN-DC02` is online at `192.168.20.12` as a DNS-enabled Global Catalog |
+| Replication | `repadmin /replsummary` shows 0 failures between both DCs |
+| SYSVOL/NETLOGON | Both shares exist on `WIN-DC02` |
 | `__vmware__` group | Empty Domain Local group, description `VMware User Group`; left untouched |
-| `WIN-DC02` | No VM found in Hyper-V; replica DC build remains pending |
 
-## Remaining Work - WIN-DC02
+## Final Replica DC State
 
-The replica DC part is not complete because Hyper-V does not currently have a
-`WIN-DC02` VM. I verified the Hyper-V VM list and did not find it.
+`WIN-DC02` is now the second domain controller for `Chongong.local`. I built it
+on the same VLAN 20 network as the existing DC, gave it the static IP
+`192.168.20.12`, promoted it with DNS installed, and verified replication both
+ways before treating the phase as complete.
 
-What I need before Phase 7:
+I intentionally left all FSMO roles on `WIN-PRQD8TJG04M`. This project added
+directory and DNS redundancy; it did not practice role transfer, seizure, or
+disaster recovery.
 
-- Windows Server 2022 ISO or a prepared source VM.
-- Hyper-V switch/VLAN decision for the replica DC.
-- Static IP address for `WIN-DC02`.
-- DNS on `WIN-DC02` pointed to `192.168.20.11` before domain join.
-- DSRM password typed by Leonel only, never saved in chat or the repo.
-- Explicit approval before promoting `WIN-DC02` as a domain controller.
-- A system state backup plan before changing DC replication.
-
-Next safe build:
-
-1. Create a Windows Server 2022 VM named `WIN-DC02`.
-2. Give it a static IP and point DNS to `192.168.20.11`.
-3. Join it to `Chongong.local`.
-4. Promote it as an additional domain controller with DNS installed.
-5. Verify `repadmin /replsummary`, `repadmin /showrepl`, DNS health, and FSMO
-   role placement.
-6. Keep FSMO roles on `WIN-PRQD8TJG04M` unless a later DR project explicitly
-   approves a transfer.
+Before promotion, I also created a Windows Server Backup image on `D:`. The
+backup version is `07/03/2026-03:37` and supports Volume, File, Application,
+Bare Metal Recovery, and System State recovery.
 
 Do not practice FSMO seizure or forced failover against the live domain in this
 project. That belongs in Project 11 backup and disaster recovery.
@@ -538,8 +540,11 @@ the live primary domain controller.
 
 **Action:** I created managed user/computer OUs, moved existing objects into the
 right places, created AGDLP groups, staged disabled service/admin accounts,
-enabled AD Recycle Bin, and delegated helpdesk reset/unlock rights.
+enabled AD Recycle Bin, delegated helpdesk reset/unlock rights, created a
+system-state/bare-metal-capable backup, cleaned the DC DNS registration problem,
+and promoted `WIN-DC02` as a DNS-enabled replica domain controller.
 
 **Result:** The domain now has a clean identity structure ready for DNS, DHCP,
-GPO, file server, SOC, and NPS/RADIUS projects. The only remaining Project 02
-infrastructure item is building and promoting `WIN-DC02`.
+GPO, file server, SOC, and NPS/RADIUS projects. It also has two working domain
+controllers with clean replication and FSMO roles still anchored on the original
+PDC.

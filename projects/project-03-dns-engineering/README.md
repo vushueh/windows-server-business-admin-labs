@@ -1,8 +1,8 @@
 # Project 03 - AD DNS and Name Resolution Engineering
 
-**Status:** Mostly complete on `2026-06-23`; Phase 5 deferred as not needed, Phase 9 blocked by `WIN-DC02`
+**Status:** Complete on `2026-07-03`; Phase 5 intentionally deferred until a real cross-lab zone exists
 
-**System:** `WIN-PRQD8TJG04M` (`192.168.20.11`) - live DNS server and Primary Domain Controller
+**System:** `WIN-PRQD8TJG04M` (`192.168.20.11`) and `WIN-DC02` (`192.168.20.12`) - AD-integrated DNS
 
 **Skill:** `/winserver-p03`
 
@@ -12,24 +12,26 @@ I audited and hardened the AD-integrated DNS configuration for `Chongong.local`.
 During the audit I found a real DNS problem: the Domain Controller was using
 public DNS servers on its own LAN NIC instead of querying itself first. I fixed
 that, created the missing reverse lookup zone, enabled scavenging, verified
-internal/external resolution, and documented break/fix runbooks.
+internal/external resolution, documented break/fix runbooks, and then completed
+secondary DNS verification after `WIN-DC02` was promoted.
 
 ## What Changed
 
 | Area | Result |
 |------|--------|
-| DC DNS client settings | LAN NIC now points to `127.0.0.1` instead of public DNS |
+| DC DNS client settings | PDC now uses `192.168.20.12, 192.168.20.11`; `WIN-DC02` uses `192.168.20.11, 192.168.20.12` |
 | Forwarders | Confirmed already configured: `8.8.8.8`, `1.1.1.1`, `8.8.4.4`, `9.9.9.9` |
-| Reverse DNS | Created `20.168.192.in-addr.arpa` and PTR for `192.168.20.11` |
-| Scavenging | Enabled server scavenging and zone aging for `Chongong.local` |
+| Reverse DNS | Created `20.168.192.in-addr.arpa` and PTR records for both DCs |
+| Scavenging | Enabled server scavenging and zone aging on the PDC; enabled server scavenging on `WIN-DC02` |
 | Split-brain behavior | Internal AD records and external public names both resolve correctly |
 | Break/fix evidence | One real DNS incident plus two documented runbooks |
+| Secondary DNS | `WIN-DC02` resolves AD names, SRV records, reverse DNS, and external names |
 
 ## Project Phases
 
-Project 03 has 10 phases. Phases 1-4, 6-8, and 10 are complete. Phase 5 is
-deferred because there is no cross-lab DNS zone that needs conditional forwarding
-yet. Phase 9 is blocked until `WIN-DC02` exists.
+Project 03 has 10 phases. Phases 1-4 and 6-10 are complete. Phase 5 remains
+deferred because there is still no cross-lab DNS zone that needs conditional
+forwarding.
 
 | Phase | Name | Status |
 |-------|------|--------|
@@ -41,7 +43,7 @@ yet. Phase 9 is blocked until `WIN-DC02` exists.
 | Phase 6 | DNS Scavenging | Complete |
 | Phase 7 | Split-Brain DNS | Complete |
 | Phase 8 | Break/Fix Exercise | Complete |
-| Phase 9 | `WIN-DC02` DNS Verification | Pending - blocked by `WIN-DC02` |
+| Phase 9 | `WIN-DC02` DNS Verification | Complete |
 | Phase 10 | Document + Push | Complete |
 
 Screenshot checklist: [docs/p03-screenshot-plan.md](docs/p03-screenshot-plan.md)
@@ -87,10 +89,11 @@ I fixed the real DNS misconfiguration found in Phase 1.
 
 What I did:
 
-- Changed `vEthernet (External-VLAN-Trunk)` from public DNS servers to
-  `127.0.0.1`.
+- Changed `vEthernet (External-VLAN-Trunk)` from public DNS servers to AD DNS.
 - Verified internal AD SRV records resolved.
 - Verified external internet names still resolved through forwarders.
+- After `WIN-DC02` was promoted, changed the PDC to use `WIN-DC02` first and
+  itself second.
 
 Why it matters: a DC should use AD DNS for its own DNS client settings. Public
 DNS belongs in the DNS server forwarder list, not on the DC NIC.
@@ -100,13 +103,15 @@ PowerShell used/proof:
 ```powershell
 Set-DnsClientServerAddress -InterfaceAlias "vEthernet (External-VLAN-Trunk)" -ServerAddresses 127.0.0.1
 
+Set-DnsClientServerAddress -InterfaceAlias "vEthernet (External-VLAN-Trunk)" -ServerAddresses 192.168.20.12,192.168.20.11
+
 Get-DnsClientServerAddress -AddressFamily IPv4
 Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
 Resolve-DnsName google.com
 ```
 
 <img src="screenshots/phase2-01-dns-client-after-fix.JPG" width="750" alt="DNS client after fix">
-*LAN NIC DNS client now pointing at `127.0.0.1` instead of public resolvers.*
+*Initial Phase 2 fix showing the DC moved off public DNS. After `WIN-DC02` was promoted, the final two-DC DNS client order is documented in Phase 9.*
 
 <img src="screenshots/phase2-02-ad-srv-record-resolution.JPG" width="750" alt="AD SRV record resolution">
 *`_ldap._tcp.Chongong.local` resolving correctly after the fix.*
@@ -285,29 +290,73 @@ Break/fix log: [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.
 
 ### Phase 9 - `WIN-DC02` DNS Verification
 
-This phase is pending because `WIN-DC02` has not been built or promoted yet.
+I completed secondary DNS verification after `WIN-DC02` was built and promoted
+as a DNS-enabled Global Catalog. Before doing that, I cleaned the multihomed
+records on `WIN-PRQD8TJG04M` so `WIN-DC02` would not try to use the wrong
+interface for AD DS and DNS replication.
 
-What is needed before I can do it:
+What I did:
 
-- `WIN-DC02` VM created.
-- `WIN-DC02` joined to `Chongong.local`.
-- `WIN-DC02` promoted as an additional DC with DNS.
-- Replication healthy between `WIN-PRQD8TJG04M` and `WIN-DC02`.
+- Verified the DNS zones replicated to `WIN-DC02`.
+- Copied the same DNS forwarders to `WIN-DC02`.
+- Enabled server-level scavenging on `WIN-DC02`.
+- Added the PTR record for `192.168.20.12`.
+- Verified `WIN-DC02` answers internal host lookups, AD SRV records, reverse
+  DNS, and external names.
+- Updated the PDC DNS client so it uses `WIN-DC02` first and itself second.
 
-Why it matters: secondary DNS verification cannot be real until the second DC
-exists.
+Why it matters: a second DC only helps if clients can actually use it for DNS.
+This phase proves the domain can resolve names through `WIN-DC02`, not just
+through the original PDC.
 
-Future PowerShell proof:
+PowerShell used/proof:
 
 ```powershell
-Get-ADDomainController -Filter * |
-  Select-Object HostName, IPv4Address, IsGlobalCatalog
-
 Get-DnsServerZone -ComputerName WIN-DC02
-repadmin /replsummary
+
+$forwarders = (Get-DnsServerForwarder -ComputerName WIN-PRQD8TJG04M).IPAddress
+Set-DnsServerForwarder -ComputerName WIN-DC02 -IPAddress $forwarders
+
+Set-DnsServerScavenging `
+  -ComputerName WIN-DC02 `
+  -ScavengingState $true `
+  -ScavengingInterval 7.00:00:00
+
+Add-DnsServerResourceRecordPtr `
+  -ZoneName "20.168.192.in-addr.arpa" `
+  -Name "12" `
+  -PtrDomainName "WIN-DC02.Chongong.local"
+
+Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local -Server 192.168.20.12 -DnsOnly -NoHostsFile
+Resolve-DnsName WIN-DC02.Chongong.local -Server 192.168.20.12 -DnsOnly -NoHostsFile
+Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.12
+Resolve-DnsName google.com -Server 192.168.20.12
+Resolve-DnsName 192.168.20.12 -Server 192.168.20.12
+Get-DnsClientServerAddress -InterfaceAlias "vEthernet (External-VLAN-Trunk)" -AddressFamily IPv4
 ```
 
-Image to insert later: `screenshots/phase9-01-win-dc02-dns-verification.png`
+Detailed DNS evidence: [docs/p03-win-dc02-secondary-dns-evidence.md](docs/p03-win-dc02-secondary-dns-evidence.md)
+
+<img src="screenshots/phase9-00-pdc-multihomed-dns-before-cleanup.png" width="750" alt="PDC multihomed DNS before cleanup">
+*Before cleanup, `WIN-PRQD8TJG04M` had multiple A records from non-AD interfaces. I fixed this before promoting `WIN-DC02` so replication would use the AD VLAN address.*
+
+<img src="screenshots/phase9-00-pdc-hostname-clean-after-fix.png" width="750" alt="PDC DNS clean after fix">
+*After cleanup, direct DNS lookup for the PDC returned only `192.168.20.11`.*
+
+<img src="screenshots/phase9-01-win-dc02-dns-zones.JPG" width="750" alt="WIN-DC02 DNS zones">
+*DNS Manager on `WIN-DC02` showing the AD-integrated zones replicated to the new DNS server.*
+
+<img src="screenshots/phase9-02-win-dc02-dns-resolution.png" width="750" alt="WIN-DC02 DNS resolution checks">
+*PowerShell proof that `WIN-DC02` resolves both DC names, AD SRV records, external names, and its own PTR record.*
+
+<img src="screenshots/phase9-03-win-dc02-forwarders.JPG" width="750" alt="WIN-DC02 DNS forwarders">
+*`WIN-DC02` has the same public forwarders as the original DNS server.*
+
+<img src="screenshots/phase9-04-win-dc02-ptr-record.png" width="750" alt="WIN-DC02 PTR record">
+*Reverse lookup zone showing the `192.168.20.12` PTR for `WIN-DC02`. The command evidence above is the final authority for the clean PTR result.*
+
+<img src="screenshots/phase9-05-pdc-dns-client-now-uses-dc02.png" width="750" alt="PDC DNS client now uses WIN-DC02">
+*The PDC now uses `WIN-DC02` first and itself second for DNS client resolution.*
 
 ### Phase 10 - Document + Push
 
@@ -330,27 +379,30 @@ git status --short
 git log --oneline -5
 ```
 
-Images to insert later:
+Final evidence links:
 
-- `screenshots/phase10-01-project-03-github-status.png`
-- `screenshots/phase10-02-project-03-files.png`
+- WIN-DC02 secondary DNS evidence: [docs/p03-win-dc02-secondary-dns-evidence.md](docs/p03-win-dc02-secondary-dns-evidence.md)
+- Break/fix log: [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md)
+- Screenshot plan: [docs/p03-screenshot-plan.md](docs/p03-screenshot-plan.md)
 
 ## Verified State
 
 | Check | Result |
 |-------|--------|
-| Internal AD SRV lookup | `_ldap._tcp.Chongong.local` resolves to `win-prqd8tjg04m.chongong.local:389` |
-| DC DNS client | LAN NIC uses `127.0.0.1` |
+| Internal AD SRV lookup | `_ldap._tcp.Chongong.local` resolves to both `win-prqd8tjg04m.chongong.local:389` and `win-dc02.chongong.local:389` |
+| PDC DNS client | `vEthernet (External-VLAN-Trunk)` uses `192.168.20.12, 192.168.20.11` |
+| WIN-DC02 DNS client | `Ethernet` uses `192.168.20.11, 192.168.20.12` |
 | Forwarders | Public forwarders still resolve external names |
-| Reverse DNS | `192.168.20.11` resolves to `WIN-PRQD8TJG04M.Chongong.local` through direct DNS queries |
+| Reverse DNS | `192.168.20.11` and `192.168.20.12` have PTR records |
 | Scavenging | Enabled |
 | Zone aging | Enabled for `Chongong.local` |
-| Secondary DNS | Pending `WIN-DC02` |
+| Secondary DNS | `WIN-DC02` answers internal, SRV, PTR, and external lookups |
 
 ## Technical Links
 
 | Detail | Link |
 |--------|------|
+| WIN-DC02 DNS evidence | [docs/p03-win-dc02-secondary-dns-evidence.md](docs/p03-win-dc02-secondary-dns-evidence.md) |
 | Break/fix log | [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md) |
 | Screenshot plan | [docs/p03-screenshot-plan.md](docs/p03-screenshot-plan.md) |
 
@@ -368,5 +420,5 @@ verified internal and external resolution; and documented DNS break/fix runbooks
 
 **Result:** The domain now resolves internal AD records correctly, external
 forwarding still works, reverse DNS exists for the DC, stale record cleanup is
-enabled, and Phase 9 is clearly blocked only by the missing `WIN-DC02` replica
-DC.
+enabled, and `WIN-DC02` is verified as a working secondary DNS server for
+internal AD, reverse, and external name resolution.

@@ -43,8 +43,8 @@ without touching the other families.
 | Project | Focus | Status |
 |---------|-------|--------|
 | [project-01-server-baseline-hardening](project-01-server-baseline-hardening/) | Role inventory, secure admin access, firewall posture, privileged account separation | ✅ Complete |
-| [project-02-ad-architecture](project-02-ad-architecture/) | Managed OU design, delegated admin, tiered accounts, AGDLP groups, service accounts, least privilege | 🔄 AD complete; WIN-DC02 pending |
-| [project-03-dns-engineering](project-03-dns-engineering/) | AD-integrated DNS, split DNS, forwarders, conditional forwarders, broken DNS troubleshooting | 🔄 Mostly complete — Phase 5 N/A, Phase 9 blocked by WIN-DC02 |
+| [project-02-ad-architecture](project-02-ad-architecture/) | Managed OU design, delegated admin, tiered accounts, AGDLP groups, service accounts, replica DC | ✅ Complete — 2026-07-03 |
+| [project-03-dns-engineering](project-03-dns-engineering/) | AD-integrated DNS, split DNS, forwarders, secondary DNS, broken DNS troubleshooting | ✅ Complete — 2026-07-03; Phase 5 deferred until a real cross-lab zone exists |
 | [project-04-dhcp-ipam](project-04-dhcp-ipam/) | Route10/OPNsense DHCP authority validation, AD DNS client behavior, Hyper-V VM addressing, optional Windows DHCP design | ⬜ Planned |
 | [project-05-gpo-security-baselines](project-05-gpo-security-baselines/) | Password/lockout policy, Windows Firewall GPO, audit policy, logon restrictions | ⬜ Planned |
 | [project-06-file-server-access-governance](project-06-file-server-access-governance/) | Department shares, AGDLP groups, auditing, access reviews, ransomware-resistant structure | ⬜ Planned |
