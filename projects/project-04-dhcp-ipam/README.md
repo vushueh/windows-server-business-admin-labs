@@ -78,6 +78,8 @@ Technical evidence:
 
 - DHCP/IPAM evidence: [docs/p04-dhcp-ipam-evidence.md](docs/p04-dhcp-ipam-evidence.md)
 - IPAM handoff: [docs/p04-ipam-handoff.md](docs/p04-ipam-handoff.md)
+- Netboot DHCP option cleanup: [docs/p04-netboot-cleanup-2026-07-04.md](docs/p04-netboot-cleanup-2026-07-04.md)
+- AD DNS follow-up: [docs/p04-ad-dns-followup-2026-07-04.md](docs/p04-ad-dns-followup-2026-07-04.md)
 - Raw discovery output: [docs/p04-live-discovery-raw.txt](docs/p04-live-discovery-raw.txt)
 - Post-change verification: [docs/p04-post-change-verification.txt](docs/p04-post-change-verification.txt)
 - Screenshot plan: [docs/p04-screenshot-plan.md](docs/p04-screenshot-plan.md)
@@ -254,9 +256,10 @@ What I documented:
 | Windows DHCP role | Installed and AD-authorized |
 | Windows DHCP scope | `192.168.20.0/24`, active, documented |
 | DHCP option 6 | `192.168.20.11, 192.168.20.12` |
+| DHCP options 66/67 | Removed on `2026-07-04`; retired `netboot.xyz` is no longer advertised |
 | DHCP exclusions | `.1-.10` and `.11-.20` reserved |
 | Route10 gateway | `192.168.20.1` |
-| AD DNS | Both DCs resolve AD names, SRV records, external names, and Route10 `localdomain` |
+| AD DNS | Functional for DHCP option targets, but `WIN-PRQD8TJG04M` has multiple A records that need Windows-side cleanup |
 | Hyper-V addressing | Switches and VM IPs documented |
 | Route10 configuration | Not changed |
 | OPNsense configuration | Not changed |
@@ -269,6 +272,8 @@ What I documented:
 - I did not change OPNsense DHCP/DNS settings.
 - I did not unbind DHCP from non-production adapters yet; that is a cleanup
   candidate after a maintenance review.
+- I did not clean up the extra `WIN-PRQD8TJG04M` DNS A records found during the
+  2026-07-04 Route10 Project 02 follow-up.
 
 ## Next Project Impact
 
