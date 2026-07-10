@@ -117,6 +117,15 @@ Any AD change can affect these integrations. Flag cross-family impacts in CODEX-
 After every session, append to `CODEX-LOG.md`:
 
 ```
+
+## Master Program Selection
+
+Before selecting or advancing work, invoke the local `/goal` wrapper or read
+`../docs/homelab-goals.yaml`. Resume the active primary item or take exactly
+the lowest-sequence ready item; never offer a project menu. Reconcile this
+repo's README/project state and `CLAUDE-REVIEW.md` lock first. A blocker must
+be repaired, safely rescoped, or closed Deferred with a precise trigger before
+advancing. Windows live-change and identity safety gates remain unchanged.
 ## Session — YYYY-MM-DD
 ### What I did
 - bullet list

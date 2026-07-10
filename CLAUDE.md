@@ -57,3 +57,11 @@ ownership, settled facts, hazards, and standards.
 - VLAN 20 authority + gateway pair with route10 repo P02
 - P10 (Wazuh/WEF) pairs with homelab-management; P11 backups pair with the
   backup workflows there; P13 NPS/RADIUS pairs with route10 P09 + CCNA AAA
+
+## `/goal` Session Start
+
+Run `/goal next` before project work. The local wrapper loads the canonical
+skill from the family-projects root; if unavailable, read
+`E:\Homelab-Repos\family-projects\docs\homelab-goals.yaml`. Return one
+queue-selected project, reconcile `CLAUDE-REVIEW.md`, and do not advance past
+an unresolved blocker. Windows live-change gates remain unchanged.

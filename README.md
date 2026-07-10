@@ -158,3 +158,11 @@ the Hyper-V host. `WIN-DC02` is now the replica DC and secondary DNS server.
 | [CLAUDE-REVIEW.md](CLAUDE-REVIEW.md) | Claude open items for Codex |
 | [CODEX-LOG.md](CODEX-LOG.md) | Codex action log |
 | [WORKFLOW.md](WORKFLOW.md) | Trigger phrases and project cycle |
+
+## Master Program Placement
+
+The forced queue is owned by `../docs/homelab-goals.yaml`. This repo supplies
+Q007 DNS triage, Q003-Q004 recovery proof, Q031-Q041 Windows P05-P12 and
+related simulations, Q079 P13 identity integration, and Q086 onboarding
+capstone. P05 cannot begin before B1/W2/B3 gates close. `/goal next` selects
+the project; all AD/GPO/DNS/DHCP mutations still need Leonel's dated approval.
