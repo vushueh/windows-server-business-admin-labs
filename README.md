@@ -132,12 +132,12 @@ the Hyper-V host. `WIN-DC02` is now the replica DC and secondary DNS server.
 
 | Family | Repo | Connection |
 |--------|------|------------|
-| Route10 Network Core | homelab-route10-network-core | Project 04 validates Windows against the Route10 DHCP/IPAM authority model |
-| CML Enterprise Labs | enterprise-network-labs | Project 13: CML routers → NPS/RADIUS |
-| CCNA Physical Expansion | Homelab_CCNA | Project 13: Physical Cisco AAA → NPS |
-| OPNsense Labs | homelab-opnsense | Project 13: OPNsense admin RADIUS |
-| Proxmox Management | homelab-proxmox-management | Project 13: Linux SSSD/AD join |
-| **Master Hub** | homelab-management | Navigation hub for all families |
+| Route10 Network Core | [homelab-route10-network-core](https://github.com/vushueh/homelab-route10-network-core) | Project 04 validates Windows against the Route10 DHCP/IPAM authority model |
+| CML Enterprise Labs | [enterprise-network-labs](https://github.com/vushueh/enterprise-network-labs) | Future Project 13 plans CML router authentication through NPS/RADIUS |
+| CCNA Physical Expansion | [Homelab_CCNA](https://github.com/vushueh/Homelab_CCNA) | Future Project 13 plans physical Cisco AAA through NPS |
+| OPNsense Labs | [homelab-opnsense](https://github.com/vushueh/homelab-opnsense) | Future Project 13 plans OPNsense administrator authentication through NPS/RADIUS |
+| Archived Proxmox Repository | [homelab-proxmox-management](https://github.com/vushueh/homelab-proxmox-management) | Historical Proxmox material; Linux SSSD/AD integration remains a future Project 13 workstream |
+| **Master Hub** | [homelab-management](https://github.com/vushueh/homelab-management) | Operations and navigation hub for all families |
 
 ---
 
