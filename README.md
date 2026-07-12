@@ -111,6 +111,7 @@ the Hyper-V host. `WIN-DC02` is now the replica DC and secondary DNS server.
 | [windows-server-business-admin](skills/windows-server-business-admin.md) | Main family skill | `/winserver` |
 | [project-01-server-hardening](skills/project-01-server-baseline-hardening.md) | P01 lean skill + phase references | `/winserver-p01` ✅ Ready |
 | [winserver-evidence-documentation](skills/winserver-evidence-documentation/SKILL.md) | Documentation standard: clean root README, phase screenshots inside project pages | Use for every project/phase documentation update |
+| [homelab-incident-response AD investigation](https://github.com/vushueh/family-projects-ai-playbook/blob/main/.claude/skills/homelab-incident-response/references/ad-compromise-investigation.md) | Shared evidence-first reference for suspected AD compromise; remediation stays approval-gated | Use for P10 and identity incidents |
 | project-12-m365-hybrid | M365/Entra skill | `/winserver-p12` — written when P12 starts |
 | project-13-identity-integration | Capstone skill | `/winserver-p13` — written when P13 starts |
 
