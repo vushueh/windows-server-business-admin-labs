@@ -4,6 +4,20 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-12 (Canonical AD incident reference linked)
+### What I did
+- Linked the shared `homelab-incident-response` AD compromise investigation
+  reference from the Windows skill table and Claude operating rules.
+- Kept evidence-first investigation separate from credential dumping, GPO or
+  account changes, domain-controller rebuilds, and `krbtgt` rotation.
+
+### Verification
+- Documentation-only cross-repo link; no AD, DNS, DHCP, GPO, account,
+  credential, or Windows host changed.
+
+### Open questions for Claude
+- None.
+
 ## Session — 2026-07-03 (Codex — Project 04 DHCP/IPAM completion)
 ### What I did
 - Connected to `WIN-PRQD8TJG04M` over SSH as `CHONGONG\adm-leonel`.

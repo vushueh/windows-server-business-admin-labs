@@ -51,6 +51,12 @@ ownership, settled facts, hazards, and standards.
   `winserver-projects`, `winserver-evidence-documentation` — some predate
   P02–P04 outcomes; flag stale guidance instead of following it blindly
 - `.github/workflows/p01-safety-check.yml` exists — keep it green
+- For suspected AD compromise, incident playbooks, or identity forensics, use
+  the canonical
+  [`homelab-incident-response` AD investigation reference](https://github.com/vushueh/family-projects-ai-playbook/blob/main/.claude/skills/homelab-incident-response/references/ad-compromise-investigation.md).
+  It allows evidence-first investigation but keeps credential dumping,
+  account/GPO changes, domain-controller rebuilds, and `krbtgt` rotation behind
+  the approved incident change process.
 
 ## Cross-repo links
 
