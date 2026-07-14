@@ -23,7 +23,7 @@ concurrency:
 jobs:
   safety-check:
     name: Validate Before Live DC
-    runs-on: self-hosted
+    runs-on: windows-latest
     defaults:
       run:
         shell: powershell
