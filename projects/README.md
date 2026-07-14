@@ -10,6 +10,25 @@ Project 13 (capstone) requires all previous projects complete.
 See [../docs/execution-roadmap.md](../docs/execution-roadmap.md) for the
 starting base, cross-family rotation plan, and done criteria.
 
+## Master Queue Projects Assigned To This Family
+
+The tables below keep the P01-P13 portfolio structure, while the master queue
+controls cross-repository order. Special recovery and simulation items are
+listed here so they remain visible and clickable instead of existing only in
+the central YAML registry.
+
+| Queue | Project | Related family project | Status |
+|---|---|---|---|
+| Q003 | [AD Recycle Bin test-object restore](project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | P11 recovery test 1 | ▶ Selected — not started; U0-RUNNER-R01 is planned as the immediate preemption and its local-only package must close first |
+| Q004 | [Test-GPO backup and restore](project-11-backup-disaster-recovery/) | P11 recovery test 3 | ⏳ Waiting for Q003 |
+| Q007 | [DNS failure-triage simulation](project-03-dns-engineering/) | P03 break/fix evidence | ⬜ Planned in master order |
+
+Later Windows portfolio queue positions are P05/Q031, P06/Q032, P07/Q033,
+P08/Q034, P09/Q035, P10/Q036, full P11/Q037, P12/Q041, and P13/Q079.
+Additional Windows simulations are Q038 LAPS/gMSA, Q039 JEA/ASR, Q040 the
+RDS/IIS move-off-DC rehearsal, and Q086 the onboarding capstone.
+The canonical order and dependencies remain in `../../docs/homelab-goals.yaml`.
+
 ## Starting Base
 
 Start with Projects 01-05 before building higher-level services:
@@ -52,7 +71,7 @@ without touching the other families.
 | [project-08-hyperv-operations](project-08-hyperv-operations/) | Virtual switch design, VLANs, checkpoints policy, VM inventory, backup, recovery | ⬜ Planned |
 | [project-09-powershell-admin-platform](project-09-powershell-admin-platform/) | User provisioning, AD reports, stale account cleanup, Hyper-V reports, repeatable scripts | ⬜ Planned |
 | [project-10-security-monitoring-ir](project-10-security-monitoring-ir/) | Event forwarding, lockout tracking, account lockout investigation, Defender, Wazuh/SIEM | ⬜ Planned |
-| [project-11-backup-disaster-recovery](project-11-backup-disaster-recovery/) | System state backup, file restore, AD recovery planning, tested restore runbooks | ⬜ Planned |
+| [project-11-backup-disaster-recovery](project-11-backup-disaster-recovery/) | System state backup, file restore, AD recovery planning, tested restore runbooks; [Q003 test-object restore](project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) is an earlier master-queue proof | ⬜ Planned (Q003 selected separately) |
 | [project-12-m365-entra-hybrid-identity](project-12-m365-entra-hybrid-identity/) | Custom domain, UPN alignment, Entra sync, license workflow, onboarding/offboarding | ⬜ Planned |
 | [project-13-enterprise-identity-integration](project-13-enterprise-identity-integration/) | **CAPSTONE** — AD as central auth for CML, physical Cisco, Proxmox, OPNsense, Wazuh, M365 | ⬜ Planned |
 

@@ -1,6 +1,6 @@
 # Windows Server Business Admin Labs
 
-**Status:** 🔒 Private — goes public when complete | **Platform:** Windows Server 2022, Hyper-V, Microsoft 365
+**Status:** 🟡 Public portfolio — active build | **Platform:** Windows Server 2022, Hyper-V, Microsoft 365
 **Trigger phrase:** `windows server project`
 
 I am building this Windows Server family to prove that I can operate the
@@ -86,21 +86,44 @@ the Hyper-V host. `WIN-DC02` is now the replica DC and secondary DNS server.
 
 ## Project Index
 
-| # | Project | Focus | Status |
-|---|---------|-------|--------|
-| [01](projects/project-01-server-baseline-hardening/) | **Server Baseline, Hardening, and Admin Model** | Role inventory, tiered admin, lockout policy, firewall baseline | ✅ Complete |
-| [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | Managed OUs, delegated admin, AGDLP groups, replica DC | ✅ Complete — 2026-07-03 |
-| [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, Route10 `localdomain` forwarding, split DNS, secondary DNS | ✅ Complete — 2026-07-03 |
-| [04](projects/project-04-dhcp-ipam/) | **DHCP/IPAM Integration and Windows Client Validation** | Route10/OPNsense DHCP authority, AD DNS client validation, Hyper-V addressing | ✅ Complete — 2026-07-03 |
-| [05](projects/project-05-gpo-security-baselines/) | **Group Policy Security Baselines** | Firewall GPO, audit policy, DefaultInboundAction | ⬜ Planned |
-| [06](projects/project-06-file-server-access-governance/) | **File Server, NTFS, and Access Governance** | Dept shares, AGDLP, auditing | ⬜ Planned |
-| [07](projects/project-07-windows-client-lifecycle/) | **Windows Client Lifecycle** | Domain join, RSAT, workstation hardening | ⬜ Planned |
-| [08](projects/project-08-hyperv-operations/) | **Hyper-V Operations** | VM inventory, RDS farm migration, virtual switch, backup | ⬜ Planned |
-| [09](projects/project-09-powershell-admin-platform/) | **PowerShell Administration Platform** | User provisioning, AD reports, repeatable scripts | ⬜ Planned |
-| [10](projects/project-10-security-monitoring-ir/) | **Security Monitoring and Incident Response** | Event forwarding, lockout tracking, Wazuh/SIEM | ⬜ Planned |
-| [11](projects/project-11-backup-disaster-recovery/) | **Backup, Restore, and Disaster Recovery** | System state backup, tested runbooks | ⬜ Planned |
-| [12](projects/project-12-m365-entra-hybrid-identity/) | **Microsoft 365 and Entra Hybrid Identity** | Custom domain, UPN, Entra sync | ⬜ Planned |
-| [13](projects/project-13-enterprise-identity-integration/) | **Enterprise Identity Integration** | AD as central identity for all lab families — capstone | ⬜ Planned |
+The family project number and the master `Q` number serve different purposes.
+P01-P13 organize the Windows portfolio; `Q` numbers control when work may run
+across all family repositories.
+
+### Current Master-Queue Projects In This Family
+
+| Queue | Clickable project | Family placement | Status |
+|---|---|---|---|
+| Q003 | [AD Recycle Bin test-object restore](projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | Early Project 11 recovery proof | ▶ Selected — not started; U0-RUNNER-R01 is planned as the immediate preemption and its local-only package must close first |
+| Q004 | [Test-GPO backup and restore](projects/project-11-backup-disaster-recovery/) | Early Project 11 recovery proof | ⏳ Waiting for Q003 |
+| Q007 | [DNS failure-triage simulation](projects/project-03-dns-engineering/) | Project 03 reusable break/fix proof | ⬜ Planned in master order |
+
+### Additional Windows Simulations And Capstone
+
+| Queue | Project | Family placement | Status |
+|---|---|---|---|
+| Q038 | [LAPS and gMSA staged rollout](https://github.com/vushueh/family-projects-ai-playbook/blob/main/docs/homelab-simulation-library.md) | Post-P11 identity hardening | ⬜ Planned |
+| Q039 | [JEA and ASR staged proof](https://github.com/vushueh/family-projects-ai-playbook/blob/main/docs/homelab-simulation-library.md) | Least-privilege follow-on | ⬜ Planned |
+| Q040 | [RDS/IIS move-off-DC rehearsal](projects/project-08-hyperv-operations/) | P08/P11 service separation | ⬜ Planned |
+| Q086 | [New-department onboarding capstone](projects/project-13-enterprise-identity-integration/) | P13 cross-family capstone | ⬜ Planned |
+
+### Windows Portfolio Projects
+
+| # | Project | Focus | Master queue | Status |
+|---|---------|-------|---|--------|
+| [01](projects/project-01-server-baseline-hardening/) | **Server Baseline, Hardening, and Admin Model** | Role inventory, tiered admin, lockout policy, firewall baseline | Completed before the forced queue | ✅ Complete |
+| [02](projects/project-02-ad-architecture/) | **Active Directory Architecture** | Managed OUs, delegated admin, AGDLP groups, replica DC | Completed before the forced queue | ✅ Complete — 2026-07-03 |
+| [03](projects/project-03-dns-engineering/) | **AD DNS and Name Resolution Engineering** | AD-integrated DNS, Route10 `localdomain` forwarding, split DNS, secondary DNS | Q007 follow-on simulation | ✅ Core project complete — 2026-07-03 |
+| [04](projects/project-04-dhcp-ipam/) | **DHCP/IPAM Integration and Windows Client Validation** | Route10/OPNsense DHCP authority, AD DNS client validation, Hyper-V addressing | Completed before the forced queue | ✅ Complete — 2026-07-03 |
+| [05](projects/project-05-gpo-security-baselines/) | **Group Policy Security Baselines** | Firewall GPO, audit policy, DefaultInboundAction | Q031 | ⬜ Planned |
+| [06](projects/project-06-file-server-access-governance/) | **File Server, NTFS, and Access Governance** | Dept shares, AGDLP, auditing | Q032 | ⬜ Planned |
+| [07](projects/project-07-windows-client-lifecycle/) | **Windows Client Lifecycle** | Domain join, RSAT, workstation hardening | Q033 | ⬜ Planned |
+| [08](projects/project-08-hyperv-operations/) | **Hyper-V Operations** | VM inventory, RDS farm migration, virtual switch, backup | Q034 | ⬜ Planned |
+| [09](projects/project-09-powershell-admin-platform/) | **PowerShell Administration Platform** | User provisioning, AD reports, repeatable scripts | Q035 | ⬜ Planned |
+| [10](projects/project-10-security-monitoring-ir/) | **Security Monitoring and Incident Response** | Event forwarding, lockout tracking, Wazuh/SIEM | Q036 | ⬜ Planned |
+| [11](projects/project-11-backup-disaster-recovery/) | **Backup, Restore, and Disaster Recovery** | System state backup, tested runbooks | Q037 full project; Q003/Q004 early proofs | ⬜ Planned |
+| [12](projects/project-12-m365-entra-hybrid-identity/) | **Microsoft 365 and Entra Hybrid Identity** | Custom domain, UPN, Entra sync | Q041 | ⬜ Planned |
+| [13](projects/project-13-enterprise-identity-integration/) | **Enterprise Identity Integration** | AD as central identity for all lab families — capstone | Q079 | ⬜ Planned |
 
 ---
 
@@ -146,9 +169,9 @@ the Hyper-V host. `WIN-DC02` is now the replica DC and secondary DNS server.
 
 | Codex | Claude | Leonel |
 |-------|--------|--------|
-| Architecture review + failure mode analysis | Final approval before any AD/GPO/M365 change | CLI typing + GUI on Windows Server |
-| PowerShell script drafts | All GitHub pushes | Final say on domain/naming decisions |
-| GPO design + AD OU structure | Review before changes applied to live AD | Screenshots + verification |
+| Architecture review + failure mode analysis | Independent Windows/PowerShell review | Final approval for every exact live change window |
+| PowerShell script drafts and evidence verification | May execute approved Windows steps and handle approved pushes | Final say on domain/naming, backup, scope, and stop/retry decisions |
+| GPO design + AD OU structure | Reviews scripts before they touch live AD | Credential entry when required, screenshots, and final evidence acceptance |
 | CODEX-LOG.md updates | CLAUDE-REVIEW.md | |
 
 ## Bridge Files
