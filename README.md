@@ -94,8 +94,8 @@ across all family repositories.
 
 | Queue | Clickable project | Family placement | Status |
 |---|---|---|---|
-| Q003 | [AD Recycle Bin test-object restore](projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | Early Project 11 recovery proof | ▶ Selected — not started; U0-RUNNER-R01 is planned as the immediate preemption and its local-only package must close first |
-| Q004 | [Test-GPO backup and restore](projects/project-11-backup-disaster-recovery/) | Early Project 11 recovery proof | ⏳ Waiting for Q003 |
+| Q003 | [AD Recycle Bin test-object restore](projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | Early Project 11 recovery proof | ✅ Complete — restored the GUID-pinned disabled test user through both DCs in 0.51 minutes |
+| Q004 | [Test-GPO backup and restore](projects/project-11-backup-disaster-recovery/) | Early Project 11 recovery proof | ⏭️ Next — design the test-GPO scope, rollback, and approval gate |
 | Q007 | [DNS failure-triage simulation](projects/project-03-dns-engineering/) | Project 03 reusable break/fix proof | ⬜ Planned in master order |
 
 ### Additional Windows Simulations And Capstone

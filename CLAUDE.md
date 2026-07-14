@@ -43,8 +43,10 @@ ownership, settled facts, hazards, and standards.
 
 ## Repo standards
 
-- Access: SSH key `claude_winserver_2022_ed25519` → PowerShell 5.1 (`;` not
-  `&&`); WIN-DC02 via `Invoke-Command` from PDC with explicit credential
+- Access: SSH alias `winserver` with key `claude_winserver_2022_ed25519` →
+  PowerShell 5.1 (`;` not `&&`); WIN-DC02 via `Invoke-Command` from PDC with
+  explicit credential. The previously referenced `winserver01` alias is not
+  present in the current SSH configuration.
 - Evidence: `projects/<p>/docs/` + screenshots per project (follow each
   project's existing layout); review file uses 🔴/🟢 emoji style
 - Technical how-to lives in global skills `winserver-p01`,

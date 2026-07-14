@@ -1,0 +1,279 @@
+﻿--- Recycle Bin through WIN-PRQD8TJG04M ---
+
+
+Server            : WIN-PRQD8TJG04M
+EnabledScopeCount : 3
+EnabledScopes     : CN=NTDS Settings,CN=WIN-DC02,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=Chongong,DC=local; CN=Partitions,CN=Configuration,DC=Chongong,DC=local; CN=NTDS
+                    Settings,CN=WIN-PRQD8TJG04M,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=Chongong,DC=local
+
+
+
+
+--- Recycle Bin through WIN-DC02 ---
+
+
+Server            : WIN-DC02
+EnabledScopeCount : 3
+EnabledScopes     : CN=NTDS Settings,CN=WIN-DC02,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=Chongong,DC=local; CN=Partitions,CN=Configuration,DC=Chongong,DC=local; CN=NTDS
+                    Settings,CN=WIN-PRQD8TJG04M,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=Chongong,DC=local
+
+
+
+
+--- Quarantine OU ---
+
+
+DistinguishedName : OU=Quarantine,DC=Chongong,DC=local
+ObjectGuid        : 61f14c01-d4b1-4913-8e2d-1256e97b16c7
+
+
+
+
+--- Directory object lifetimes ---
+
+
+ConfiguredMsDSDeletedObjectLifetimeDays :
+TombstoneLifetimeDays                   : 180
+EffectiveDeletedObjectLifetimeDays      : 180
+
+
+
+
+--- Replication failure history with zero current failures ---
+
+
+FailureCount     : 0
+FailureType      : Link
+FirstFailureTime : 7/13/2026 8:48:16 AM
+LastError        : 8524
+Partner          : CN=NTDS Settings,CN=WIN-DC02,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=Chongong,DC=local
+PartnerGuid      : 20ef4fa4-f6f8-4a52-9836-c2fa4ce2ccdc
+Server           : WIN-PRQD8TJG04M.Chongong.local
+
+
+
+
+--- Replication cmdlet summary ---
+
+
+CurrentFailureCount                   : 0
+ZeroCountHistoricalFailureRecordCount : 1
+NonzeroPartnerResultCount             : 0
+
+
+
+
+--- repadmin replsummary ---
+Replication Summary Start Time: 2026-07-14 00:28:40
+
+
+
+Beginning data collection for replication summary, this may take awhile:
+
+  .....
+
+
+
+
+
+Source DSA          largest delta    fails/total %%   error
+
+ WIN-DC02                  30m:16s    0 /   5    0
+
+ WIN-PRQD8TJG04M           37m:27s    0 /   5    0
+
+
+
+
+
+Destination DSA     largest delta    fails/total %%   error
+
+ WIN-DC02                  37m:27s    0 /   5    0
+
+ WIN-PRQD8TJG04M           30m:16s    0 /   5    0
+
+
+
+
+
+
+--- repadmin showrepl WIN-PRQD8TJG04M errors-only ---
+Default-First-Site-Name\WIN-PRQD8TJG04M
+
+DSA Options: IS_GC
+
+Site Options: (none)
+
+DSA object GUID: 4378e624-3ef9-4ab1-9246-675b18f17d66
+
+DSA invocationID: 4378e624-3ef9-4ab1-9246-675b18f17d66
+
+
+
+==== INBOUND NEIGHBORS ======================================
+
+
+
+
+--- repadmin showrepl WIN-PRQD8TJG04M errors-only native status ---
+
+
+ExitCode    : 234
+Win32Name   : ERROR_MORE_DATA
+Disposition : Accepted only because structured errors-only output contains no failed result.
+
+
+
+
+--- repadmin showrepl WIN-DC02 errors-only ---
+Default-First-Site-Name\WIN-DC02
+
+DSA Options: IS_GC
+
+Site Options: (none)
+
+DSA object GUID: 20ef4fa4-f6f8-4a52-9836-c2fa4ce2ccdc
+
+DSA invocationID: bcb2a971-38aa-48f3-a00a-8802743cd8a7
+
+
+
+==== INBOUND NEIGHBORS ======================================
+
+
+
+
+--- repadmin showrepl WIN-DC02 errors-only native status ---
+
+
+ExitCode    : 234
+Win32Name   : ERROR_MORE_DATA
+Disposition : Accepted only because structured errors-only output contains no failed result.
+
+
+
+
+--- Precheck summary ---
+
+
+Result                 : PASS
+Domain                 : Chongong.local
+Forest                 : Chongong.local
+WritableServers        : WIN-PRQD8TJG04M, WIN-DC02
+Quarantine             : OU=Quarantine,DC=Chongong,DC=local
+ProposedSamAccountName : q003-restore-0713
+LiveCollisionCount     : 0
+DeletedCollisionCount  : 0
+
+
+
+
+Q003_PRECHECK=PASS
+Q003_RUN_STARTED=2026-07-14T00:28:40.6619328-06:00
+Q003_APPROVAL_ID=Q003-20260714-LEONEL
+--- Captured baseline ---
+
+
+ObjectGuid                   : 2386a6b1-8830-4457-bc5f-56da1ac493a1
+SID                          : S-1-5-21-3193592578-3103812925-2486053872-1161
+DistinguishedName            : CN=Q003 Restore Test 2026-07-13,OU=Quarantine,DC=Chongong,DC=local
+SamAccountName               : q003-restore-0713
+DisplayName                  : Q003 Restore Test 2026-07-13
+Enabled                      : False
+Description                  : Q003 disposable disabled Recycle Bin restore proof - 2026-07-13
+PrimaryGroupID               : 513
+ExplicitGroupMembershipCount : 0
+WhenCreated                  : 7/14/2026 12:28:40 AM
+
+
+
+
+Q003_DELETE_STARTED=2026-07-14T00:28:56.2518049-06:00
+--- Deleted object guard ---
+
+
+ObjectGuid      : 2386a6b1-8830-4457-bc5f-56da1ac493a1
+SeenThrough     : WIN-PRQD8TJG04M, WIN-DC02
+IsDeleted       : True
+IsRecycled      :
+LastKnownParent : OU=Quarantine,DC=Chongong,DC=local
+LastKnownRDN    : Q003 Restore Test 2026-07-13
+
+
+
+
+--- final repadmin showrepl WIN-PRQD8TJG04M errors-only ---
+Default-First-Site-Name\WIN-PRQD8TJG04M
+
+DSA Options: IS_GC
+
+Site Options: (none)
+
+DSA object GUID: 4378e624-3ef9-4ab1-9246-675b18f17d66
+
+DSA invocationID: 4378e624-3ef9-4ab1-9246-675b18f17d66
+
+
+
+==== INBOUND NEIGHBORS ======================================
+
+
+
+
+--- final repadmin showrepl WIN-PRQD8TJG04M errors-only native status ---
+
+
+ExitCode    : 234
+Win32Name   : ERROR_MORE_DATA
+Disposition : Accepted only because structured errors-only output contains no failed result.
+
+
+
+
+--- final repadmin showrepl WIN-DC02 errors-only ---
+Default-First-Site-Name\WIN-DC02
+
+DSA Options: IS_GC
+
+Site Options: (none)
+
+DSA object GUID: 20ef4fa4-f6f8-4a52-9836-c2fa4ce2ccdc
+
+DSA invocationID: bcb2a971-38aa-48f3-a00a-8802743cd8a7
+
+
+
+==== INBOUND NEIGHBORS ======================================
+
+
+
+
+--- final repadmin showrepl WIN-DC02 errors-only native status ---
+
+
+ExitCode    : 234
+Win32Name   : ERROR_MORE_DATA
+Disposition : Accepted only because structured errors-only output contains no failed result.
+
+
+
+
+--- Final verification ---
+
+
+Result                         : PASS
+ObjectGuid                     : 2386a6b1-8830-4457-bc5f-56da1ac493a1
+SID                            : S-1-5-21-3193592578-3103812925-2486053872-1161
+VerifiedThrough                : WIN-PRQD8TJG04M, WIN-DC02
+Enabled                        : False
+DistinguishedName              : CN=Q003 Restore Test 2026-07-13,OU=Quarantine,DC=Chongong,DC=local
+SamAccountName                 : q003-restore-0713
+ExplicitGroupMembershipCount   : 0
+DeleteToVerifiedRestoreMinutes : 0.51
+FinalState                     : Disabled in Quarantine
+
+
+
+
+Q003_RUN_FINISHED=2026-07-14T00:29:26.8480527-06:00
+Q003_RESULT=PASS

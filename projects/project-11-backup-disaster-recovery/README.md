@@ -1,6 +1,6 @@
 # Project 11 — Backup, Restore, and Disaster Recovery
 
-**Status:** ⬜ Full P11 planned at Q037; early Q003 proof selected separately and not started
+**Status:** ⬜ Full P11 planned at Q037; early Q003 proof complete and Q004 next separately
 **Skill:** `/winserver-p11` — written when this project starts
 
 ## Master Queue Placement
@@ -11,11 +11,11 @@ rollback evidence:
 
 | Queue | Recovery proof | Status |
 |---|---|---|
-| Q003 | [AD Recycle Bin test-object restore](q003-ad-recycle-bin-test-object-restore/) | ▶ Selected — not started |
-| Q004 | Test-GPO backup and restore | ⏳ Waiting for Q003 |
+| Q003 | [AD Recycle Bin test-object restore](q003-ad-recycle-bin-test-object-restore/) | ✅ Complete — same disabled test-object GUID restored and verified through both DCs |
+| Q004 | Test-GPO backup and restore | ⏭️ Next — test-GPO only; default policies remain out of scope |
 | Q037 | Full Project 11 backup and disaster recovery | ⬜ Planned |
 
-Completing Q003 will satisfy one early restore proof; it will not mark this
+Completing Q003 satisfied one early restore proof; it did not mark this
 entire project complete or bypass Q037's master-queue dependencies. The Q003
 plan, approval, evidence, and closeout remain inside its linked folder so the
 proof can be reused when Q037 begins.

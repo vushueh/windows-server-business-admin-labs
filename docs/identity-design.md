@@ -43,14 +43,19 @@ chongong.local
   │   ├── IT
   │   ├── Management
   │   └── Sales
-  └── Groups
+  ├── Groups
       ├── GlobalGroups    ← GG-* (who people are)
       └── DomainLocalGroups  ← DL-* (what they can access)
+  └── Quarantine
 ```
 
 `ManagedUsers` and `ManagedComputers` are intentional. The domain already has
 built-in root containers named `CN=Users` and `CN=Computers`, so Project 02 uses
 managed OUs for GPO-ready objects without touching the built-in containers.
+
+`OU=Quarantine,DC=Chongong,DC=local` is also present at the domain root. I use
+it only for disabled staged or recovery-test identities. The Q003 read-only
+precheck reconfirmed the OU on 2026-07-14 before any test object was created.
 
 ## AGDLP Model
 

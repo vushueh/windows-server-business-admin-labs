@@ -11,6 +11,83 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ---
 
+## Q003 AD RECYCLE BIN RESTORE — 2026-07-13 to 2026-07-14
+
+### 🟢 RESOLVED — Item Q003-01: Restore PDC reachability and run the approved read-only precheck
+
+**Found by:** Codex primary with Claude read-only review/executor attempts
+
+**Evidence:**
+
+- Claude independently reviewed the Q003 scope and identified the missing
+  Quarantine-OU proof, GUID-pinned delete/restore requirement,
+  `msDS-DeletedObjectLifetime` check, and both-DC verification requirement.
+- Codex verified the cmdlet design against Microsoft documentation and wrote
+  the change window, rollback plan, screenshot plan, and fail-closed script in
+  `projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/`.
+- Windows PowerShell parsed the script with zero syntax errors.
+- A local workstation attempt stopped at `Import-Module ActiveDirectory`
+  because that workstation is not the PDC and has no AD module.
+- The current SSH configuration uses alias `winserver`; the older
+  `winserver01` reference was stale and has been corrected in `CLAUDE.md`.
+- Leonel's console evidence proved `sshd` and Tailscale were running and TCP
+  22 was listening on the PDC. Claude then proved LAN SSH through
+  `192.168.20.11`; the documented Tailscale endpoint still timed out.
+- The first real precheck exposed two fail-closed script defects rather than an
+  AD outage: zero-count replication history was counted as a current failure,
+  and clean `repadmin /showrepl ... /errorsonly` output returned native status
+  `234` on both DCs. Codex corrected both conditions narrowly, and Claude
+  reviewed each correction before replacing the temporary PDC copy.
+- Leonel ran the corrected script locally in the authenticated PDC session.
+  The fresh 2026-07-14 transcript ends `Q003_PRECHECK=PASS` and is saved at
+  `projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/evidence/q003-precheck-2026-07-14.txt`.
+- The proof confirms both writable DCs, enabled Recycle Bin scope, the existing
+  Quarantine OU, 180-day effective deleted-object lifetime, zero current
+  replication failures, zero nonzero partner results, clean `repadmin`
+  results, and zero live or deleted name collisions.
+- No AD object was created, changed, deleted, moved, enabled, or restored.
+
+**What remained gated when the precheck closed:** Leonel's exact dated approval and all
+create/delete/restore execution. Q004 had to continue waiting at that point.
+
+**Resolution steps used:**
+
+1. Keep the sanitized passing precheck in the Q003 evidence folder.
+2. Present the exact named-object approval statement in
+   `docs/q003-change-window.md` to Leonel.
+3. Do not use `-Mode Execute` until that dated approval is recorded.
+
+**Approval update:** Leonel recorded the exact `Q003-20260714-LEONEL`
+delete/restore exception and object-only recovery floor on 2026-07-14.
+Supervised execution and final verification then passed.
+
+### 🟢 RESOLVED — Item Q003-02: Execute, independently review, and close the test-object restore
+
+**Leonel:** Ran the approved script from the authenticated PDC console after
+providing the exact dated approval. The run ended `Q003_RESULT=PASS`.
+
+**Claude:** Retrieved and independently reviewed the complete transcript
+against the script, change window, and rollback plan. Claude confirmed the
+same GUID and SID before deletion and after restore, both-DC verification,
+clean replication, zero explicit memberships, the disabled Quarantine final
+state, the 0.51-minute recovery time, and a clean secret scan.
+
+**Codex:** Coordinated the guarded workflow, wrote and corrected the script,
+verified Claude's findings, maintained the project/queue state, and produced
+the first-person closeout with links to technical evidence.
+
+**Evidence:**
+
+- `projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/evidence/q003-precheck-2026-07-14.txt`
+- `projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/evidence/q003-sanitized-transcript.txt`
+- `projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/evidence/q003-closeout.md`
+
+**Final state:** Q003 is complete. The disposable test identity remains
+disabled in Quarantine. Q004 is next; default domain policies remain out of
+scope.
+
+---
+
 ## CURRENT UPDATE — 2026-07-03
 
 `WIN-DC02` now exists at `192.168.20.12` and has been promoted as a replica

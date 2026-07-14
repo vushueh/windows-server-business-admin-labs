@@ -857,3 +857,107 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ### Open questions for Claude
 - Local changes are ready for review/commit/push. Codex did not push because `AGENTS.md` says Claude owns GitHub pushes for this repo unless Leonel explicitly asks Codex to push.
+
+---
+
+## Session — 2026-07-13 (Codex primary with Claude peer — Q003 preparation)
+
+### What I did
+
+- Closed the U0-RUNNER-R01 local-only prerequisite with the shared workflow
+  inventory, public `windows-latest` patch, and parity checklist; no push or
+  runner change occurred.
+- Asked Claude for an independent read-only challenge of Q003 safety,
+  rollback, stop conditions, and evidence.
+- Verified the material findings against Microsoft AD cmdlet documentation.
+- Wrote Q003's change window, rollback plan, screenshot plan, and fail-closed
+  PowerShell script.
+- Corrected the stale `winserver01` reference to the configured `winserver`
+  SSH alias.
+- Reconciled Q003 as In Progress across the Windows indexes and central state.
+- Raised `CLAUDE-REVIEW.md` item Q003-01 for the reachability/precheck gate.
+
+### Verification
+
+- Windows PowerShell AST parser: zero script errors.
+- YAML parse: central state and goal registry passed.
+- Relative Markdown links: passed.
+- Git whitespace checks: passed.
+- Claude's first precheck stopped on the wrong workstation before any AD
+  query. The corrected PDC Tailscale attempt timed out before hostname
+  verification. A LAN fallback produced no usable result and was stopped.
+- No test object was created, deleted, restored, moved, or enabled. No AD,
+  runner, service, task, or workflow state changed.
+
+### Architecture decisions made
+
+- The test identity is `q003-restore-0713`, disabled, passwordless,
+  non-privileged, and pinned by GUID after creation.
+- The proposed starting and final location is the existing Quarantine OU, but
+  execution stops unless fresh prechecks prove that OU exists.
+- The rollback floor is object-level: baseline plus Recycle Bin. Q003 never
+  restores a DC checkpoint or system state for one disposable object.
+- A failed/partial object remains disabled in Quarantine or safely in Deleted
+  Objects. There is no routine second deletion and no forced replication.
+- RTO is 30 minutes from deletion to both-DC verified restore.
+
+### Cross-family impacts
+
+- Q004 and Q005 remain waiting for Q003.
+- The public P01 workflow patch remains local and requires separate
+  commit/push approval and hosted-run parity proof.
+
+### Needed from Leonel
+
+- Restore `WIN-PRQD8TJG04M` Tailscale/OpenSSH reachability or run the prepared
+  script locally with `-Mode Precheck`.
+- After a clean precheck, approve or reject the exact
+  `Q003-20260713-LEONEL` live exception in the change-window document.
+
+---
+
+## Session — 2026-07-14 (Codex primary with Claude peer — Q003 precheck passed)
+
+### What I did
+
+- Used Leonel's console evidence to confirm the PDC hostname, running
+  OpenSSH/Tailscale services, and TCP 22 listener.
+- Worked with Claude to prove LAN SSH at `192.168.20.11`; the Tailscale path
+  remained unreachable and was not required for the supervised local run.
+- Diagnosed the SSH credential-delegation limit that prevented Claude's
+  key-authenticated session from querying `WIN-DC02` through ADWS.
+- Corrected two fail-closed precheck defects: zero-count replication history is
+  no longer treated as a current failure, and native `repadmin` status `234` is
+  accepted only for complete structured errors-only output with no failed
+  result and clean independent replication gates.
+- Had Claude independently review each correction and hash-match each temporary
+  PDC script copy.
+- Saved the fresh passing transcript at
+  `projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/evidence/q003-precheck-2026-07-14.txt`.
+- Resolved `CLAUDE-REVIEW.md` item Q003-01 and reconciled the Windows indexes.
+
+### Verification
+
+- Final read-only result: `Q003_PRECHECK=PASS`.
+- Domain and forest: `Chongong.local`.
+- Writable DCs: `WIN-PRQD8TJG04M` and `WIN-DC02`.
+- Recycle Bin enabled through both DCs; effective deleted-object lifetime is
+  180 days.
+- Existing Quarantine OU confirmed; no live or deleted test-name collision.
+- Current replication failures: 0; nonzero partner results: 0; `repadmin`
+  summary: 0/5 failures in both directions.
+- Evidence scan found no password, key, token, credential prompt, public WAN
+  address, or unrelated identity list.
+- No AD object was created, changed, deleted, moved, enabled, or restored.
+
+### Current gate
+
+- Leonel supplied the exact `Q003-20260714-LEONEL` approval and launched the
+  reviewed script from the authenticated PDC console.
+- The same GUID was created disabled, captured, deleted, restored, and verified
+  through both DCs in 0.51 minutes. The run ended `Q003_RESULT=PASS`.
+- Claude retrieved and independently reviewed the complete transcript, found
+  no discrepancy or secret, and approved the execution evidence.
+- Codex wrote the readable role-based closeout, reconciled the Windows indexes,
+  and advanced the master queue without marking full Project 11 complete.
+- Q003 is complete. Q004 is next.

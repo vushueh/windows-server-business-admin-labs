@@ -19,8 +19,8 @@ the central YAML registry.
 
 | Queue | Project | Related family project | Status |
 |---|---|---|---|
-| Q003 | [AD Recycle Bin test-object restore](project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | P11 recovery test 1 | ▶ Selected — not started; U0-RUNNER-R01 is planned as the immediate preemption and its local-only package must close first |
-| Q004 | [Test-GPO backup and restore](project-11-backup-disaster-recovery/) | P11 recovery test 3 | ⏳ Waiting for Q003 |
+| Q003 | [AD Recycle Bin test-object restore](project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | P11 recovery test 1 | ✅ Complete — restored the GUID-pinned disabled test user through both DCs in 0.51 minutes |
+| Q004 | [Test-GPO backup and restore](project-11-backup-disaster-recovery/) | P11 recovery test 3 | ⏭️ Next — design the test-GPO scope, rollback, and approval gate |
 | Q007 | [DNS failure-triage simulation](project-03-dns-engineering/) | P03 break/fix evidence | ⬜ Planned in master order |
 
 Later Windows portfolio queue positions are P05/Q031, P06/Q032, P07/Q033,
@@ -71,7 +71,7 @@ without touching the other families.
 | [project-08-hyperv-operations](project-08-hyperv-operations/) | Virtual switch design, VLANs, checkpoints policy, VM inventory, backup, recovery | ⬜ Planned |
 | [project-09-powershell-admin-platform](project-09-powershell-admin-platform/) | User provisioning, AD reports, stale account cleanup, Hyper-V reports, repeatable scripts | ⬜ Planned |
 | [project-10-security-monitoring-ir](project-10-security-monitoring-ir/) | Event forwarding, lockout tracking, account lockout investigation, Defender, Wazuh/SIEM | ⬜ Planned |
-| [project-11-backup-disaster-recovery](project-11-backup-disaster-recovery/) | System state backup, file restore, AD recovery planning, tested restore runbooks; [Q003 test-object restore](project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) is an earlier master-queue proof | ⬜ Planned (Q003 selected separately) |
+| [project-11-backup-disaster-recovery](project-11-backup-disaster-recovery/) | System state backup, file restore, AD recovery planning, tested restore runbooks; [Q003 test-object restore](project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) is an earlier master-queue proof | ⬜ Full P11 planned; Q003 complete and Q004 next separately |
 | [project-12-m365-entra-hybrid-identity](project-12-m365-entra-hybrid-identity/) | Custom domain, UPN alignment, Entra sync, license workflow, onboarding/offboarding | ⬜ Planned |
 | [project-13-enterprise-identity-integration](project-13-enterprise-identity-integration/) | **CAPSTONE** — AD as central auth for CML, physical Cisco, Proxmox, OPNsense, Wazuh, M365 | ⬜ Planned |
 
