@@ -83,150 +83,84 @@ Manage Backups is a separate exercise.
 
 ## Phase 0 — Queue And Safety Reconciliation
 
-**Status:** Complete
-
-**What I did:** I confirmed Q004 was the selected queue item and reconciled its
-dependencies, review lock, and live-change boundary.
-
-**How I did it:** I compared the central queue, repository state, Q003
-closeout, and review records before designing any change.
-
-**Result:** Q004 had a clear scope and no unresolved dependency that allowed a
-different project to start first.
-
-**Connection to the next phase:** This gate authorized read-only discovery,
-not a live GPO change.
-
-**Details:** [Simulation run sheet](docs/q004-simulation-run-sheet.md)
+Before I designed any GPO work, I confirmed Q004 was the selected queue item
+and compared the central queue, repository state, Q003 closeout, and review
+records. That reconciliation gave the [simulation run sheet](docs/q004-simulation-run-sheet.md)
+a clear boundary with no unresolved dependency. It authorized read-only
+discovery, not a live GPO change, which let me begin by examining the domain as
+it actually existed.
 
 ## Phase 1 — Domain And Replication Discovery
 
-**Status:** Complete
-
-**What I did:** I inspected the domain, both writable domain controllers, the
-existing GPOs, Quarantine OU, storage, and replication health.
-
-**How I did it:** I used read-only Active Directory, Group Policy, service, and
-`repadmin` queries. I checked WIN-DC02 directly after an earlier remote-path
-failure.
-
-**Result:** ADWS was running, replication had zero failures, the domain had
-only its two default GPOs, and the Quarantine subtree had no enabled user.
-
-**Connection to the next phase:** Healthy services and an empty isolated link
-target allowed me to design a disposable simulation.
-
-**Details:** [Read-only discovery](evidence/q004-read-only-discovery-2026-07-14.txt)
+I began with read-only Active Directory, Group Policy, service, and `repadmin`
+queries across both writable domain controllers. After an earlier remote-path
+failure, I checked WIN-DC02 directly instead of assuming its AD Web Service was
+unhealthy. The [discovery record](evidence/q004-read-only-discovery-2026-07-14.txt)
+showed ADWS running, zero replication failures, only the two default GPOs, and
+no enabled user in the Quarantine subtree. That healthy, isolated starting
+point made a disposable simulation possible.
 
 ## Phase 2 — Simulation And Evidence Design
 
-**Status:** Complete
-
-**What I did:** I designed one disposable custom GPO, one harmless registry
-marker, an isolated modeling scope, and evidence for every safety claim.
-
-**How I did it:** I mapped baseline, fault, restore, RSoP, cleanup, and manifest
-artifacts before execution.
-
-**Result:** The test could prove restore behavior without applying policy to a
-production computer or enabled user.
-
-**Connection to the next phase:** The evidence design defined the backup,
-stop-condition, and rollback requirements.
-
-**Details:** [Evidence plan](docs/q004-evidence-plan.md)
+With the domain healthy, I designed one disposable GPO, one harmless registry
+marker, and an isolated modeling scope. I mapped the baseline, fault, restore,
+RSoP, cleanup, and integrity artifacts in the [evidence plan](docs/q004-evidence-plan.md)
+before anything changed. This design could prove restore behavior without
+applying policy to a production computer or enabled user. It also defined the
+backup, stop-condition, and rollback controls needed for the change window.
 
 ## Phase 3 — Change Window And Rollback Controls
 
-**Status:** Complete
-
-**What I did:** I documented the exact approved actions, protected objects,
-prechecks, stop conditions, containment, and rollback path.
-
-**How I did it:** I used a dated change window and separate rollback plan, then
-had Claude independently review the plan before live execution.
-
-**Result:** The two default GPOs were protected by exact IDs and unchanged
-version/time guards. Any failed gate stopped the script.
-
-**Connection to the next phase:** Leonel's approval and the passing controls
-allowed creation of the disposable GPO.
-
-**Details:** [Change window](docs/q004-change-window.md), [rollback plan](docs/q004-rollback-plan.md), and [Claude pre-execution review](evidence/q004-claude-preexecution-review-2026-07-14.md)
+Because even a disposable GPO touches the live domain, I converted the design
+into a dated [change window](docs/q004-change-window.md) and separate
+[rollback plan](docs/q004-rollback-plan.md). Exact IDs and version/time guards
+protected both default policies, while every failed gate stopped the script.
+Claude's [pre-execution review](evidence/q004-claude-preexecution-review-2026-07-14.md)
+challenged those controls before Leonel approved the work. With the boundary
+reviewed and approved, I could safely create the disposable GPO.
 
 ## Phase 4 — Baseline Backup And Disposable GPO
 
-**Status:** Complete
-
-**What I did:** I passed the precheck, backed up the current policies, created
-`Q004-GPO-Restore-Test`, and wrote the baseline marker.
-
-**How I did it:** I ran the fail-closed PowerShell script from the PDC under a
-supervised administrator session.
-
-**Result:** The dated run held backups for both default policies and the
-separate known-good custom-GPO backup.
-
-**Connection to the next phase:** The exact custom backup ID established the
-known-good state required before fault injection.
-
-**Details:** [Backup inventory](evidence/q004-backup-inventory.txt) and [fail-closed script](scripts/q004-gpo-backup-restore.ps1)
+At the approved window, I ran the [fail-closed PowerShell script](scripts/q004-gpo-backup-restore.ps1)
+from the PDC under a supervised administrator session. Its precheck passed
+before it backed up the current policies, created `Q004-GPO-Restore-Test`, and
+wrote the baseline marker. The [backup inventory](evidence/q004-backup-inventory.txt)
+then held both default-policy backups and a separate known-good backup ID for
+the custom GPO. That exact ID established the safe point needed before I could
+inject the harmless fault.
 
 ## Phase 5 — Harmless Fault And Containment
 
-**Status:** Complete after contained resume
-
-**What I did:** I changed only the disposable marker to
-`Q004-FAULT-INJECTED`. The first execution then stopped on an unexpected
-PowerShell backup-object property.
-
-**How I did it:** I preserved the run directory, removed the direct test link,
-verified the default policies were unchanged, and wrote a state-specific resume
-addendum before continuing.
-
-**Result:** The failure was contained. No default GPO changed, no policy was
-applied to a client, and the exact backup remained available.
-
-**Connection to the next phase:** The containment proof and resume gate made it
-safe to restore the known-good backup without repeating earlier mutations.
-
-**Details:** [Execute attempt incident](evidence/q004-execute-attempt1-incident-2026-07-14.md) and [contained-state resume addendum](docs/q004-resume-addendum-2026-07-14.md)
+I changed only the disposable GPO marker to `Q004-FAULT-INJECTED`, the one
+deliberate break this test needed. The first execution then stopped on an
+unexpected PowerShell backup-object property, so I preserved the run directory,
+removed the direct test link, and confirmed both default GPOs were untouched.
+The [incident record](evidence/q004-execute-attempt1-incident-2026-07-14.md)
+and [contained-state resume addendum](docs/q004-resume-addendum-2026-07-14.md)
+show that no policy reached a client and the exact backup remained available.
+That containment proof made it safe to restore the known-good state without
+repeating the earlier mutations.
 
 ## Phase 6 — Exact Backup Restore
 
-**Status:** Complete — 0.1 minutes
-
-**What I did:** I restored the same disposable GPO GUID from its exact
-known-good `BackupId`.
-
-**How I did it:** I used the guarded resume path, then checked the restored
-registry marker and default-policy invariants.
-
-**Result:** The marker returned to `Q004-BASELINE` in 0.1 minutes while both
-default policies remained unchanged.
-
-**Connection to the next phase:** The restored value was ready for independent
-Group Policy Modeling verification.
-
-**Details:** [Restored GPO report](evidence/reports/q004-restored.xml) and [sanitized transcript](evidence/q004-sanitized-transcript.txt)
+After proving the failed run was contained, I used the guarded resume path to
+restore the same disposable GPO GUID from its exact known-good `BackupId`. I
+then checked the registry marker and both default-policy invariants. The
+[restored report](evidence/reports/q004-restored.xml) and
+[sanitized transcript](evidence/q004-sanitized-transcript.txt) show the marker
+returned to `Q004-BASELINE` in 0.1 minutes while the default policies remained
+unchanged. With the value restored, I could independently model which policy
+would win.
 
 ## Phase 7 — RSoP Verification
 
-**Status:** Complete
-
-**What I did:** I modeled the restored GPO for the disabled Quarantine user and
-the Workstations computer container.
-
-**How I did it:** I used Group Policy Management's Modeling Wizard and saved
-the resulting RSoP report with the run evidence.
-
-**Result:** Modeling showed `Q004-BASELINE` and named the disposable restored
-GPO as the winning source. This was planning proof, not live policy application.
-
-**Connection to the next phase:** The restored result was proven, so the test
-link and GPO could be safely removed.
-
-**Details:** [RSoP modeling report](evidence/reports/q004-rsop-modeling.html)
+To prove the restored value without applying it to a client, I used Group
+Policy Management's Modeling Wizard for the disabled Quarantine user and the
+Workstations computer container. The saved
+[RSoP report](evidence/reports/q004-rsop-modeling.html) showed
+`Q004-BASELINE` and named the restored disposable GPO as the winning source.
+This was planning proof rather than live policy application. Once that proof
+was captured, the test link and GPO no longer needed to remain in the domain.
 
 ### Restored Marker And Winning GPO
 
@@ -242,39 +176,24 @@ link and GPO could be safely removed.
 
 ## Phase 8 — Disposable GPO Cleanup
 
-**Status:** Complete
-
-**What I did:** I removed the Quarantine link and deleted only the disposable
-custom GPO after the restore proof was complete.
-
-**How I did it:** I ran the script's cleanup mode and checked the remaining GPO
-count, direct links, protected IDs, users, and replication.
-
-**Result:** Only the two canonical default GPOs remained. Quarantine had no
-direct link, and the retained backup/evidence path remained intact.
-
-**Connection to the next phase:** The clean final state allowed evidence review
-and project closeout.
-
-**Details:** [Final live state](evidence/q004-final-live-state-2026-07-14.txt)
+Once modeling proved the restore, I ran the script's cleanup mode to remove the
+Quarantine link and delete only the disposable custom GPO. I checked the
+remaining GPO count, direct links, protected IDs, users, and replication rather
+than assuming cleanup had worked. The [final live state](evidence/q004-final-live-state-2026-07-14.txt)
+shows only the two canonical default policies remained, Quarantine had no
+direct link, and the backup/evidence path was preserved. That clean boundary
+allowed the project to move into evidence review and closeout.
 
 ## Phase 9 — Evidence Review And Closeout
 
-**Status:** Complete
-
-**What I did:** I sanitized the transcript, collected reports and screenshots,
-generated an integrity manifest, reconciled status, and closed Q004.
-
-**How I did it:** I checked the final live state against the evidence set and
-had Claude independently review the completed package.
-
-**Result:** The final review found the restore proof, containment, cleanup, and
-documentation sufficient for Q004 completion.
-
-**Connection to the next phase:** Q004 has no next phase. Its verified rollback
-method is an entry condition for later GPO security-baseline work.
-
-**Details:** [Closeout](evidence/q004-closeout.md), [evidence manifest](evidence/q004-evidence-manifest.sha256), and [Claude final review](evidence/q004-claude-final-review-2026-07-14.md)
+Finally, I sanitized the transcript, collected the reports and screenshots,
+generated the [evidence manifest](evidence/q004-evidence-manifest.sha256), and
+reconciled the repository status with the final live state. Claude's
+[final review](evidence/q004-claude-final-review-2026-07-14.md) independently
+confirmed that the restore, containment, cleanup, and documentation supported
+completion. The [closeout](evidence/q004-closeout.md) therefore ends Q004 with
+no unfinished phase. Its tested rollback method now becomes an entry condition
+for later GPO security-baseline work rather than another phase of this project.
 
 ## What I Proved
 

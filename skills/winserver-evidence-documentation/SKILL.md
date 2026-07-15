@@ -33,7 +33,9 @@ README. Use descriptive links to the technical files.
 
 ## Windows Phase Detail
 
-In each canonical phase section, name the shortest reproducible method:
+Keep status only in the project phase table. Write each phase breakdown as a
+short first-person story without `What I did`, `How`, `Result`, `Connection`,
+or `Details` labels. Weave the shortest reproducible method into the prose:
 
 - the PowerShell cmdlet or verification command;
 - the concise GUI path when Leonel used a graphical tool;
@@ -73,7 +75,8 @@ prove.
 
 Before a Windows project is published as Complete, confirm:
 
-- every phase-table row has a matching short phase section;
+- every phase-table row has a matching short narrative and status is not
+  repeated inside it;
 - the technical evidence and reproduction links resolve;
 - every screenshot is redaction-checked and the two-per-phase cap holds;
 - default or protected objects were not changed unless exact evidence and

@@ -1084,3 +1084,18 @@ Codex writes here after every session. Claude reads this to stay in sync.
   unchanged.
 - This was repository documentation work only; no AD, GPO, client, backup, or
   other live system was accessed or changed.
+
+---
+
+## Session — 2026-07-14 (Q004 narrative-phase refinement)
+
+- Applied Leonel's presentation correction: phase status now appears only in
+  the table, never inside a phase breakdown.
+- Rewrote Q004 Phases 0–9 as concise first-person story sections without
+  repeated What/How/Result/Connection/Details labels.
+- Preserved one concrete method or artifact and a natural evidence link in
+  every phase, plus the result and handoff to the next phase.
+- Updated the canonical standard, templates, documentation skill, closeout
+  checks, and Windows extension to make this the rule for future projects.
+- Claude independently reviewed the revised pattern and returned `READY` with
+  no fix. No live system was accessed or changed.
