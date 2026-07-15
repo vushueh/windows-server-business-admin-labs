@@ -1,6 +1,6 @@
 # Project 11 — Backup, Restore, and Disaster Recovery
 
-**Status:** ⬜ Full P11 planned at Q037; early Q003 proof complete and Q004 next separately
+**Status:** 🟡 Full P11 planned at Q037; Q003 and Q004 recovery proofs complete separately
 **Skill:** `/winserver-p11` — written when this project starts
 
 ## Master Queue Placement
@@ -12,13 +12,13 @@ rollback evidence:
 | Queue | Recovery proof | Status |
 |---|---|---|
 | Q003 | [AD Recycle Bin test-object restore](q003-ad-recycle-bin-test-object-restore/) | ✅ Complete — same disabled test-object GUID restored and verified through both DCs |
-| Q004 | Test-GPO backup and restore | ⏭️ Next — test-GPO only; default policies remain out of scope |
+| Q004 | [Test-GPO backup and restore](q004-test-gpo-backup-restore/) | ✅ Complete — custom-GPO backup/fault/restore, RSoP, cleanup, and final review passed |
 | Q037 | Full Project 11 backup and disaster recovery | ⬜ Planned |
 
-Completing Q003 satisfied one early restore proof; it did not mark this
-entire project complete or bypass Q037's master-queue dependencies. The Q003
-plan, approval, evidence, and closeout remain inside its linked folder so the
-proof can be reused when Q037 begins.
+Completing Q003 and Q004 satisfied two early restore proofs; it did not mark
+this entire project complete or bypass Q037's master-queue dependencies. Each
+proof's plan, approval, evidence, and closeout remain inside its linked folder
+so they can be reused when Q037 begins.
 
 ## Objective
 
@@ -75,7 +75,7 @@ Execute all five restore tests to prove recovery works. Write DR runbooks with r
 | 5 | Configure VM Export | Weekly Hyper-V VM export for all critical VMs |
 | 6 | Test 1: AD Recycle Bin | Create disposable restore-test user → delete → restore via ADAC → confirm intact |
 | 7 | Test 2: File Restore | Delete a file from WIN-FS01 → restore from shadow copy |
-| 8 | Test 3: GPO Restore | Delete disposable test GPO → restore from C:\GPO-Backups\ → verify links |
+| 8 | Test 3: GPO Restore | Fault an existing disposable test GPO → restore its exact backup ID → verify link and RSoP |
 | 9 | Test 4: DC System State | Lab exercise: restore system state on WIN-DC02 (not PDC) |
 | 10 | Test 5: VM Restore | Restore WIN-WS01 export as isolated test copy; do not delete the working VM |
 | 11 | DR Runbook | Write recovery procedures for each scenario, including time estimates |
@@ -114,22 +114,14 @@ Get-ADObject -Filter {SamAccountName -eq 'restore-test-p11'} -IncludeDeletedObje
 ```
 
 ### Phase 8 — GPO Restore Test
-```powershell
-# Backup all GPOs before test
-$BackupPath = "C:\GPO-Backups\$(Get-Date -Format yyyyMMdd)"
-New-Item -ItemType Directory -Path $BackupPath
-Backup-Gpo -All -Path $BackupPath
 
-# Simulate disaster with a disposable GPO, not a production baseline GPO
-New-GPO -Name "P11-Restore-Test"
-Backup-GPO -Name "P11-Restore-Test" -Path $BackupPath
-Remove-GPO -Name "P11-Restore-Test"
-
-# Restore
-Restore-GPO -Name "P11-Restore-Test" -Path $BackupPath
-
-# Optional: link only to a test OU if needed, then remove the test GPO after verification
-```
+Use the reviewed [Q004 change window](q004-test-gpo-backup-restore/docs/q004-change-window.md)
+and [fail-closed script](q004-test-gpo-backup-restore/scripts/q004-gpo-backup-restore.ps1).
+Q004 keeps the disposable GPO present, captures its exact `BackupId`, injects
+a harmless test marker, and calls `Restore-GPO` against that existing object.
+Microsoft's PowerShell restore cmdlet does not recreate a deleted GPO; deleted
+GPO recovery through GPMC Manage Backups is a separate exercise. Neither
+default policy may be used as the restore target.
 
 ### Phase 11 — DR Runbook Template
 ```

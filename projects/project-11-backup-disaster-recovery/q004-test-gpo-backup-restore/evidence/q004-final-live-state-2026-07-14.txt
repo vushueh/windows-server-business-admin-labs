@@ -1,0 +1,37 @@
+Q004 final live-state verification
+Date: 2026-07-14
+Host: WIN-PRQD8TJG04M
+Domain: Chongong.local
+
+Default Domain Policy
+  GPO ID: 31b2f340-016d-11d2-945f-00c04fb984f9
+  Present: yes
+  Status: AllSettingsEnabled
+  User DS/SYSVOL version: 0/0
+  Computer DS/SYSVOL version: 4/4
+  Modification time UTC: 2026-06-23T02:30:28Z
+
+Default Domain Controllers Policy
+  GPO ID: 6ac1786c-016f-11d2-945f-00c04fb984f9
+  Present: yes
+  Status: AllSettingsEnabled
+  User DS/SYSVOL version: 0/0
+  Computer DS/SYSVOL version: 4/4
+  Modification time UTC: 2025-08-22T02:30:08Z
+
+Disposable test state
+  Q004-GPO-Restore-Test count: 0
+  Quarantine direct GPO links: 0
+  Quarantine enabled subtree users: 0
+
+Replication
+  WIN-PRQD8TJG04M source failures: 0/5
+  WIN-DC02 source failures: 0/5
+  repadmin /showrepl /errorsonly: no errors on either DC
+
+Retained recovery evidence
+  C:\GPO-Backups\Q004\20260714T233623Z
+
+Result: PASS
+The domain returned to its original two-GPO state. The disposable GPO and its
+Quarantine link are absent; the approved backup/evidence set remains.

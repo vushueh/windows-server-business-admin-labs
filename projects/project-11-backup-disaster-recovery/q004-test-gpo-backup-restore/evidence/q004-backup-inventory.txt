@@ -1,0 +1,18 @@
+Q004 backup inventory
+Captured: 2026-07-14
+Run path: C:\GPO-Backups\Q004\20260714T233623Z
+
+Q004-GPO-Restore-Test
+  GPO ID: b6a59828-e00b-4228-b285-b4a2a08f2909
+  Backup ID: 2c5ab818-6893-4ed7-b942-8e403e5b4b3e
+
+Default Domain Policy
+  GPO ID: 31b2f340-016d-11d2-945f-00c04fb984f9
+  Backup ID: 40a14d4e-ba9a-4274-aeba-6f82e2e662e3
+
+Default Domain Controllers Policy
+  GPO ID: 6ac1786c-016f-11d2-945f-00c04fb984f9
+  Backup ID: f09d96b4-6c75-4a84-a7ac-c61732ed56a1
+
+The two default policies were backed up only. Neither was restored or
+modified. The retained server-side backup tree contains all three manifests.

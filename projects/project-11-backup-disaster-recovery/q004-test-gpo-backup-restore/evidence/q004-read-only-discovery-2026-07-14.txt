@@ -1,0 +1,52 @@
+Q004 READ-ONLY DISCOVERY SUMMARY
+Captured: 2026-07-14
+Mode: LIVE-RO through Claude over BatchMode LAN SSH to WIN-PRQD8TJG04M
+Mutation: none
+
+SCOPE
+- Host: WIN-PRQD8TJG04M
+- Domain: Chongong.local; mode Windows2016Domain
+- DCs returned: WIN-PRQD8TJG04M and WIN-DC02
+
+GPO INVENTORY
+- Default Domain Policy
+  GUID 31b2f340-016d-11d2-945f-00c04fb984f9
+  AllSettingsEnabled; computer AD/SYSVOL version 4/4
+  Modified 2026-06-22 20:30:28 local server time
+- Default Domain Controllers Policy
+  GUID 6ac1786c-016f-11d2-945f-00c04fb984f9
+  AllSettingsEnabled; computer AD/SYSVOL version 4/4
+  Modified 2025-08-21 20:30:08 local server time
+- No other GPO returned; Q004-GPO-Restore-Test was absent.
+
+OU/LINK BOUNDARY
+- Domain Controllers had its canonical default-policy link.
+- Quarantine and all other queried managed/admin/group OUs had no direct link.
+- Workstations contained six enabled Windows computer accounts. No object was
+  authoritatively designated disposable, so Q004 will move/refresh none and
+  will use the OU only as a Group Policy Modeling location.
+
+READINESS
+- C:\GPO-Backups existed: True; C: free: 711.39 GB
+- SYSVOL and NETLOGON: present and online
+- GroupPolicy module: 1.0.0.0
+- Backup-GPO, Restore-GPO, Get-GPResultantSetOfPolicy: present
+
+PRELIMINARY REPLICATION
+Start: 2026-07-14 09:01:04
+Source WIN-DC02: 0/5 failures; largest delta 02m:40s
+Destination WIN-PRQD8TJG04M: 0/5 failures; largest delta 02m:40s
+The command also printed operational error 110 for WIN-DC02.Chongong.local.
+
+DISPOSITION
+- The 0/5 rows do not override the operational error.
+- Execution stays blocked until the prepared precheck passes every
+  replication gate without an operational error.
+- Fresh Quarantine-subtree enabled-user counts remain an execution-time gate;
+  carried-forward disabled-user evidence is not substituted.
+
+REDACTION
+- No password, token, key content, credential prompt, public WAN address, or
+  unrelated user list is stored here.
+- Raw Claude traces contained tool metadata/verbose fields and were not copied;
+  this summary preserves the exact facts and complete replication warning.

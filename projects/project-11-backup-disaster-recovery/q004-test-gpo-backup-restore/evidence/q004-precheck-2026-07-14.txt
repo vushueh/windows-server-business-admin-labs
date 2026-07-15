@@ -1,0 +1,56 @@
+Q004 READ-ONLY PRECHECK ATTEMPTS
+Captured: 2026-07-14
+Mode: LIVE-RO through Claude over BatchMode LAN SSH to WIN-PRQD8TJG04M
+Remote file created: no; the local script was invoked in memory
+Mutation: none
+
+ATTEMPT 1
+- Result: FAIL CLOSED before replication checks.
+- Cause: this server's Get-GPO objects expose version data through the User
+  and Computer sub-objects, not flat UserVersion/ComputerVersion properties.
+- Disposition: Codex changed the baseline to capture and compare User and
+  Computer DSVersion and SysvolVersion, with an explicit shape guard.
+- Windows PowerShell parser after correction: PASS.
+
+ATTEMPT 2
+- Result: FAIL CLOSED at the replication cmdlet gate.
+- Passed first: host, domain, forest, PDC, two writable-DC identities, required
+  modules/cmdlets, online SYSVOL/NETLOGON, free space, exact two-GPO inventory,
+  canonical protected GPO/link guards, test-name collision guard, Quarantine
+  scope/user safety, and corrected protected-GPO version capture.
+- Exact safe failure: Get-ADReplicationFailure could not contact
+  WIN-DC02.Chongong.local through ADWS; the service/path was reported
+  unreachable at that time.
+- Root cause: not established. The earlier discovery also reported repadmin
+  operational error 110 for WIN-DC02 despite 0/5 failure rows.
+
+DISPOSITION
+- Leonel's interactive PDC session subsequently proved WIN-DC02 ADWS is
+  Running/Automatic, Get-ADRootDSE succeeds, all returned partner results are
+  zero, current replication failures are absent, and repadmin reports 0/5
+  failures with clean errors-only output.
+- The earlier failure was the OpenSSH public-key session's non-delegating
+  authentication context; no ADWS restart, firewall, or authentication repair
+  was justified or performed.
+- Q004 Execute remains NO-GO until Mode=Precheck passes in the interactive
+  domain Administrator context.
+- A passing precheck does not authorize live work; Leonel's exact dated
+  approval and the locked script approval ID are still required.
+
+FINAL INTERACTIVE SCRIPT PRECHECK
+- Result: PASS; native exit code 0.
+- Host/domain/PDC: WIN-PRQD8TJG04M / Chongong.local / WIN-PRQD8TJG04M.
+- Writable servers: WIN-PRQD8TJG04M and WIN-DC02.
+- GPOs: exactly two protected defaults; zero test-name collisions.
+- Quarantine: zero direct links; two subtree users; zero enabled subtree users.
+- Backup root: present; C: free space 710.51 GB.
+- Modeling identity/container: q003-restore-0713 / Workstations OU.
+- Terminal marker: Q004_PRECHECK=PASS.
+
+APPROVAL
+- Leonel supplied exact ID Q004-20260714-LEONEL after the passing precheck.
+- The reviewed script was updated to accept only that ID for Execute/Cleanup.
+
+REDACTION
+- No password, token, key content, credential prompt, public WAN address, or
+  unrelated identity list is stored here.

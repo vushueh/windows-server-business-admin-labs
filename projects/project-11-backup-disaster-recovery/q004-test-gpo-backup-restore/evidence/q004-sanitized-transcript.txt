@@ -1,0 +1,79 @@
+Q004 sanitized execution transcript
+Date: 2026-07-14
+Domain: Chongong.local
+Execution host: WIN-PRQD8TJG04M
+Run path: C:\GPO-Backups\Q004\20260714T233623Z
+
+This is a reviewed chronological summary of the two server-side PowerShell
+transcripts. Credentials, command prompts, shell metadata, and unrelated
+session details are omitted. The raw transcripts remain server-side.
+
+1. Interactive precheck
+   Q004_PRECHECK=PASS
+   Exit code: 0
+   Writable DCs: WIN-PRQD8TJG04M, WIN-DC02
+   Existing GPO count: 2
+   Quarantine direct links: 0
+   Quarantine subtree users: 2
+   Quarantine enabled subtree users: 0
+   Test-GPO collisions: 0
+   Free space: 710.51 GB
+
+2. Approved Execute attempt 1
+   Approval: Q004-20260714-LEONEL
+   All current GPOs were backed up.
+   Q004-GPO-Restore-Test was created with GPO ID
+   b6a59828-e00b-4228-b285-b4a2a08f2909, set to Q004-BASELINE,
+   linked only to Quarantine, and backed up.
+   The script then checked a nonexistent BackupId property on the installed
+   Microsoft.GroupPolicy.GpoBackup object. It stopped before fault injection.
+   Q004_CONTAINMENT_LINK_REMOVAL=PASS
+   Exit code: 1
+   Contained state: test GPO unlinked at Q004-BASELINE; defaults unchanged.
+
+3. Corrected, independently reviewed Resume
+   Resume approval: Q004-20260714-LEONEL-RESUME1
+   Pinned test backup ID: 2c5ab818-6893-4ed7-b942-8e403e5b4b3e
+   The Resume gate parsed all three backup manifests and revalidated the exact
+   run path, GUID, baseline marker, protected defaults, Quarantine scope, and
+   replication before mutation.
+   The same test GPO was relinked only to Quarantine.
+   Fault report marker: Q004-FAULT-INJECTED
+   Restore-GPO used the pinned backup ID.
+   Restored report marker: Q004-BASELINE
+   Restored GPO ID: b6a59828-e00b-4228-b285-b4a2a08f2909
+   Restore time: 0.1 minutes
+   Q004_RESUME_RESTORE=PASS
+   Q004_AWAITING_RSOP=YES
+   Exit code: 0
+
+4. Group Policy Modeling and verification
+   The saved GPMC model used disabled user q003-restore-0713 in Quarantine
+   and the Workstations OU as the modeled computer location.
+   Group Policy Infrastructure: Success
+   Registry: Success
+   Setting: Software\Policies\Chongong\Q004\RestoreMarker
+   State: Q004-BASELINE
+   Winning GPO: Q004-GPO-Restore-Test
+   The report was initially saved with an .htm suffix while the verifier
+   expected .html. Verification failed closed without changing AD. The
+   original report was preserved and copied to the expected filename.
+   Q004_VERIFY=PASS
+   Exit code: 0
+
+5. Cleanup and post-check
+   The disposable GPO link was removed before the GPO was deleted.
+   Removed GPO ID: b6a59828-e00b-4228-b285-b4a2a08f2909
+   Quarantine direct links: 0
+   Protected default policies: 2
+   Backup path retained: C:\GPO-Backups\Q004\20260714T233623Z
+   Replication summary: 0/5 failures for both DCs
+   repadmin /showrepl /errorsonly: no errors on either DC
+   Q004_CLEANUP=PASS
+   Exit code: 0
+
+Final result: PASS
+The disposable GPO and link are absent. Only the two canonical default GPOs
+remain, and their captured versions, status, and modification times passed
+the script's unchanged checks. No gpupdate, identity/OU move, client policy
+application, default-policy restore, or production-OU link occurred.

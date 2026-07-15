@@ -95,7 +95,7 @@ across all family repositories.
 | Queue | Clickable project | Family placement | Status |
 |---|---|---|---|
 | Q003 | [AD Recycle Bin test-object restore](projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | Early Project 11 recovery proof | ✅ Complete — restored the GUID-pinned disabled test user through both DCs in 0.51 minutes |
-| Q004 | [Test-GPO backup and restore](projects/project-11-backup-disaster-recovery/) | Early Project 11 recovery proof | ⏭️ Next — design the test-GPO scope, rollback, and approval gate |
+| Q004 | [Test-GPO backup and restore](projects/project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/) | Early Project 11 recovery proof | ✅ Complete — exact custom-GPO restore passed in 0.1 minutes; RSoP and cleanup verified |
 | Q007 | [DNS failure-triage simulation](projects/project-03-dns-engineering/) | Project 03 reusable break/fix proof | ⬜ Planned in master order |
 
 ### Additional Windows Simulations And Capstone
@@ -121,7 +121,7 @@ across all family repositories.
 | [08](projects/project-08-hyperv-operations/) | **Hyper-V Operations** | VM inventory, RDS farm migration, virtual switch, backup | Q034 | ⬜ Planned |
 | [09](projects/project-09-powershell-admin-platform/) | **PowerShell Administration Platform** | User provisioning, AD reports, repeatable scripts | Q035 | ⬜ Planned |
 | [10](projects/project-10-security-monitoring-ir/) | **Security Monitoring and Incident Response** | Event forwarding, lockout tracking, Wazuh/SIEM | Q036 | ⬜ Planned |
-| [11](projects/project-11-backup-disaster-recovery/) | **Backup, Restore, and Disaster Recovery** | System state backup, tested runbooks | Q037 full project; Q003/Q004 early proofs | ⬜ Planned |
+| [11](projects/project-11-backup-disaster-recovery/) | **Backup, Restore, and Disaster Recovery** | System state backup, tested runbooks | Q037 full project; Q003/Q004 early proofs | 🟡 Q003/Q004 proofs complete; full P11 planned |
 | [12](projects/project-12-m365-entra-hybrid-identity/) | **Microsoft 365 and Entra Hybrid Identity** | Custom domain, UPN, Entra sync | Q041 | ⬜ Planned |
 | [13](projects/project-13-enterprise-identity-integration/) | **Enterprise Identity Integration** | AD as central identity for all lab families — capstone | Q079 | ⬜ Planned |
 

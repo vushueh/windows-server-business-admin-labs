@@ -48,7 +48,9 @@ ownership, settled facts, hazards, and standards.
   explicit credential. The previously referenced `winserver01` alias is not
   present in the current SSH configuration.
 - Evidence: `projects/<p>/docs/` + screenshots per project (follow each
-  project's existing layout); review file uses 🔴/🟢 emoji style
+  project's existing layout); use the shared
+  [portfolio documentation standard](../docs/readme-layered-documentation-standard.md)
+  and `width="900"` HTML screenshot wrapper; review file uses 🔴/🟢 emoji style
 - Technical how-to lives in global skills `winserver-p01`,
   `winserver-projects`, `winserver-evidence-documentation` — some predate
   P02–P04 outcomes; flag stale guidance instead of following it blindly

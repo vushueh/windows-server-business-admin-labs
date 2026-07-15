@@ -11,6 +11,76 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ---
 
+## Q004 TEST-GPO BACKUP/RESTORE — 2026-07-14
+
+### 🟢 RESOLVED — Item Q004-01: Independently review and correct the preparation package
+
+**Found by:** Claude independent reviewer; resolved and verified by Codex
+
+**Evidence:**
+
+- Codex prepared the run sheet, change window, rollback/evidence plans, and a
+  fail-closed four-mode PowerShell script under
+  `projects/project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/`.
+- Claude's first independent review found that the draft used flat
+  `UserVersion`/`ComputerVersion` properties not returned by the installed
+  GroupPolicy module. Its read-only precheck stopped before replication and
+  before any mutation.
+- Codex replaced those fields with guarded User/Computer `DSVersion` and
+  `SysvolVersion` captures and updated the protected-policy comparisons.
+- Windows PowerShell parsing passed after correction. Claude's follow-up
+  static review found no remaining Critical, High, Medium, or Low issue.
+- Claude then reviewed the final current package after its subtree, canonical
+  link, backup-state, transcript, and status updates; it reported no finding
+  and rated preparation ready while retaining the live NO-GO.
+- The follow-up live read-only precheck passed the scope, GPO collision,
+  canonical default-policy/link, Quarantine, module, share, storage, and
+  corrected version-shape guards.
+- The exact sanitized reports are
+  `evidence/q004-precheck-2026-07-14.txt` and
+  `evidence/q004-claude-preexecution-review-2026-07-14.md` inside the Q004
+  folder.
+
+**Safety result:** No GPO, link, OU, identity, backup, or remote file was
+created, modified, restored, or removed. No `gpupdate` ran.
+
+### 🟢 RESOLVED — Item Q004-02: Execute, contain, resume, verify, and close
+
+**Resolved by:** Leonel-supervised execution; Codex verification; Claude
+independent final evidence review
+
+**Evidence and disposition:**
+
+1. Interactive precheck passed with both DCs healthy and no test-name/link or
+   enabled-Quarantine-user collision. The earlier DC02 symptom was an SSH
+   double-hop limitation; ADWS/firewall/authentication required no repair.
+2. Leonel supplied exact approval `Q004-20260714-LEONEL`. Execute backed up all
+   GPOs and the disposable baseline, then stopped before fault injection on
+   the installed backup object's `Id`/`BackupId` property shape. Containment
+   removed the Quarantine link and left the unlinked test GPO at baseline.
+3. Codex corrected the script, pinned the exact run/GUID/backup, and added a
+   fail-closed Resume mode. Claude rated the recovery `RESUME-READY`; Leonel
+   supplied `Q004-20260714-LEONEL-RESUME1`.
+4. Resume faulted and restored the same test GPO in 0.1 minutes. GPMC modeling
+   proved `Q004-BASELINE` from the winning custom GPO. Verify and Cleanup
+   passed; final state has zero test GPOs, zero Quarantine links, both defaults
+   unchanged, and clean replication on both DCs.
+5. Claude's read-only final review returned `COMPLETE-READY` with no Critical,
+   High, or Medium issue. Codex addressed its two Low hardening observations
+   by making the protected-version proof self-contained and accepting GPMC's
+   `.htm` or `.html` suffix while retaining content validation.
+
+**Final evidence:**
+
+- `projects/project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/evidence/q004-closeout.md`
+- `projects/project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/evidence/q004-sanitized-transcript.txt`
+- `projects/project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/evidence/q004-claude-final-review-2026-07-14.md`
+
+**Final state:** Q004 is complete. Q005 is next; neither this closeout nor the
+retained backups authorize Q005 execution.
+
+---
+
 ## Q003 AD RECYCLE BIN RESTORE — 2026-07-13 to 2026-07-14
 
 ### 🟢 RESOLVED — Item Q003-01: Restore PDC reachability and run the approved read-only precheck

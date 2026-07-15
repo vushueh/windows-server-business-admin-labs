@@ -55,13 +55,11 @@ file now exists.
 
 ## Final Screenshot
 
-<p align="center">
-  <img src="screenshots/phase5-02-q003-both-dc-verification.png" width="750" alt="Q003 final PowerShell verification showing PASS, both domain controllers, disabled state, Quarantine location, 0.51-minute restore time, and Q003_RESULT=PASS">
-</p>
+### Both-DC Restore Verification
 
-*The same restored GUID was verified through both domain controllers. The
-account remained disabled in Quarantine, and the run ended
-`Q003_RESULT=PASS`.*
+<p><strong>Proof:</strong> I verified the same restored GUID through both domain controllers, kept the account disabled in Quarantine, and completed the restore in 0.51 minutes.</p>
+
+<img src="screenshots/phase5-02-q003-both-dc-verification.png" alt="Q003 final both-domain-controller restore verification" width="900">
 
 ## Claude And Codex Review
 

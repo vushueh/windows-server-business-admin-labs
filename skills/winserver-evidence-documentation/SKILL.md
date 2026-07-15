@@ -171,7 +171,9 @@ Start -> Windows Tools -> Tool Name -> object -> tab/button
 
 ### Screenshot: phaseN-01-short-name.png
 
-![short alt text](screenshots/phaseN-01-short-name.png)
+<p><strong>Proof:</strong> One sentence explaining what this image proves.</p>
+
+<img src="screenshots/phaseN-01-short-name.png" alt="short alt text" width="900">
 
 - **When to capture:** Before change, after change, verification, or deferred proof.
 - **What it shows:** Explain exactly what is visible.
@@ -283,10 +285,12 @@ phase9-01-final-verification-output.png
 - no unredacted credential fields
 - no unrelated personal files, browser tabs, or notifications
 
-4. Link screenshots with relative Markdown paths only:
+4. Embed screenshots with a relative HTML path and the shared width:
 
-```markdown
-![short alt text](screenshots/phaseN-NN-short-description.png)
+```html
+<p><strong>Proof:</strong> One sentence explaining what this image proves.</p>
+
+<img src="screenshots/phaseN-NN-short-description.png" alt="short alt text" width="900">
 ```
 
 5. Do not upload screenshots to external image hosts for repo documentation.
@@ -310,12 +314,16 @@ phase. A technical reviewer should be able to read Phase 2, see the Phase 2
 image, and understand the before/after or verification result without searching
 elsewhere.
 
-Every screenshot shown in an individual project README must use this block:
+Every screenshot shown in an individual project README must use the
+[shared screenshot block](../../../templates/readme-screenshot-block.md) pattern
+and this block:
 
 ````markdown
 ### Short Evidence Title
 
-![short alt text](screenshots/file.jpg)
+<p><strong>Proof:</strong> One direct sentence explaining what the screenshot proves.</p>
+
+<img src="screenshots/file.jpg" alt="short alt text" width="900">
 
 - **What it shows:** One direct sentence.
 - **Capture timing:** Before change, after change, verification, or deferred proof.
@@ -328,7 +336,7 @@ Every screenshot shown in an individual project README must use this block:
 ```
 ````
 
-Do not group several images together and explain them later. Image, description,
+Keep `width="900"`. Do not group several images together and explain them later. Image, description,
 capture timing, capture path, PowerShell equivalent, and reason must stay
 together.
 

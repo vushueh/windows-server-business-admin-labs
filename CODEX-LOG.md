@@ -961,3 +961,101 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - Codex wrote the readable role-based closeout, reconciled the Windows indexes,
   and advanced the master queue without marking full Project 11 complete.
 - Q003 is complete. Q004 is next.
+
+---
+
+## Session — 2026-07-14 (Codex primary with Claude peer — Q004 preparation)
+
+### What I did
+
+- Recovered Q004 as the deterministic next queue item and kept Q005/P05
+  waiting behind it.
+- Ran fresh Claude-assisted LIVE-RO discovery for the domain, two default
+  GPOs, direct links, OUs, backup directory, modules, SYSVOL/NETLOGON, storage,
+  replication, and test-name collision.
+- Designed a custom-GPO-only restore proof at the existing Quarantine OU using
+  a harmless user registry marker and GPMC Group Policy Modeling; no client
+  move or `gpupdate` is part of the exercise.
+- Wrote the Q004 README, run sheet, change window, rollback/evidence plans,
+  fail-closed PowerShell script, and sanitized preparation evidence.
+- Corrected the parent Project 11 guidance: PowerShell `Restore-GPO` targets
+  an existing GPO, so Q004 faults and restores the same disposable GUID rather
+  than deleting it first.
+- Had Claude independently review the package and invoke only the in-memory
+  read-only precheck twice.
+
+### Verification
+
+- Windows PowerShell AST parser: passed after every script correction.
+- Claude's first precheck found the installed module's nested GPO version
+  shape; Codex changed the script to guard and compare User/Computer AD and
+  SYSVOL versions. Claude verified the correction and found no remaining
+  static issue.
+- Claude's final read-only pass over the current package found no Critical,
+  High, Medium, or Low issue and rated it preparation ready, not execution
+  ready.
+- The corrected precheck passed host/domain/PDC, writable-DC identity,
+  module/cmdlet, share, storage, exact GPO/collision, canonical link,
+  Quarantine safety, and default-policy version guards.
+- It then stopped fail-closed because WIN-DC02 ADWS was unreachable during the
+  replication cmdlet check. The exact root cause remains open.
+- `Execute` and `Cleanup` are still locked by
+  `Q004-APPROVAL-NOT-RECORDED`.
+- No backup, GPO, link, OU, identity, remote file, service, or client state was
+  created or changed. No commit or push occurred.
+
+### Architecture decisions made
+
+- The test GPO is `Q004-GPO-Restore-Test`; both default-policy GUIDs are
+  protected by explicit name, GUID, version, status, modification-time, and
+  canonical-link guards.
+- Quarantine must have no enabled user anywhere in its subtree; the one link
+  is enabled but not enforced and contains only a test user setting.
+- The exact test-GPO backup ID is the only restore target. All-GPO backup is a
+  recovery floor, not authority to restore defaults.
+- The disabled Q003 identity and Workstations OU are modeling inputs only;
+  no user/computer is moved, enabled, refreshed, or treated as disposable.
+- Execution evidence must include a supervised transcript, baseline/fault/
+  restored reports, saved RSoP model, cleanup proof, redaction scan, and final
+  independent Claude review.
+
+### Current gate
+
+- Restore/confirm WIN-DC02 ADWS and require a fresh passing precheck.
+- Leonel must then accept the exact dated Q004 change window.
+- Q004 remains In Progress and Q005 stays queued; final live evidence does not
+  yet exist.
+
+---
+
+## Session — 2026-07-14 (Codex primary with Claude peer — Q004 closeout)
+
+### Outcome
+
+- Leonel's interactive precheck passed; both DCs, protected policies,
+  Quarantine scope, replication, storage, and collision guards were healthy.
+- The first approved Execute backed up all policies and created/backed up the
+  disposable baseline, then stopped before fault injection on the installed
+  `GpoBackup.Id` versus drafted `BackupId` property shape. Automatic
+  containment removed the link; defaults remained untouched.
+- After exact resume approval and Claude's independent `RESUME-READY` review,
+  the pinned custom backup restored the same GPO from
+  `Q004-FAULT-INJECTED` to `Q004-BASELINE` in 0.1 minutes.
+- Group Policy Modeling named the custom GPO as the winning source. Verify and
+  Cleanup passed. The disposable GPO/link are absent; the original two-policy
+  state and clean two-DC replication remain.
+- Claude independently reviewed the complete final evidence and returned
+  `COMPLETE-READY` with no material blocker. Codex validated PowerShell/JSON/
+  XML syntax, links, identifiers, marker lifecycle, screenshots, redaction,
+  and worktree scope.
+- Claude's final read-only cross-repository documentation review returned
+  `PUBLISH-READY`: all 14 evidence hashes, first-person story, technical links,
+  900-pixel screenshot wrappers, and Q004 Complete/Q005 Selected status passed.
+
+### Handoff
+
+- Q004 / SIM-B3-GPO-RESTORE is complete with evidence under its project
+  folder. Full Project 11 remains planned at Q037.
+- Q005 / SIM-B4-VM-RESTORE is the next deterministic queue item but is not
+  started or authorized by this closeout.
+- All repository changes remain local; no commit or push occurred.
