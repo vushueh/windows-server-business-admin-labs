@@ -1099,3 +1099,23 @@ Codex writes here after every session. Claude reads this to stay in sync.
   checks, and Windows extension to make this the rule for future projects.
 - Claude independently reviewed the revised pattern and returned `READY` with
   no fix. No live system was accessed or changed.
+
+---
+
+## Session — 2026-07-14 (Q003 canonical documentation rewrite)
+
+- Rebuilt the completed Q003 README with the canonical first-person portfolio
+  structure while preserving the original evidence and recovery result.
+- Added the STAR summary, reader paths, test boundary, six-row phase table,
+  six matching narrative phase sections, technical evidence, collaboration
+  record, pushback resolution, and safe reproduction guidance.
+- Moved the one reviewed screenshot into Phase 5 and retained the shared
+  900-pixel evidence wrapper.
+- Verified `Q003 / SIM-W2-AD-RESTORE` against the central goal registry and
+  corrected the stale wording that previously called Q004 the next item; Q004
+  later completed separately.
+- Claude independently checked the rewrite against the change window,
+  rollback, script, transcript, screenshot, closeout, and review record and
+  returned `READY` with no material fix.
+- This was documentation-only work. No AD object, DC, replication setting,
+  policy, identity, or other live system was accessed or changed.
