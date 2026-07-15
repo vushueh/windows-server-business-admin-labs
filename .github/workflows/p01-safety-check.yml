@@ -92,21 +92,4 @@ jobs:
           Write-Host "No NPS XML files are tracked." -ForegroundColor Green
 
       - name: Check Default Domain Policy not modified
-        run: |
-          Write-Host "=== Checking for direct Default Domain Policy edits ===" -ForegroundColor Cyan
-          $files = git ls-files '*.ps1'
-          $violations = @()
-
-          foreach ($file in $files) {
-            $content = Get-Content $file -Raw
-            if ($content -match 'Default Domain Policy' -and $content -match 'Set-GPRegistryValue|Set-GPLink|Set-GPPermission') {
-              $violations += $file
-            }
-          }
-
-          if ($violations.Count -gt 0) {
-            $violations | ForEach-Object { Write-Error "Script may modify Default Domain Policy directly: $_" }
-            exit 1
-          }
-
-          Write-Host "Default Domain Policy is not modified directly by tracked scripts." -ForegroundColor Green
+        run: ./scripts/Test-DefaultDomainPolicySafety.ps1

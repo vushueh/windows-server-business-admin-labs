@@ -4,6 +4,30 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-14 (P01 safety-check false-positive correction)
+
+### What I did
+
+- Replaced the file-wide Default Domain Policy text check with a PowerShell
+  AST-based command check.
+- Kept the safety gate focused on protected mutating commands that directly
+  reference the protected policy name, canonical GUID, or protected variable.
+- Preserved Q004's disposable-GPO proof without adding a path allowlist.
+
+### Verification
+
+- The checker passes the current tracked scripts, including Q004.
+- A synthetic direct Default Domain Policy mutation fails with its file, line,
+  and command name, while a disposable-GPO mutation passes.
+- Workflow and checker changes are repository-only; no AD or GPO state changed.
+
+### Claude review
+
+- Claude independently marked the checker and workflow ready to publish.
+- The checker intentionally detects direct protected targets. Variable or splat
+  indirection and dynamically invoked command names remain static-analysis limits;
+  the existing human approval gate remains the backstop for live GPO changes.
+
 ## Session — 2026-07-14 (completed-project README migration)
 
 ### What I did
