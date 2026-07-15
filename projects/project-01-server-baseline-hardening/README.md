@@ -1,361 +1,181 @@
-# Project 01 - Server Baseline, Hardening, and Admin Model
+# Project 01 — Server Baseline, Hardening, And Admin Model
 
-| Field | Value |
-|-------|-------|
-| Status | Complete |
-| Completed | 2026-06-23 |
-| System | `WIN-PRQD8TJG04M` - live Primary Domain Controller for `Chongong.local` |
-| Goal | Secure and document the existing Windows Server foundation before building later projects. |
+- **Status:** Complete — 2026-06-23
+- **Project / Queue ID:** `Windows-P01`
+- **Owner:** `windows-server-business-admin-labs`
+- **Scope:** Live primary domain controller baseline, account policy, privileged administration, service risk, firewall visibility, and lockout proof
+- **Risk:** Approved live identity changes with documentation-only service review
 
-## Summary
+## Why This Matters
 
-I audited the live Domain Controller, fixed the critical identity gaps, documented risky services, and left larger migrations for the right future projects.
+The domain controller already supported real users and services, so I could not
+treat it like a disposable training server. I needed to reduce the most serious
+identity risks while preserving access and documenting work that belonged in
+later projects.
 
 ## Portfolio Summary
 
-**Situation:** The Domain Controller had weak account policy, too many Domain Admins, and undocumented services.
+**Situation:** The domain allowed seven-character passwords, had no lockout
+threshold, included too many Domain Admins, and ran undocumented RDS/IIS roles.
+
+**Task:** I needed to harden the existing foundation without breaking the live
+Windows environment.
 
-**Task:** Secure the foundation without breaking the live Windows environment.
+**Action:** I audited the server, backed up policy, strengthened password and
+lockout settings, built a tiered admin model, reduced Domain Admin membership,
+documented service and firewall risk, and tested lockout with a disposable user.
+
+**Result:** The domain has a stronger verified account policy, three approved
+Domain Admin members, separated admin identities, and a reusable baseline for
+the later Windows projects.
+
+## How To Read This Project
+
+| Reader | Start here |
+|---|---|
+| Hiring manager or non-technical reader | [Portfolio Summary](#portfolio-summary) and [What I Proved](#what-i-proved) |
+| Technical reviewer | [Phase Status](#phase-status), [Technical Evidence](#technical-evidence), and [technical details](technical-details.md) |
+| Future operator | [Reproduce Or Re-Verify](#reproduce-or-re-verify) |
+
+## My Test Boundary
 
-**Action:** I backed up policy, hardened passwords and lockout, built tiered admin accounts, cleaned Domain Admins, documented RDS/IIS/NPS, captured the firewall baseline, and tested lockout with `testuser`.
+I changed only the approved account-policy and identity items after recording
+the starting state. I did not remove RDS, IIS, NPS, VNC, or remote-access rules,
+and I used `testuser` instead of a real person for the lockout exercise.
 
-**Result:** Project 01 is complete. The Windows identity foundation is safer, verified, and ready for Project 02.
+## Phase Status
 
-## Starting Problems
+| Phase | Work | Status |
+|---:|---|---|
+| 1 | Audit and starting-state documentation | Complete |
+| 2 | Password and lockout policy | Complete |
+| 3 | Tiered admin model | Complete |
+| 4 | RDS, IIS, and NPS risk assessment | Complete |
+| 5 | Firewall and listener baseline | Complete |
+| 6 | Lockout break/fix proof | Complete |
+| 7 | Evidence and closeout | Complete |
 
-| Area | Finding |
-|------|---------|
-| Passwords | Minimum length was 7 |
-| Lockout | Account lockout was disabled |
-| Domain Admins | Too many users had Domain Admin rights |
-| Admin model | No clean Tier 0 / Tier 1 separation |
-| RDS/IIS | Both were running on the Domain Controller |
-| Firewall | Remote-access and listener exposure needed review |
+## Phase 1 — Audit And Starting-State Documentation
 
-## What Changed
+I inventoried the live roles, users, groups, GPOs, joined computers, listeners,
+and firewall posture before making a change. The
+[verified state](docs/p01-verified-final-state.md) established that this was a
+working multi-role domain controller, not a fresh build. That baseline let me
+rank the account-policy gaps first.
 
-| Area | Result | Proof |
-|------|--------|-------|
-| Password policy | Minimum length now 14 | [Phase 2](docs/p01-phase2-evidence.md) |
-| Account lockout | 5 bad attempts, 30-minute lockout | [Phase 2](docs/p01-phase2-evidence.md) |
-| Admin model | `_Admin` OU, `adm-leonel`, `srv-leonel`, Tier 0 PSO | [Phase 3](docs/p01-phase3-evidence.md) |
-| Domain Admins | Reduced from 12 to 3 approved members | [Phase 3](docs/p01-phase3-evidence.md) |
-| RDS/IIS/NPS | Documented only, no roles removed | [Risk assessment](docs/p01-rds-iis-risk-assessment.md) |
-| Firewall | TCP/UDP listeners and firewall profile state documented | [Firewall baseline](docs/p01-phase5-firewall-baseline.md) |
-| `testuser` | Lockout tested, then account disabled and quarantined | [Break/fix](docs/p01-phase6-lockout-breakfix.md) |
+## Phase 2 — Password And Lockout Policy
 
-## Project Phases
+I backed up the policy state, raised the minimum password length to 14, and set
+lockout at five failed attempts for 30 minutes. The
+[Phase 2 evidence](docs/p01-phase2-evidence.md) records the final domain policy
+instead of relying on a GUI screenshot alone. Once the account policy was
+verified, I could reduce standing privilege safely.
 
-| Phase | Name | Status |
-|-------|------|--------|
-| Phase 1 | Audit Documentation | Complete |
-| Phase 2 | Password Policy + Lockout | Complete |
-| Phase 3 | Tiered Admin Model | Complete |
-| Phase 4 | RDS/IIS/NPS Risk Assessment | Complete |
-| Phase 5 | Firewall Baseline | Complete |
-| Phase 6 | Lockout Break/Fix | Complete |
-| Phase 7 | Document + Push | Complete |
+## Phase 3 — Tiered Admin Model
 
-## Phase Details
+I created the `_Admin` structure, separated `adm-leonel` and `srv-leonel`,
+created the Tier 0 password policy, and reduced Domain Admins from 12 to three
+approved members. The [admin-model evidence](docs/p01-phase3-evidence.md)
+verifies placement, membership, and policy assignment. This established the
+identity boundary needed to assess the remaining server roles.
 
-### Phase 1 - Audit Documentation
+## Phase 4 — RDS, IIS, And NPS Risk Assessment
 
-I audited the live server before changing anything.
+I inspected RDS, IIS application pools, and NPS without removing a live role.
+The [risk assessment](docs/p01-rds-iis-risk-assessment.md) explains why an
+unplanned cleanup could break access and carries migration to Project 08. That
+decision kept the baseline safe while I documented network exposure.
 
-What I did:
+## Phase 5 — Firewall And Listener Baseline
 
-- Confirmed `WIN-PRQD8TJG04M` is the live Primary Domain Controller.
-- Documented installed roles: AD DS, DNS, DHCP, NPS, File Server, Hyper-V,
-  RDS, and IIS.
-- Reviewed users, groups, GPOs, firewall posture, and joined computers.
-- Identified the main risks: weak password policy, no lockout, too many Domain
-  Admins, and RDS/IIS running on the DC.
+I captured the firewall profiles and TCP/UDP listeners and verified the NPS
+ports. The [firewall baseline](docs/p01-phase5-firewall-baseline.md) preserves
+the RDP/Tailscale path and defers default-block hardening until tested GPO
+allowlists exist. With access protected, I could test the new lockout behavior.
 
-Why it matters: I treated the server as a live production-style DC, not as a
-fresh install.
+## Phase 6 — Lockout Break/Fix Proof
 
-Evidence: [Final state](docs/p01-verified-final-state.md)
+I triggered five failed attempts against `testuser`, verified Event 4740, then
+disabled the account and moved it to Quarantine. The
+[break/fix record](docs/p01-phase6-lockout-breakfix.md) also documents the
+missing failed-logon audit events for future policy work. The disposable test
+proved enforcement without risking a real identity.
 
-PowerShell used/proof:
+## Phase 7 — Evidence And Closeout
 
-```powershell
-Get-ADDomain | Select-Object DNSRoot, DomainMode
-Get-WindowsFeature | Where-Object Installed
-Get-ADUser -Filter * | Select-Object SamAccountName, Enabled
-Get-GPO -All | Select-Object DisplayName, GpoStatus
-```
+I saved the phase records, reviewed the final state, and kept sensitive NPS
+exports outside the repository. The [full technical record](technical-details.md)
+preserves commands, screenshots, deferrals, and links. That closeout made the
+server foundation ready for the Active Directory architecture project.
 
-Image to insert later: `screenshots/phase1-01-server-role-inventory.png`
+## What I Proved
 
-### Phase 2 - Password Policy + Lockout
+- The domain enforces a 14-character minimum and locks an account after five
+  failed attempts.
+- Domain Admin membership was reduced from 12 to three approved identities.
+- Tier 0 and Tier 1 administrative identities are separated and auditable.
+- The disposable lockout account ended disabled in Quarantine.
+- RDS, IIS, NPS, firewall, and audit gaps remain documented rather than falsely
+  reported as remediated.
 
-I fixed the most important account-security gap first.
+## Technical Evidence
 
-What I did:
+- [Complete commands, screenshots, and deferred items](technical-details.md)
+- [Password and lockout evidence](docs/p01-phase2-evidence.md)
+- [Tiered admin evidence](docs/p01-phase3-evidence.md)
+- [RDS, IIS, and NPS risk assessment](docs/p01-rds-iis-risk-assessment.md)
+- [Firewall and listener baseline](docs/p01-phase5-firewall-baseline.md)
+- [Lockout break/fix record](docs/p01-phase6-lockout-breakfix.md)
+- [Verified final state](docs/p01-verified-final-state.md)
+- [Supporting screenshots](screenshots/)
 
-- Backed up the current policy state.
-- Set minimum password length to 14.
-- Enabled account lockout at 5 bad attempts.
-- Verified the new domain account policy.
+## How We Worked Together
 
-Why it matters: the domain no longer allows weak 7-character passwords, and
-brute-force attempts now lock accounts.
+### My Input And How I Helped
 
-Evidence: [Phase 2 evidence](docs/p01-phase2-evidence.md)
+I approved the live policy and identity changes, performed the early GUI steps,
+and supplied screenshots and console results. I chose to preserve remote access
+and defer risky service removal.
 
-PowerShell used/proof:
+### What Codex Did And How
 
-```powershell
-Get-ADDefaultDomainPasswordPolicy |
-  Select-Object MinPasswordLength, LockoutThreshold, LockoutDuration, LockoutObservationWindow
-```
+Codex reviewed the seven-phase design, corrected the safety guidance, verified
+the policy and evidence structure, and completed the final documentation and
+status cleanup.
 
-Image to insert later: `screenshots/phase2-01-password-lockout-policy.png`
+### What Claude Did And How
 
-### Phase 3 - Tiered Admin Model
+Claude designed and coordinated the early project phases, reviewed Codex's
+corrections, and performed approved remote checks after the SSH path became
+available. The bridge log records the role change and review history.
 
-I separated privileged access from daily-user access.
+### How We Communicated And Completed The Project
 
-What I did:
+I returned GUI screenshots and PowerShell results after each gate. Claude and
+Codex used the bridge files to reconcile corrections, and the project closed
+only after the evidence and live readback agreed.
 
-- Created the `_Admin` OU structure.
-- Created `adm-leonel` for Tier 0 domain administration.
-- Created `srv-leonel` for Tier 1 server administration.
-- Created `GG-Tier0-Admins` and `GG-ServerAdmins`.
-- Reduced Domain Admin membership from 12 to 3 approved members.
-- Created the Tier 0 fine-grained password policy.
+### Pushback And How We Resolved It
 
-Why it matters: Domain Admin access is now limited and easier to audit.
+The initial hardening scope could have expanded into removing RDS/IIS or
+tightening remote-access rules on the domain controller. I kept those items as
+documented future work because the project had no tested migration or allowlist
+for them.
 
-Evidence: [Phase 3 evidence](docs/p01-phase3-evidence.md)
+## Reproduce Or Re-Verify
 
-PowerShell used/proof:
+1. Read the [verified state](docs/p01-verified-final-state.md) and confirm the
+   target is still the live domain controller before running read-only checks.
+2. Query the password policy, Domain Admin membership, tiered accounts,
+   firewall profiles, listeners, and Quarantine state using the commands in
+   [technical details](technical-details.md).
+3. Use only a disposable disabled test identity for any new lockout exercise.
+4. Do not remove a role, change remote access, or alter account policy without
+   a fresh backup, approved window, verification, and rollback.
 
-```powershell
-Get-ADOrganizationalUnit -SearchBase "OU=_Admin,DC=Chongong,DC=local" -Filter * |
-  Select-Object Name, DistinguishedName
+## What Happens Next
 
-Get-ADGroupMember "Domain Admins" |
-  Select-Object Name, SamAccountName
-
-Get-ADFineGrainedPasswordPolicy -Filter * |
-  Select-Object Name, MinPasswordLength, LockoutThreshold
-```
-
-Image to insert later: `screenshots/phase3-01-tiered-admin-ou-and-groups.png`
-
-### Phase 4 - RDS/IIS/NPS Risk Assessment
-
-I documented risky roles without removing anything from the live DC.
-
-What I did:
-
-- Reviewed Remote Desktop Services.
-- Reviewed IIS application pools and web role usage.
-- Reviewed NPS/RADIUS configuration.
-- Confirmed NPS had no custom RADIUS clients yet.
-- Documented that RDS/IIS migration belongs in Project 08.
-
-Why it matters: removing RDS or IIS from a live DC without a migration plan
-could break access. This phase documented the risk and moved remediation to the
-right project.
-
-Evidence: [RDS/IIS/NPS risk assessment](docs/p01-rds-iis-risk-assessment.md)
-
-PowerShell used/proof:
-
-```powershell
-Get-Service -Name Tssdis,RDMS,IAS -ErrorAction SilentlyContinue
-
-Import-Module WebAdministration
-Get-ChildItem IIS:\AppPools |
-  Select-Object Name, State, @{Name='Identity';Expression={$_.processModel.identityType}}
-```
-
-Images already captured:
-
-- `screenshots/phase4-01-rds-overview-broker-error.jpg`
-- `screenshots/phase4-04-iis-application-pools.jpg`
-- `screenshots/phase4-09-nps-radius-clients-servers-overview.jpg`
-
-### Phase 5 - Firewall Baseline
-
-I captured the firewall and listener baseline without tightening rules too early.
-
-What I did:
-
-- Documented Windows Firewall profile state.
-- Captured TCP and UDP listening services.
-- Verified NPS-related UDP listeners.
-- Left RDP/Tailscale scope unchanged by explicit instruction.
-- Deferred full default-block hardening to Project 05.
-
-Why it matters: firewall hardening needs a tested AD/GPO allowlist first, not a
-random live change on the Domain Controller.
-
-Evidence: [Firewall baseline](docs/p01-phase5-firewall-baseline.md)
-
-PowerShell used/proof:
-
-```powershell
-Get-NetFirewallProfile |
-  Select-Object Name, Enabled, DefaultInboundAction
-
-Get-NetTCPConnection -State Listen |
-  Select-Object LocalAddress, LocalPort, OwningProcess
-
-Get-NetUDPEndpoint |
-  Select-Object LocalAddress, LocalPort, OwningProcess
-```
-
-Images already captured:
-
-- `screenshots/phase5-01-wfas-overview.jpg`
-- `screenshots/phase5-02-wfas-inbound-rules.jpg`
-
-### Phase 6 - Lockout Break/Fix
-
-I tested the lockout policy with a disposable account.
-
-What I did:
-
-- Used `testuser` for the lockout simulation.
-- Triggered lockout after 5 failed attempts.
-- Verified Event 4740.
-- Disabled `testuser`.
-- Moved `testuser` to `OU=Quarantine`.
-- Documented the audit gap for missing failed-logon events.
-
-Why it matters: this proved the new lockout policy works and created a real
-break/fix exercise for future SOC documentation.
-
-Evidence: [Lockout break/fix](docs/p01-phase6-lockout-breakfix.md)
-
-PowerShell used/proof:
-
-```powershell
-Search-ADAccount -LockedOut |
-  Select-Object SamAccountName, Enabled, LockedOut
-
-Get-ADUser testuser -Properties Enabled, DistinguishedName |
-  Select-Object SamAccountName, Enabled, DistinguishedName
-
-Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4740} -MaxEvents 5
-```
-
-Image to insert later: `screenshots/phase6-01-testuser-locked-and-quarantined.png`
-
-### Phase 7 - Document + Push
-
-I closed the project by saving the evidence and updating the repo.
-
-What I did:
-
-- Updated the Project 01 README.
-- Saved the phase evidence documents.
-- Confirmed sensitive NPS exports were not committed.
-- Updated project status references.
-- Pushed the documentation to GitHub.
-
-Why it matters: the project is not only configured; it is also documented and
-usable as portfolio evidence.
-
-Evidence: [Final state](docs/p01-verified-final-state.md)
-
-PowerShell/Git proof:
-
-```powershell
-Get-ADDefaultDomainPasswordPolicy
-Search-ADAccount -LockedOut
-```
-
-```bash
-git status --short
-git log --oneline -5
-```
-
-Image to insert later: `screenshots/phase7-01-project-01-final-github-state.png`
-
-## Verified State
-
-| Check | Result |
-|-------|--------|
-| Password policy | `MinPasswordLength=14`, `LockoutThreshold=5` |
-| Tier 0 | `adm-leonel` has the Tier 0 password policy |
-| Tier 1 | `srv-leonel` is not in built-in admin groups |
-| Lockout test | `testuser` locked on the 5th failed attempt |
-| Quarantine | `testuser` is disabled in `OU=Quarantine` |
-| NPS | Installed and listening, no custom RADIUS clients yet |
-
-Full state: [p01-verified-final-state.md](docs/p01-verified-final-state.md)
-
-## Visual Evidence
-
-Each image is separated so the reader knows what the screenshot proves.
-
-### RDS Broker Issue
-
-![RDS overview showing broker issue](screenshots/phase4-01-rds-overview-broker-error.jpg)
-
-- **What it shows:** Server Manager could not reach the RD Connection Broker cleanly.
-- **Manual check:** Server Manager -> Remote Desktop Services -> Overview.
-- **Why:** RDS needs to move off the Domain Controller in Project 08 instead of being patched randomly in P01.
-- **PowerShell equivalent:**
-
-```powershell
-Get-Service -Name Tssdis,RDMS -ErrorAction SilentlyContinue
-Get-NetTCPConnection -State Listen | Where-Object {$_.LocalPort -eq 51175}
-```
-
-### IIS Application Pools
-
-![IIS application pools](screenshots/phase4-04-iis-application-pools.jpg)
-
-- **What it shows:** IIS application pools were running on the Domain Controller.
-- **Manual check:** IIS Manager -> server name -> Application Pools.
-- **Why:** IIS is tied to RDS Web Access and should migrate with RDS in Project 08.
-- **PowerShell equivalent:**
-
-```powershell
-Import-Module WebAdministration
-Get-ChildItem IIS:\AppPools |
-    Select-Object Name, State, @{Name='Identity';Expression={$_.processModel.identityType}}
-```
-
-### Windows Firewall Profiles
-
-![Windows Firewall overview](screenshots/phase5-01-wfas-overview.jpg)
-
-- **What it shows:** Windows Firewall profiles were enabled, but inbound default behavior was not hardened yet.
-- **Manual check:** Windows Firewall with Advanced Security -> root overview page.
-- **Why:** Firewall default-block needs a full AD allowlist GPO first, so it belongs in Project 05.
-- **PowerShell equivalent:**
-
-```powershell
-Get-NetFirewallProfile | Select-Object Name, Enabled, DefaultInboundAction
-```
-
-Full screenshots: [screenshots/](screenshots/)
-
-## Deferred On Purpose
-
-| Item | Reason | Future owner |
-|------|--------|--------------|
-| RDS/IIS migration | Too risky to remove from the live DC during baseline hardening | Project 08 |
-| RDP/Tailscale scope | Left unchanged by explicit instruction | Project 05 or remote-access review |
-| VNC exposure | Flagged, not removed | Leonel decision |
-| NPS/RADIUS policies | No clients configured yet | Project 13 |
-| Failed-logon audit gap | 4740 worked, but 4625/4776/4771 need audit policy work | Project 05 / SOC |
-| `__vmware__` group | Empty VMware-related Domain Local group, confirmed again in P02 and left untouched | No action |
-
-## Technical Links
-
-| Detail | Link |
-|--------|------|
-| Password and lockout | [docs/p01-phase2-evidence.md](docs/p01-phase2-evidence.md) |
-| Admin model | [docs/p01-phase3-evidence.md](docs/p01-phase3-evidence.md) |
-| RDS/IIS/NPS | [docs/p01-rds-iis-risk-assessment.md](docs/p01-rds-iis-risk-assessment.md) |
-| Firewall | [docs/p01-phase5-firewall-baseline.md](docs/p01-phase5-firewall-baseline.md) |
-| Lockout break/fix | [docs/p01-phase6-lockout-breakfix.md](docs/p01-phase6-lockout-breakfix.md) |
-| Final state | [docs/p01-verified-final-state.md](docs/p01-verified-final-state.md) |
-| Scripts | [scripts/](scripts/) |
+Project 01 is closed. [Project 02](../project-02-ad-architecture/) uses this
+secured foundation to organize users, computers, groups, delegation, recovery,
+and domain-controller redundancy. This closeout and link do not start or
+authorize an Active Directory change.

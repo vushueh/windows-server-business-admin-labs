@@ -289,5 +289,5 @@ GPO to a client.
 
 Q004 is closed. The disposable GPO and Quarantine link are absent, both default
 policies passed unchanged guards, and the retained backups/evidence remain at
-the dated run path. Q005 / SIM-B4-VM-RESTORE is the next queue item; this
-closeout does not start or authorize it.
+the dated run path. [Q005 / SIM-B4-VM-RESTORE](https://github.com/vushueh/homelab-management/blob/main/docs/backup-coverage-and-restore-plan.md#q005-approval-ready-restore-to-copy-plan)
+is the next queue item; this closeout and link do not start or authorize it.

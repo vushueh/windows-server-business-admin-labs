@@ -1,489 +1,203 @@
-# Project 03 - AD DNS and Name Resolution Engineering
+# Project 03 — AD DNS And Name Resolution Engineering
 
-**Status:** Complete on `2026-07-03`
+- **Status:** Complete — 2026-07-03
+- **Project / Queue ID:** `Windows-P03`
+- **Owner:** `windows-server-business-admin-labs`
+- **Scope:** AD-integrated DNS client settings, zones, forwarding, reverse DNS, scavenging, redundancy, and troubleshooting
+- **Risk:** Approved live DNS changes on two domain controllers
 
-**System:** `WIN-PRQD8TJG04M` (`192.168.20.11`) and `WIN-DC02` (`192.168.20.12`) - AD-integrated DNS
+## Why This Matters
 
-**Skill:** `/winserver-p03`
-
-## Summary
-
-I audited and hardened the AD-integrated DNS configuration for `Chongong.local`.
-During the audit I found a real DNS problem: the Domain Controller was using
-public DNS servers on its own LAN NIC instead of querying itself first. I fixed
-that, created the missing reverse lookup zone, enabled scavenging, verified
-internal/external resolution, documented break/fix runbooks, completed
-secondary DNS verification after `WIN-DC02` was promoted, and added a real
-conditional forwarder for Route10's `localdomain` zone.
+Active Directory depends on DNS for authentication and service discovery. I
+needed both domain controllers to answer internal, reverse, household, and
+external lookups correctly without sending private AD names to public DNS.
 
 ## Portfolio Summary
 
-**Situation:** DNS had not been fully documented, reverse DNS was missing for the
-Windows subnet, scavenging was disabled, and the DC itself was pointing at
-public DNS instead of AD DNS.
+**Situation:** The PDC NIC used public DNS directly, reverse DNS was missing,
+scavenging was disabled, and secondary-DNS behavior was unproven.
+
+**Task:** I needed to fix the real AD DNS fault and add safe, repeatable name-
+resolution controls without disrupting the household domain.
+
+**Action:** I audited DNS, corrected both DC client orders, preserved the
+forwarder list, created the reverse zone and PTRs, added the Route10
+`localdomain` conditional forwarder, enabled scavenging, and tested both DNS
+servers.
+
+**Result:** AD service records, both DC names and PTRs, Route10 household names,
+and external names resolve through either DC with the intended namespace
+boundaries.
 
-**Task:** Audit and harden DNS without breaking the live household domain.
+## How To Read This Project
 
-**Action:** I audited zones, forwarders, scavenging, and NIC settings; fixed the
-DC DNS client path; created the reverse zone and PTR record; enabled scavenging;
-verified internal and external resolution; added a conditional forwarder for
-Route10's `localdomain` zone; and documented DNS break/fix runbooks.
+| Reader | Start here |
+|---|---|
+| Hiring manager or non-technical reader | [Portfolio Summary](#portfolio-summary) and [What I Proved](#what-i-proved) |
+| Technical reviewer | [Phase Status](#phase-status), [Technical Evidence](#technical-evidence), and [technical details](technical-details.md) |
+| Future operator | [Reproduce Or Re-Verify](#reproduce-or-re-verify) |
 
-**Result:** The domain now resolves internal AD records correctly, external
-forwarding still works, reverse DNS exists for both DCs, stale record cleanup is
-enabled, `WIN-DC02` is verified as a working secondary DNS server, and AD DNS can
-now resolve Route10-registered household names without leaking `localdomain`
-queries to public DNS.
+## My Test Boundary
 
-## What Changed
+I changed Windows DNS only after read-only discovery and retained rollback
+commands. I did not rewrite the working public forwarder list, change Route10,
+or deliberately break live household DNS to manufacture an incident.
+
+## Phase Status
+
+| Phase | Work | Status |
+|---:|---|---|
+| 1 | DNS audit | Complete |
+| 2 | DC DNS client correction | Complete |
+| 3 | Public-forwarder verification | Complete |
+| 4 | Reverse lookup zones | Complete |
+| 5 | Route10 conditional forwarding | Complete |
+| 6 | Scavenging and zone aging | Complete |
+| 7 | Internal and external resolution | Complete |
+| 8 | Break/fix documentation | Complete |
+| 9 | Secondary-DNS verification | Complete |
+| 10 | Evidence and closeout | Complete |
 
-| Area | Result |
-|------|--------|
-| DC DNS client settings | PDC now uses `192.168.20.12, 192.168.20.11`; `WIN-DC02` uses `192.168.20.11, 192.168.20.12` |
-| Forwarders | Confirmed already configured: `8.8.8.8`, `1.1.1.1`, `8.8.4.4`, `9.9.9.9` |
-| Reverse DNS | Created `20.168.192.in-addr.arpa` and PTR records for both DCs |
-| Scavenging | Enabled server scavenging and zone aging on the PDC; enabled server scavenging on `WIN-DC02` |
-| Split-brain behavior | Internal AD records and external public names both resolve correctly |
-| Conditional forwarder | Added AD-integrated `localdomain` forwarder to Route10 at `192.168.20.1`, replicated to both DCs |
-| Break/fix evidence | One real DNS incident plus two documented runbooks |
-| Secondary DNS | `WIN-DC02` resolves AD names, SRV records, reverse DNS, and external names |
+## Phase 1 — DNS Audit
 
-## Project Phases
+I inspected zones, forwarders, scavenging, records, and NIC client settings
+before changing anything. The audit found the PDC's AD-facing NIC querying
+public DNS directly, which explained failed local SRV lookups. That real fault
+gave Phase 2 a narrow, evidence-backed target.
 
-Project 03 has 10 phases. All phases are complete. Phase 5 was completed after
-live discovery found a real forwarding target: Route10's `localdomain` DNS zone.
+## Phase 2 — DC DNS Client Correction
 
-| Phase | Name | Status |
-|-------|------|--------|
-| Phase 1 | Audit Current DNS State | Complete |
-| Phase 2 | Fix DNS Server Addressing | Complete |
-| Phase 3 | Configure Forwarders | Complete |
-| Phase 4 | Reverse Lookup Zones | Complete |
-| Phase 5 | Conditional Forwarders | Complete - Route10 `localdomain` |
-| Phase 6 | DNS Scavenging | Complete |
-| Phase 7 | Split-Brain DNS | Complete |
-| Phase 8 | Break/Fix Exercise | Complete |
-| Phase 9 | `WIN-DC02` DNS Verification | Complete |
-| Phase 10 | Document + Push | Complete |
+I moved the PDC off public NIC resolvers and, after `WIN-DC02` existed, set the
+PDC to use `.12` then `.11` while the replica uses `.11` then `.12`. The
+[break/fix log](troubleshooting/break-fix-log.md) records the original failure
+and successful AD SRV readback. This restored the correct internal query path
+without changing public forwarding.
 
-Screenshot checklist: [docs/p03-screenshot-plan.md](docs/p03-screenshot-plan.md)
+## Phase 3 — Public-Forwarder Verification
 
-## Phase Details
+I read the existing forwarder list and confirmed external resolution worked. I
+did not run `Set-DnsServerForwarder` merely to restate a correct configuration
+because it replaces the full list. That preserved the known-good external path
+before I added reverse DNS.
 
-### Phase 1 - Audit Current DNS State
+## Phase 4 — Reverse Lookup Zones
 
-I audited the current DNS configuration before making changes.
+I created `20.168.192.in-addr.arpa` and PTR records for both DCs, then queried
+the server directly to avoid local resolver artifacts. The resulting reverse
+lookups support monitoring and troubleshooting. With forward and reverse AD
+records verified, I could evaluate non-AD local namespaces.
 
-What I did:
+## Phase 5 — Route10 Conditional Forwarding
 
-- Reviewed DNS server role configuration.
-- Listed all DNS zones.
-- Checked forwarders.
-- Checked scavenging state.
-- Checked DNS client settings on the DC NICs.
-- Found that the LAN NIC was pointing to public DNS instead of itself.
+I rejected OPNsense `internal` and Pi-hole because discovery did not prove a
+usable authoritative target. After Route10 answered a real `localdomain`
+record, I added an AD-integrated conditional forwarder to `192.168.20.1` and
+disabled recursion for that zone. The
+[secondary-DNS evidence](docs/p03-win-dc02-secondary-dns-evidence.md) proves
+the forwarder works through both DCs without changing Route10.
 
-Why it matters: AD depends on DNS. If a Domain Controller sends internal AD
-queries to public DNS first, authentication and service discovery can fail even
-when the DNS zone itself is correct.
+## Phase 6 — Scavenging And Zone Aging
 
-PowerShell used/proof:
+I enabled server scavenging on both DNS servers and aging on the
+`Chongong.local` zone with documented intervals. This adds controlled stale-
+record cleanup rather than an immediate destructive purge. The final state
+could then be tested for both internal and external behavior.
 
-```powershell
-Get-DnsServer
-Get-DnsServerZone
-Get-DnsServerForwarder
-Get-DnsServerScavenging
-Get-DnsClientServerAddress -AddressFamily IPv4
-Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
-```
+## Phase 7 — Internal And External Resolution
 
-Images to insert later:
+I verified AD host and SRV records stay inside AD DNS while public names resolve
+through forwarders. The tests show the internal namespace and normal internet
+resolution can coexist. That provided the healthy baseline for the break/fix
+record.
 
-- `screenshots/phase1-01-dns-zones-and-forwarders.png`
-- `screenshots/phase1-02-dns-client-before-fix.png`
+## Phase 8 — Break/Fix Documentation
 
-### Phase 2 - Fix DNS Server Addressing
+I used the real NIC-DNS fault as the executed incident and wrote two additional
+safe runbooks for missing SRV records and broken forwarders. I did not inject a
+second live outage merely for evidence. The
+[break/fix log](troubleshooting/break-fix-log.md) turns the incident into a
+repeatable troubleshooting path.
 
-I fixed the real DNS misconfiguration found in Phase 1.
+## Phase 9 — Secondary-DNS Verification
 
-What I did:
+I verified zones, forwarders, scavenging, PTRs, internal names, SRV records,
+Route10 names, and external names directly through `WIN-DC02`. The
+[secondary-DNS record](docs/p03-win-dc02-secondary-dns-evidence.md) also proves
+the PDC hostname returns only its AD VLAN address. That confirmed the second DC
+is a usable DNS server, not merely a promoted replica.
 
-- Changed `vEthernet (External-VLAN-Trunk)` from public DNS servers to AD DNS.
-- Verified internal AD SRV records resolved.
-- Verified external internet names still resolved through forwarders.
-- After `WIN-DC02` was promoted, changed the PDC to use `WIN-DC02` first and
-  itself second.
+## Phase 10 — Evidence And Closeout
 
-Why it matters: a DC should use AD DNS for its own DNS client settings. Public
-DNS belongs in the DNS server forwarder list, not on the DC NIC.
+I saved the screenshot plan, incident record, two-DC proof, commands, and final
+state. The [technical details](technical-details.md) retain the full
+implementation and rollback commands while this README carries the project
+story. That handed a verified DNS foundation to DHCP/IPAM validation.
 
-PowerShell used/proof:
+## What I Proved
 
-```powershell
-Set-DnsClientServerAddress -InterfaceAlias "vEthernet (External-VLAN-Trunk)" -ServerAddresses 127.0.0.1
+- Both DNS servers answer AD host, SRV, reverse, Route10 `localdomain`, and
+  external queries.
+- DC NICs use AD DNS in a reciprocal order rather than public resolvers.
+- `localdomain` forwards only to Route10 and has recursion disabled.
+- Reverse DNS and controlled stale-record cleanup are enabled.
+- The executed break/fix used a real fault and did not create an unnecessary
+  household outage.
 
-Set-DnsClientServerAddress -InterfaceAlias "vEthernet (External-VLAN-Trunk)" -ServerAddresses 192.168.20.12,192.168.20.11
+## Technical Evidence
 
-Get-DnsClientServerAddress -AddressFamily IPv4
-Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
-Resolve-DnsName google.com
-```
+- [Complete implementation, commands, screenshots, and rollback](technical-details.md)
+- [WIN-DC02 secondary-DNS evidence](docs/p03-win-dc02-secondary-dns-evidence.md)
+- [DNS break/fix log](troubleshooting/break-fix-log.md)
+- [Screenshot checklist](docs/p03-screenshot-plan.md)
+- [Reviewed screenshots](screenshots/)
 
-<img src="screenshots/phase2-01-dns-client-after-fix.JPG" width="750" alt="DNS client after fix">
-*Initial Phase 2 fix showing the DC moved off public DNS. After `WIN-DC02` was promoted, the final two-DC DNS client order is documented in Phase 9.*
+## How We Worked Together
 
-<img src="screenshots/phase2-02-ad-srv-record-resolution.JPG" width="750" alt="AD SRV record resolution">
-*`_ldap._tcp.Chongong.local` resolving correctly after the fix.*
+### My Input And How I Helped
 
-Break/fix evidence: [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md)
+I authorized the scoped live DNS work, chose not to manufacture a second
+outage, and supplied the Windows and Route10 evidence needed to settle the
+conditional-forwarder target.
 
-### Phase 3 - Configure Forwarders
+### What Codex Did And How
 
-I confirmed the forwarders were already configured correctly, so no change was
-needed.
+Codex reviewed the DNS design, corrected unsafe command assumptions, integrated
+the Route10 discovery and two-DC evidence, and maintained the final technical
+and portfolio records.
 
-What I did:
+### What Claude Did And How
 
-- Verified forwarders were already set to `8.8.8.8`, `1.1.1.1`, `8.8.4.4`,
-  and `9.9.9.9`.
-- Verified external DNS still resolved.
-- Did not overwrite the forwarder list.
+Claude performed the approved live Project 03 session, found and fixed the PDC
+NIC DNS fault, created the reverse zone, enabled scavenging, and recorded the
+initial verification. Claude later performed read-only target discovery for
+the conditional forwarder.
 
-Why it matters: `Set-DnsServerForwarder` replaces the forwarder list. Since the
-list was already correct, leaving it alone was safer than rewriting it.
+### How We Communicated And Completed The Project
 
-PowerShell used/proof:
+Live command output and screenshots moved from audit to correction, readback,
+target discovery, two-DC verification, and documentation. The bridge record
+marked the initially deferred phases complete only after real evidence existed.
 
-```powershell
-Get-DnsServerForwarder
-Resolve-DnsName google.com
-```
+### Pushback And How We Resolved It
 
-<img src="screenshots/phase3-01-dns-forwarders.JPG" width="750" alt="DNS forwarders">
-*Configured forwarders: `8.8.8.8`, `1.1.1.1`, `8.8.4.4`, `9.9.9.9`.*
+The original plan expected a conditional forwarder but had no proven target.
+I deferred it rather than inventing one, then completed it only after Route10
+answered a real `localdomain` record from both DC paths.
 
-<img src="screenshots/phase3-02-external-resolution.JPG" width="750" alt="External resolution">
-*External name resolution confirmed working through the forwarders.*
+## Reproduce Or Re-Verify
 
-### Phase 4 - Reverse Lookup Zones
+1. Run read-only queries for zones, forwarders, scavenging, zone aging, and
+   both DC NIC resolver orders.
+2. Query AD host/SRV records, both PTRs, one `localdomain` record, and one
+   external name directly against each DC.
+3. Compare the results with the [two-DC evidence](docs/p03-win-dc02-secondary-dns-evidence.md)
+   and incident record.
+4. Do not replace forwarders, remove a zone, or alter client addresses without
+   a fresh backup, approved change window, and the rollback commands in the
+   technical details.
 
-I created reverse DNS for the Windows subnet.
+## What Happens Next
 
-What I did:
-
-- Created reverse zone `20.168.192.in-addr.arpa` for `192.168.20.0/24`.
-- Created PTR record for `192.168.20.11`.
-- Verified the PTR record by querying the DNS server directly.
-- Identified Docker Desktop `hns` as a local client-side artifact when
-  `Resolve-DnsName` returned `host.docker.internal`.
-
-Why it matters: reverse DNS helps troubleshooting, logging, monitoring, and some
-enterprise tools that expect PTR records for infrastructure hosts.
-
-PowerShell used/proof:
-
-```powershell
-Add-DnsServerPrimaryZone -NetworkID "192.168.20.0/24" -ReplicationScope Domain -DynamicUpdate Secure
-Add-DnsServerResourceRecordPtr -ZoneName "20.168.192.in-addr.arpa" -Name "11" -PtrDomainName "WIN-PRQD8TJG04M.Chongong.local"
-
-Get-DnsServerZone -Name "20.168.192.in-addr.arpa"
-Get-DnsServerResourceRecord -ZoneName "20.168.192.in-addr.arpa" -RRType Ptr
-nslookup -type=PTR 192.168.20.11 127.0.0.1
-nslookup -type=PTR 192.168.20.11 192.168.20.11
-```
-
-<img src="screenshots/phase4-01-reverse-zone-created.JPG" width="750" alt="Reverse zone created">
-*`20.168.192.in-addr.arpa` reverse lookup zone created.*
-
-<img src="screenshots/phase4-02-ptr-record-verified.JPG" width="750" alt="PTR record verified">
-*PTR record for `192.168.20.11` confirmed pointing to `WIN-PRQD8TJG04M.Chongong.local`.*
-
-### Phase 5 - Conditional Forwarders
-
-This phase is complete. I first deferred conditional forwarding because there
-was no proven target zone. After live discovery, I found a real one:
-Route10 registers household DHCP names under `localdomain`, and both DCs can
-query Route10 at `192.168.20.1`.
-
-What I did:
-
-- Ruled out OPNsense `internal` because it was not an authoritative zone for
-  lab clients and the DCs could not query OPNsense DNS on VLAN 20.
-- Ruled out Pi-hole at `192.168.10.26` because it did not host a useful local
-  zone for this project.
-- Verified Route10 answered `DESKTOP-QVM6OQN.localdomain` as `192.168.50.28`.
-- Added an AD-integrated conditional forwarder for `localdomain` to Route10 at
-  `192.168.20.1`.
-- Verified the forwarder replicated to both DNS servers and works from both
-  `192.168.20.11` and `192.168.20.12`.
-- Disabled recursion for this forwarded zone so `localdomain` queries stay with
-  Route10 instead of falling through to public DNS.
-
-Why it matters: domain clients use AD DNS. Before this change, a lookup for a
-household device like `DESKTOP-QVM6OQN.localdomain` could fail or be sent to
-public forwarders. Now AD DNS sends only `localdomain` queries to Route10, which
-keeps local names local without changing Route10, routing, DHCP, NAT, or firewall
-behavior.
-
-PowerShell used/proof:
-
-```powershell
-Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.1
-
-Add-DnsServerConditionalForwarderZone `
-  -Name "localdomain" `
-  -MasterServers 192.168.20.1 `
-  -ReplicationScope "Forest"
-
-Set-DnsServerConditionalForwarderZone -ComputerName WIN-PRQD8TJG04M -Name "localdomain" -UseRecursion $false
-Set-DnsServerConditionalForwarderZone -ComputerName WIN-DC02 -Name "localdomain" -UseRecursion $false
-
-Get-DnsServerZone -ComputerName WIN-PRQD8TJG04M -Name "localdomain" |
-  Format-List ZoneName,ZoneType,IsDsIntegrated,MasterServers,ReplicationScope,UseRecursion
-
-Get-DnsServerZone -ComputerName WIN-DC02 -Name "localdomain" |
-  Format-List ZoneName,ZoneType,IsDsIntegrated,MasterServers,ReplicationScope,UseRecursion
-
-Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.11 -DnsOnly -NoHostsFile
-Resolve-DnsName DESKTOP-QVM6OQN.localdomain -Server 192.168.20.12 -DnsOnly -NoHostsFile
-```
-
-Final verified state:
-
-| Check | Result |
-|-------|--------|
-| Forwarded zone | `localdomain` |
-| Forwarder target | Route10 at `192.168.20.1` |
-| Replication | Forest-wide, AD-integrated, present on both DCs |
-| Recursion for forwarded zone | Disabled |
-| Test record | `DESKTOP-QVM6OQN.localdomain -> 192.168.50.28` from both DCs |
-
-Rollback if this ever causes a problem:
-
-```powershell
-Remove-DnsServerConditionalForwarderZone -Name "localdomain" -Force
-```
-
-#### Conditional forwarder replicated to both DCs
-
-<img src="screenshots/phase5-01-conditional-forwarder-localdomain.png" width="750" alt="localdomain conditional forwarder on both DCs">
-
-*Both DNS servers have the AD-integrated `localdomain` conditional forwarder.
-The forwarder points to Route10 at `192.168.20.1`, replicates forest-wide, and
-has recursion disabled for that forwarded zone.*
-
-#### Route10 localdomain resolution through both DCs
-
-<img src="screenshots/phase5-02-localdomain-resolution-both-dcs.png" width="750" alt="localdomain resolution through both DCs">
-
-*Both DCs resolve `DESKTOP-QVM6OQN.localdomain` to `192.168.50.28`, and AD SRV
-lookups still return both domain controllers. This proves the Route10 forwarder
-works without breaking AD DNS service discovery.*
-
-### Phase 6 - DNS Scavenging
-
-I enabled stale-record cleanup.
-
-What I did:
-
-- Enabled DNS server scavenging.
-- Enabled aging on the `Chongong.local` zone.
-- Set refresh and no-refresh intervals.
-- Verified the next available scavenging time.
-
-Why it matters: stale DNS records create bad troubleshooting data. Scavenging
-keeps DNS cleaner as clients and VMs change over time.
-
-PowerShell used/proof:
-
-```powershell
-Set-DnsServerScavenging -ScavengingState $true -ScavengingInterval 7.00:00:00 -ComputerName WIN-PRQD8TJG04M
-Set-DnsServerZoneAging -Name "Chongong.local" -Aging $true -RefreshInterval 4.00:00:00 -NoRefreshInterval 4.00:00:00
-
-Get-DnsServerScavenging
-Get-DnsServerZoneAging -Name "Chongong.local"
-```
-
-Images to insert later:
-
-- `screenshots/phase6-01-scavenging-enabled.png`
-- `screenshots/phase6-02-zone-aging-enabled.png`
-
-### Phase 7 - Split-Brain DNS
-
-I verified internal and external name resolution behaved correctly.
-
-What I did:
-
-- Verified internal host records resolve from AD DNS.
-- Verified internal SRV records resolve from AD DNS.
-- Verified external names resolve through forwarders.
-
-Why it matters: internal AD names must stay private, while normal internet names
-still need to resolve for updates, Microsoft 365, and general network use.
-
-PowerShell used/proof:
-
-```powershell
-Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local
-Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
-Resolve-DnsName google.com
-```
-
-<img src="screenshots/phase7-01-internal-ad-resolution.JPG" width="750" alt="Internal AD resolution">
-*Internal AD names (host + SRV) resolving correctly and privately.*
-
-<img src="screenshots/phase7-02-external-forwarder-resolution.JPG" width="750" alt="External forwarder resolution">
-*External public names still resolving correctly via forwarders.*
-
-### Phase 8 - Break/Fix Exercise
-
-I documented DNS troubleshooting using one real incident and two safe runbooks.
-
-What I did:
-
-- Used the real DC NIC DNS issue as Scenario A.
-- Documented the missing `_msdcs` SRV records runbook.
-- Documented the broken/missing forwarder runbook.
-- Avoided intentionally breaking the live household DNS service just to create
-  screenshots.
-
-Why it matters: this turns a real DNS outage pattern into portfolio evidence and
-future troubleshooting procedure without creating unnecessary downtime.
-
-PowerShell used/proof:
-
-```powershell
-Get-DnsClientServerAddress -AddressFamily IPv4
-Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV
-Get-DnsServerForwarder
-Resolve-DnsName google.com
-```
-
-<img src="screenshots/phase8-01-real-dns-incident-fixed.JPG" width="750" alt="Real DNS incident fixed">
-*NIC DNS fix and SRV resolution confirming the real Phase 2 incident is resolved.*
-
-Image not yet captured for this phase: `screenshots/phase8-02-break-fix-log.png`
-
-Break/fix log: [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md)
-
-### Phase 9 - `WIN-DC02` DNS Verification
-
-I completed secondary DNS verification after `WIN-DC02` was built and promoted
-as a DNS-enabled Global Catalog. Before doing that, I cleaned the multihomed
-records on `WIN-PRQD8TJG04M` so `WIN-DC02` would not try to use the wrong
-interface for AD DS and DNS replication.
-
-What I did:
-
-- Verified the DNS zones replicated to `WIN-DC02`.
-- Copied the same DNS forwarders to `WIN-DC02`.
-- Enabled server-level scavenging on `WIN-DC02`.
-- Added the PTR record for `192.168.20.12`.
-- Verified `WIN-DC02` answers internal host lookups, AD SRV records, reverse
-  DNS, and external names.
-- Updated the PDC DNS client so it uses `WIN-DC02` first and itself second.
-
-Why it matters: a second DC only helps if clients can actually use it for DNS.
-This phase proves the domain can resolve names through `WIN-DC02`, not just
-through the original PDC.
-
-PowerShell used/proof:
-
-```powershell
-Get-DnsServerZone -ComputerName WIN-DC02
-
-$forwarders = (Get-DnsServerForwarder -ComputerName WIN-PRQD8TJG04M).IPAddress
-Set-DnsServerForwarder -ComputerName WIN-DC02 -IPAddress $forwarders
-
-Set-DnsServerScavenging `
-  -ComputerName WIN-DC02 `
-  -ScavengingState $true `
-  -ScavengingInterval 7.00:00:00
-
-Add-DnsServerResourceRecordPtr `
-  -ZoneName "20.168.192.in-addr.arpa" `
-  -Name "12" `
-  -PtrDomainName "WIN-DC02.Chongong.local"
-
-Resolve-DnsName WIN-PRQD8TJG04M.Chongong.local -Server 192.168.20.12 -DnsOnly -NoHostsFile
-Resolve-DnsName WIN-DC02.Chongong.local -Server 192.168.20.12 -DnsOnly -NoHostsFile
-Resolve-DnsName _ldap._tcp.Chongong.local -Type SRV -Server 192.168.20.12
-Resolve-DnsName google.com -Server 192.168.20.12
-Resolve-DnsName 192.168.20.12 -Server 192.168.20.12
-Get-DnsClientServerAddress -InterfaceAlias "vEthernet (External-VLAN-Trunk)" -AddressFamily IPv4
-```
-
-Detailed DNS evidence: [docs/p03-win-dc02-secondary-dns-evidence.md](docs/p03-win-dc02-secondary-dns-evidence.md)
-
-<img src="screenshots/phase9-00-pdc-multihomed-dns-before-cleanup.png" width="750" alt="PDC multihomed DNS before cleanup">
-*Before cleanup, `WIN-PRQD8TJG04M` had multiple A records from non-AD interfaces. I fixed this before promoting `WIN-DC02` so replication would use the AD VLAN address.*
-
-<img src="screenshots/phase9-00-pdc-hostname-clean-after-fix.png" width="750" alt="PDC DNS clean after fix">
-*After cleanup, direct DNS lookup for the PDC returned only `192.168.20.11`.*
-
-<img src="screenshots/phase9-01-win-dc02-dns-zones.JPG" width="750" alt="WIN-DC02 DNS zones">
-*DNS Manager on `WIN-DC02` showing the AD-integrated zones replicated to the new DNS server.*
-
-<img src="screenshots/phase9-02-win-dc02-dns-resolution.png" width="750" alt="WIN-DC02 DNS resolution checks">
-*PowerShell proof that `WIN-DC02` resolves both DC names, AD SRV records, external names, and its own PTR record.*
-
-<img src="screenshots/phase9-03-win-dc02-forwarders.JPG" width="750" alt="WIN-DC02 DNS forwarders">
-*`WIN-DC02` has the same public forwarders as the original DNS server.*
-
-<img src="screenshots/phase9-04-win-dc02-ptr-record.png" width="750" alt="WIN-DC02 PTR record">
-*Reverse lookup zone showing the `192.168.20.12` PTR for `WIN-DC02`. The command evidence above is the final authority for the clean PTR result.*
-
-<img src="screenshots/phase9-05-pdc-dns-client-now-uses-dc02.png" width="750" alt="PDC DNS client now uses WIN-DC02">
-*The PDC now uses `WIN-DC02` first and itself second for DNS client resolution.*
-
-### Phase 10 - Document + Push
-
-I saved the Project 03 evidence and updated the repo.
-
-What I did:
-
-- Updated this Project 03 README.
-- Added the break/fix log.
-- Updated project status references.
-- Added screenshot planning and embedded the completed Phase 5 and Phase 9
-  evidence.
-
-Why it matters: the DNS work is repeatable and reviewable, not just a one-time
-live change.
-
-Proof commands:
-
-```bash
-git status --short
-git log --oneline -5
-```
-
-Final evidence links:
-
-- WIN-DC02 secondary DNS evidence: [docs/p03-win-dc02-secondary-dns-evidence.md](docs/p03-win-dc02-secondary-dns-evidence.md)
-- Break/fix log: [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md)
-- Screenshot plan: [docs/p03-screenshot-plan.md](docs/p03-screenshot-plan.md)
-
-## Verified State
-
-| Check | Result |
-|-------|--------|
-| Internal AD SRV lookup | `_ldap._tcp.Chongong.local` resolves to both `win-prqd8tjg04m.chongong.local:389` and `win-dc02.chongong.local:389` |
-| PDC DNS client | `vEthernet (External-VLAN-Trunk)` uses `192.168.20.12, 192.168.20.11` |
-| WIN-DC02 DNS client | `Ethernet` uses `192.168.20.11, 192.168.20.12` |
-| Forwarders | Public forwarders still resolve external names |
-| Conditional forwarder | `localdomain` forwards to Route10 `192.168.20.1` from both DCs |
-| Reverse DNS | `192.168.20.11` and `192.168.20.12` have PTR records |
-| Scavenging | Enabled |
-| Zone aging | Enabled for `Chongong.local` |
-| Secondary DNS | `WIN-DC02` answers internal, SRV, PTR, and external lookups |
-
-## Technical Links
-
-| Detail | Link |
-|--------|------|
-| WIN-DC02 DNS evidence | [docs/p03-win-dc02-secondary-dns-evidence.md](docs/p03-win-dc02-secondary-dns-evidence.md) |
-| Break/fix log | [troubleshooting/break-fix-log.md](troubleshooting/break-fix-log.md) |
-| Screenshot plan | [docs/p03-screenshot-plan.md](docs/p03-screenshot-plan.md) |
+Project 03 is closed. [Project 04](../project-04-dhcp-ipam/) validates how
+Windows DHCP and AD DNS fit the Route10/OPNsense authority model. This closeout
+and link do not start or authorize a DHCP or IPAM change.

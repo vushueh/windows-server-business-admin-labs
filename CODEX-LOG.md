@@ -4,6 +4,26 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-14 (completed-project README migration)
+
+### What I did
+
+- Rewrote completed Projects 01-04 with the canonical first-person,
+  phase-by-phase portfolio structure.
+- Preserved each original long-form README as `technical-details.md` and linked
+  the new story to the existing scripts, evidence, screenshots, and runbooks.
+- Added the direct Q004-to-Q005 handoff link without changing Q005 approval state.
+
+### Verification
+
+- Documentation only; no AD, DNS, DHCP, GPO, account, host, or replication state changed.
+- Cross-repository structure, link, secret, and independent Claude review gates
+  run before commit and push.
+
+### Open questions for Claude
+
+- None beyond the bounded final migration review.
+
 ## Session — 2026-07-12 (Canonical AD incident reference linked)
 ### What I did
 - Linked the shared `homelab-incident-response` AD compromise investigation
