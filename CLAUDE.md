@@ -50,7 +50,10 @@ ownership, settled facts, hazards, and standards.
 - Evidence: `projects/<p>/docs/` + screenshots per project (follow each
   project's existing layout); use the shared
   [portfolio documentation standard](../docs/readme-layered-documentation-standard.md)
-  and `width="900"` HTML screenshot wrapper; review file uses 🔴/🟢 emoji style
+  through the canonical
+  [`homelab-project-documentation` skill](../.claude/skills/homelab-project-documentation/SKILL.md),
+  plus the Windows-specific `winserver-evidence-documentation` extension;
+  review file uses 🔴/🟢 emoji style
 - Technical how-to lives in global skills `winserver-p01`,
   `winserver-projects`, `winserver-evidence-documentation` — some predate
   P02–P04 outcomes; flag stale guidance instead of following it blindly

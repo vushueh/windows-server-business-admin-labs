@@ -1,410 +1,86 @@
 ---
 name: winserver-evidence-documentation
-description: >
-  Windows Server Business Admin documentation standard. Trigger whenever creating,
-  rewriting, reviewing, or updating project README files, evidence docs, screenshots,
-  scripts, phase completion notes, portfolio summaries, status tables, or final
-  project documentation for P01-P13. Enforces layered documentation: readable public
-  summary first, root README without screenshots, project phase evidence with
-  screenshots under the matching phase, Server World style command-and-image
-  flow with stronger explanations, no secrets, and consistent status.
+description: Document Windows Server Business Admin projects P01-P13 using the canonical family-projects documentation standard plus Windows-specific PowerShell, GUI, screenshot, evidence, and redaction rules. Use for project READMEs, phase evidence, screenshots, scripts, status tables, portfolio summaries, completed-project collaboration, or publication review in this repository.
 ---
 
-# Windows Server Documentation Standard
+# Windows Server Evidence Documentation
 
-Use this skill whenever documenting any Windows Server Business Admin project.
-The goal is a portfolio that a hiring manager can understand quickly, while still
-giving technical reviewers proof of the exact configuration.
-
-## Core Rule
-
-Do not turn the project README into a command transcript.
-
-The root/family README is the public navigation page. It must not show screenshots.
-It should explain why I am building the family, what the family proves, and where
-to click next.
-
-Each individual project README is the project story. It may show screenshots, but
-only under the phase they prove. Detailed raw output, rollback notes, and long
-troubleshooting records still belong in linked files under the project folder.
+This skill extends the canonical
+[`homelab-project-documentation` skill](../../../.claude/skills/homelab-project-documentation/SKILL.md).
+Read that skill and the
+[`Portfolio Documentation Standard`](../../../docs/readme-layered-documentation-standard.md)
+first. They own the project structure, first-person voice, phase coverage,
+two-screenshot limit, collaboration record, and reproduction path.
 
 ## Required Read Order
 
-Before editing documentation, read:
+1. Closest `AGENTS.md` and `CLAUDE.md`
+2. Canonical `homelab-project-documentation` skill and standard
+3. Project README, `docs/`, `scripts/`, `screenshots/`, and evidence
+4. Relevant Windows technical skill and review/closeout records
 
-1. `AGENTS.md`
-2. The project `README.md`
-3. Existing files under that project's `docs/`, `scripts/`, and `screenshots/`
-4. The relevant technical project skill
-5. This skill
+## Windows-Specific Layering
 
-## Layered Documentation Model
+| Layer | Purpose |
+|---|---|
+| Root README | Screenshot-free family navigation and project index |
+| Project README | Short first-person story, every phase, and no more than two screenshots per phase |
+| `docs/`, `scripts/`, `screenshots/`, `evidence/` | Exact PowerShell, click paths, reports, screenshot 3+, troubleshooting, rollback, and re-verification |
+| `CODEX-LOG.md` and `CLAUDE-REVIEW.md` | Agent handoff, review state, and unresolved items |
 
-Every Windows Server family/project has these layers:
+Do not paste long PowerShell output or raw troubleshooting into the project
+README. Use descriptive links to the technical files.
 
-| Layer | Audience | Where it lives | Purpose |
-|-------|----------|----------------|---------|
-| Family index | Hiring manager, recruiter, non-technical reader | Root `README.md` | First-person reason for the family, project index, and navigation links. No screenshots. |
-| Project story + phase evidence | Hiring manager first, technical reviewer second | Individual project `README.md` | What I built, why it matters, phase-by-phase results, and embedded screenshot proof under each phase. |
-| Technical evidence | Engineer, architect, future me | Project `docs/*.md`, `scripts/`, `screenshots/` | Exact commands, output, screenshot plans, verification, rollback, and deeper notes. |
-| Operator handoff | Claude/Codex/Leonel | `CODEX-LOG.md`, `CLAUDE-REVIEW.md`, phase skills | What to do next, blockers, safety notes |
+## Windows Phase Detail
 
-## Root README Standard
+In each canonical phase section, name the shortest reproducible method:
 
-The root README is the clean front door for the whole Windows Server family.
-Keep it readable and attractive, but do not embed screenshots there.
+- the PowerShell cmdlet or verification command;
+- the concise GUI path when Leonel used a graphical tool;
+- the before/change/verify sequence when a setting changed; and
+- the linked report, transcript, rollback, or evidence file.
 
-Required root README content:
-
-1. Title, status, platform, and trigger phrase
-2. First-person introduction explaining why I am building the family
-3. Plain-language purpose: what this family proves in the homelab
-4. Architecture or integration overview
-5. Project index with links and status
-6. Skills, docs, related families, and bridge files
-
-Root README rules:
-
-- No screenshots or image embeds
-- No long PowerShell blocks
-- No raw terminal output
-- No phase-by-phase execution transcript
-- Link to project folders for technical evidence
-- Use first-person language where it explains motivation and portfolio value
-
-## Individual Project README Standard
-
-Keep each project README direct but complete. It can be longer than the root
-README because it owns the phase-level evidence. Use first-person portfolio
-language for completed work.
-
-Required section order:
-
-1. Title, status, completion date if complete, system or scope
-2. Short plain-language summary that includes why it matters
-3. Portfolio Summary with Situation, Task, Action, and Result
-4. Starting point or problem found
-5. What I changed
-6. What I proved
-7. Simple phase/status table
-8. Phase sections with explanation, commands, and screenshot evidence
-9. Evidence links for deeper technical proof
-10. Decisions intentionally deferred or not changed
-11. Next project impact or carried-forward items
-
-Every phase section must include:
-
-- Phase title and status
-- Brief first-person explanation of what I did in that phase
-- What was achieved and why it matters
-- PowerShell/admin commands used or verification commands, when applicable
-- How I did it manually, when a GUI was used
-- Screenshot block under that same phase once the image exists
-- Screenshot-to-capture note if the image has not been taken yet
-
-Do not add broken image links. If Leonel has not provided the screenshot yet,
-write the filename, exact capture path, and PowerShell equivalent as a pending
-screenshot note. After the image exists under `screenshots/`, embed it directly
-under the matching phase.
-
-Allowed in the README:
-
-- Short tables
-- Screenshots embedded under the phase they prove
-- Links to technical evidence
-- Short command names when they clarify verification
-
-Do not put these in the individual project README:
-
-- Long PowerShell blocks
-- Full terminal output
-- Stacked screenshots with no explanation
-- Raw troubleshooting logs
-- Secrets, tokens, passwords, private keys, shared secrets, or NPS XML exports
-
-Concise click paths are allowed beside screenshots, for example:
+Use comments in longer PowerShell examples and keep those examples in `docs/`
+or `scripts/`. A click path may use this compact form:
 
 ```text
-Start -> Windows Tools -> Active Directory Users and Computers -> Chongong.local -> ManagedUsers
+Start -> Windows Tools -> Group Policy Management -> <object> -> <action>
 ```
 
-Longer click-by-click walkthroughs belong in a project screenshot plan under
-`docs/`.
-
-## Phase Documentation Pattern
-
-Use a command-and-image flow similar to Server World documentation, but make it
-more portfolio-ready. Each phase should read like a small case record, not a
-loose screenshot gallery.
-
-Required phase structure:
-
-````markdown
-## Phase N - Phase Name
-
-**Status:** Complete, partial, deferred, or pending
-
-I configured/verified/fixed ... so that ...
-
-**What I achieved**
-- Direct result 1
-- Direct result 2
-
-**Why this matters**
-One short paragraph connecting the work to business operations, security,
-network operations, or portfolio value.
-
-**PowerShell / verification**
-
-```powershell
-# comment explaining the command
-Command-That-Was-Used
-
-# verify the result
-Command-That-Proves-It
-```
-
-**Manual path**
-Start -> Windows Tools -> Tool Name -> object -> tab/button
-
-**Screenshot evidence**
-
-### Screenshot: phaseN-01-short-name.png
-
-<p><strong>Proof:</strong> One sentence explaining what this image proves.</p>
-
-<img src="screenshots/phaseN-01-short-name.png" alt="short alt text" width="900">
-
-- **When to capture:** Before change, after change, verification, or deferred proof.
-- **What it shows:** Explain exactly what is visible.
-- **How to capture it:** Click path or command window to open.
-- **Why it matters:** What this proves to a reviewer.
-- **PowerShell equivalent:** Matching command, if one exists.
-````
-
-PowerShell sections should be structured with comments the way good technical
-walkthroughs are: show the current state, apply the change when applicable, then
-verify. Do not paste huge terminal transcripts into the project README. Put long
-raw output in `docs/`.
-
-Screenshot sections must appear immediately after the instruction or command
-they prove. Do not put all screenshots at the bottom of the page. Do not place a
-row of images together without explanation. Each image needs its own title,
-caption, capture timing, click path, and reason.
-
-For phases that include both PowerShell and GUI work:
-
-1. Put the PowerShell/admin command block first when it is the clearest way to
-   show the exact configuration.
-2. Put the GUI/manual path next so Leonel and a non-technical reader can see
-   where the same setting lives.
-3. Put the screenshot directly below the GUI path or verification command.
-4. Add more explanation than Server World does: state what the screenshot proves
-   in this specific homelab, not only what button was clicked.
-
-## Evidence File Standard
-
-Use evidence files for technical depth. A good evidence file includes:
-
-1. Objective
-2. Date and method
-3. Approval or safety gate if live infrastructure changed
-4. Before state
-5. Commands or GUI path used
-6. Output or screenshot proof
-7. Verification result
-8. Rollback or recovery path
-9. Findings carried forward
-
-Evidence files may include long command blocks and command output, but keep them
-organized by phase and redact sensitive data.
-
-## Screenshot Standard
-
-Screenshots must prove something. Do not add screenshots just to make the repo look
-busy.
-
-Good screenshots show:
-
-- Before and after state
-- A policy value
-- A membership list
-- A service/tool status
-- A verified error or break/fix result
-
-Plan screenshots before configuration starts. For each phase, decide:
-
-- whether a before screenshot is needed
-- whether an after screenshot is needed
-- whether one verification screenshot is enough
-- the exact filename
-- the exact GUI path or command Leonel will use to capture it
-- the matching PowerShell proof command, if one exists
-
-Take before screenshots before changing the system. Take after screenshots after
-the change is verified. If a phase is deferred or blocked, capture one screenshot
-that proves why.
-
-Naming pattern:
-
-```text
-phaseN-NN-short-description.jpg
-```
-
-## Screenshot Upload Workflow
-
-Use this workflow every time Leonel provides screenshots for a Windows project.
-
-1. Save screenshots under the project folder:
-
-```text
-projects/project-NN-project-name/screenshots/
-```
-
-2. Rename each screenshot with the phase-based pattern:
-
-```text
-phaseN-NN-short-description.png
-phaseN-NN-short-description.jpg
-```
-
-Examples:
-
-```text
-phase2-01-password-lockout-policy.png
-phase4-02-sample-agdlp-nesting.png
-phase9-01-final-verification-output.png
-```
-
-3. Check every image before committing:
-
-- no passwords
-- no private keys
-- no recovery keys
-- no shared secrets
-- no unredacted credential fields
-- no unrelated personal files, browser tabs, or notifications
-
-4. Embed screenshots with a relative HTML path and the shared width:
-
-```html
-<p><strong>Proof:</strong> One sentence explaining what this image proves.</p>
-
-<img src="screenshots/phaseN-NN-short-description.png" alt="short alt text" width="900">
-```
-
-5. Do not upload screenshots to external image hosts for repo documentation.
-Commit the reviewed image files into the repo with the README/evidence update.
-
-6. If a project needs many screenshots, create or update a project-specific
-screenshot plan:
-
-```text
-projects/project-NN-project-name/docs/pNN-screenshot-plan.md
-```
-
-That plan must list each screenshot filename, what it proves, where Leonel
-captures it manually, when to capture it, and the PowerShell command that proves
-the same result.
-
-Never embed screenshots in the root README.
-
-For an individual project README, place screenshot evidence under the matching
-phase. A technical reviewer should be able to read Phase 2, see the Phase 2
-image, and understand the before/after or verification result without searching
-elsewhere.
-
-Every screenshot shown in an individual project README must use the
-[shared screenshot block](../../../templates/readme-screenshot-block.md) pattern
-and this block:
-
-````markdown
-### Short Evidence Title
-
-<p><strong>Proof:</strong> One direct sentence explaining what the screenshot proves.</p>
-
-<img src="screenshots/file.jpg" alt="short alt text" width="900">
-
-- **What it shows:** One direct sentence.
-- **Capture timing:** Before change, after change, verification, or deferred proof.
-- **How to capture it:** GUI path, click path, or command window Leonel used.
-- **Why:** Why this configuration or finding matters.
-- **PowerShell equivalent:**
-
-```powershell
-# PowerShell command that proves the same point
-```
-````
-
-Keep `width="900"`. Do not group several images together and explain them later. Image, description,
-capture timing, capture path, PowerShell equivalent, and reason must stay
-together.
-
-## No-Secrets Policy
-
-Never commit:
-
-- Passwords or generated passwords
-- Password hashes
-- Private keys
-- Microsoft 365 or Entra credentials
-- RADIUS shared secrets
-- NPS XML exports
-- BitLocker recovery keys
-- Screenshots showing unredacted credential fields
-- Any `C:\Audit` export marked sensitive
-
-Safe to commit when reviewed:
-
-- Redacted command output
-- AD object summaries without passwords
-- Screenshots of settings with credential fields hidden
-- Scripts without embedded secrets
-- Markdown evidence summaries
-
-## Status Consistency
-
-When a project status changes, update all relevant places in the same commit:
-
-- Root `README.md`
-- `projects/README.md`
-- Project `README.md`
-- Relevant project skill checklist
-- `AGENTS.md` current status if it mentions the project
-- `CODEX-LOG.md` session note
-
-Do not leave one file saying "In Progress" while the final evidence says
-"Complete."
-
-## Voice and Attribution
-
-Use first person for portfolio work:
-
-- "I audited..."
-- "I configured..."
-- "I verified..."
-- "I deferred..."
-
-Use tool/operator names only where they matter:
-
-- Approval source
-- Who executed a live command
-- Handoff notes
-- Safety gate history
-
-Avoid making the public README read like a Claude/Codex transcript.
-
-## Final Review Checklist
-
-Before committing documentation:
-
-- Root README has no screenshots and still explains why the family exists
-- Individual project README can be understood without opening a technical evidence file
-- Phase screenshots sit under the phase they prove, or the phase has a clear pending screenshot note
-- Each completed phase follows the explain, command, manual path, screenshot pattern
-- Technical readers have clear links to exact proof
-- No secrets or sensitive exports are present
-- Status matches across indexes and skills
-- Deferred risks point to the correct future project
-- Markdown links are relative and valid
-- The README does not duplicate entire evidence files
+## Screenshot Rules
+
+- Store reviewed images under the project's existing `screenshots/` or
+  `evidence/screenshots/` layout.
+- Name images `phaseN-NN-short-description.png` or `.jpg`.
+- Display them with the shared HTML wrapper and `width="900"`.
+- Put each image inside the phase it proves.
+- Display no more than two images per phase in the project README. Put image 3+
+  and long click-by-click walkthroughs in a linked details or evidence file.
+- Never add a broken image link. A planned screenshot stays a text-only capture
+  note until the reviewed image exists.
+- Never publish passwords, recovery keys, shared secrets, private keys,
+  unredacted credential fields, NPS XML exports, unrelated tabs, or
+  notifications.
+
+## Evidence File Content
+
+Use linked evidence files for objective, absolute date, approval/safety gate,
+before state, exact commands or GUI path, output, verification, rollback, and
+carried-forward findings. State what each artifact proves and what it does not
+prove.
+
+## Complete-Project Check
+
+Before a Windows project is published as Complete, confirm:
+
+- every phase-table row has a matching short phase section;
+- the technical evidence and reproduction links resolve;
+- every screenshot is redaction-checked and the two-per-phase cap holds;
+- default or protected objects were not changed unless exact evidence and
+  approval prove otherwise; and
+- `How We Worked Together` precisely records Leonel's input, Codex's work,
+  Claude's work, communication, and pushback/resolution or `None.`
+
+Do not redefine the shared documentation structure here. If this skill and the
+canonical standard disagree, follow the canonical standard and flag this file
+for correction.

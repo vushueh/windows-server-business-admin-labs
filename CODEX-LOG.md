@@ -1059,3 +1059,28 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - Q005 / SIM-B4-VM-RESTORE is the next deterministic queue item but is not
   started or authorized by this closeout.
 - All repository changes remain local; no commit or push occurred.
+
+---
+
+## Session — 2026-07-14 (Q004 documentation-standard adoption)
+
+### What changed
+
+- Reworked Q004 into the canonical completed-project structure without
+  changing its technical claims or evidence.
+- Added one short section for each of its ten phases, moved both screenshots
+  into Phase 7, added a re-verification path, and recorded Leonel's input,
+  Codex's work, Claude's independent reviews, communication, and resolved
+  pushback.
+- Replaced the repo-local Windows documentation skill with a Windows-specific
+  extension of the family-level canonical skill, removing conflicting section
+  and screenshot rules.
+
+### Verification
+
+- The Q004 phase table and phase sections are one-to-one.
+- Phase 7 is the only phase with inline screenshots and contains exactly two.
+- Existing Q004 evidence links, status, risk boundary, and final claims remain
+  unchanged.
+- This was repository documentation work only; no AD, GPO, client, backup, or
+  other live system was accessed or changed.
