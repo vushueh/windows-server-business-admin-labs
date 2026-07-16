@@ -1,0 +1,64 @@
+Q007 DNS FAILURE TRIAGE SIMULATION
+started_utc=2026-07-16T04:11:52+00:00
+boundary=loopback-only UDP DNS on 127.0.0.1:10553
+live_dns_or_host_configuration_changed=NO
+evidence_client=Python standard-library UDP client plus raw packet hex
+
+PHASE bind-collision stop test
+TEST startup_aborts_when_port_in_use=PASS
+
+PHASE healthy baseline
+baseline_raw_response_hex=7001850000010001000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d070a
+baseline_decoded_header=transaction_id:0x7001,flags:0x8500,rcode:0,qdcount:1,ancount:1,nscount:0,arcount:0
+baseline_question=files.q007.test
+baseline_answers=10.77.7.10
+TEST baseline_returns_exactly_one_correct_a_record=PASS
+
+PHASE malformed-packet survival
+post_malformed_raw_response_hex=7002850000010001000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d070a
+post_malformed_decoded_header=transaction_id:0x7002,flags:0x8500,rcode:0,qdcount:1,ancount:1,nscount:0,arcount:0
+post_malformed_question=files.q007.test
+post_malformed_answers=10.77.7.10
+TEST malformed_packet_is_counted=PASS
+TEST malformed_packet_does_not_crash_server=PASS
+
+PHASE inject extra wrong A record and diagnose impact
+fault_raw_response_hex=7003850000010002000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d0763c00c000100010000001e00040a4d070a
+fault_decoded_header=transaction_id:0x7003,flags:0x8500,rcode:0,qdcount:1,ancount:2,nscount:0,arcount:0
+fault_question=files.q007.test
+fault_answers=10.77.7.99,10.77.7.10
+fault_naive_client_selected=10.77.7.99
+fault_user_impact=client targets wrong host 10.77.7.99 instead of 10.77.7.10
+TEST fault_response_contains_wrong_and_correct_records=PASS
+TEST fault_demonstrates_wrong_answer_consumption=PASS
+
+PHASE repair and repeat positive retest
+repair_1_raw_response_hex=7004850000010001000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d070a
+repair_1_decoded_header=transaction_id:0x7004,flags:0x8500,rcode:0,qdcount:1,ancount:1,nscount:0,arcount:0
+repair_1_question=files.q007.test
+repair_1_answers=10.77.7.10
+repair_2_raw_response_hex=7005850000010001000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d070a
+repair_2_decoded_header=transaction_id:0x7005,flags:0x8500,rcode:0,qdcount:1,ancount:1,nscount:0,arcount:0
+repair_2_question=files.q007.test
+repair_2_answers=10.77.7.10
+repair_3_raw_response_hex=7006850000010001000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d070a
+repair_3_decoded_header=transaction_id:0x7006,flags:0x8500,rcode:0,qdcount:1,ancount:1,nscount:0,arcount:0
+repair_3_question=files.q007.test
+repair_3_answers=10.77.7.10
+TEST three_post_repair_queries_return_only_correct_record=PASS
+TEST post_repair_answers_exclude_wrong_record=PASS
+
+PHASE negative retest
+nxdomain_raw_response_hex=700785030001000000000000096f6c642d66696c6573047130303704746573740000010001
+nxdomain_decoded_header=transaction_id:0x7007,flags:0x8503,rcode:3,qdcount:1,ancount:0,nscount:0,arcount:0
+nxdomain_question=old-files.q007.test
+nxdomain_answers=<none>
+TEST unknown_name_returns_nxdomain=PASS
+
+PHASE cleanup
+TEST server_thread_stopped=PASS
+TEST udp_port_released_after_cleanup=PASS
+completed_utc=2026-07-16T04:11:53+00:00
+Q007_RESULT=PASS
+transcript_file=q007-sanitized-transcript.txt
+results_file=q007-run-results.json

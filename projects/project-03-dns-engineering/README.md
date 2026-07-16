@@ -37,6 +37,14 @@ boundaries.
 | Technical reviewer | [Phase Status](#phase-status), [Technical Evidence](#technical-evidence), and [technical details](technical-details.md) |
 | Future operator | [Reproduce Or Re-Verify](#reproduce-or-re-verify) |
 
+## Q007 Follow-On Simulation
+
+The completed core P03 project remains unchanged. Its later queue-selected
+follow-on is [Q007 — DNS Failure-Triage
+Simulation](q007-dns-failure-triage-simulation/), which safely recreates an
+extra wrong A record on loopback, proves diagnosis/repair/retest/cleanup, and
+publishes the reusable Windows operator runbook without touching live DNS.
+
 ## My Test Boundary
 
 I changed Windows DNS only after read-only discovery and retained rollback

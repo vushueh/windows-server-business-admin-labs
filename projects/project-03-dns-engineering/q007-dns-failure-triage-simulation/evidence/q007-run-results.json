@@ -1,0 +1,115 @@
+{
+  "baseline": {
+    "ancount": 1,
+    "answers": [
+      "10.77.7.10"
+    ],
+    "arcount": 0,
+    "flags": "0x8500",
+    "nscount": 0,
+    "qdcount": 1,
+    "question": "files.q007.test",
+    "raw_response_hex": "7001850000010001000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d070a",
+    "rcode": 0,
+    "source": "127.0.0.1:10553",
+    "transaction_id": "0x7001"
+  },
+  "boundary": "loopback-only UDP DNS on 127.0.0.1:10553",
+  "completed_utc": "2026-07-16T04:11:53+00:00",
+  "correct_ip": "10.77.7.10",
+  "fault": {
+    "ancount": 2,
+    "answers": [
+      "10.77.7.99",
+      "10.77.7.10"
+    ],
+    "arcount": 0,
+    "flags": "0x8500",
+    "naive_client_selected": "10.77.7.99",
+    "nscount": 0,
+    "qdcount": 1,
+    "question": "files.q007.test",
+    "raw_response_hex": "7003850000010002000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d0763c00c000100010000001e00040a4d070a",
+    "rcode": 0,
+    "source": "127.0.0.1:10553",
+    "transaction_id": "0x7003"
+  },
+  "malformed_packet_count": 1,
+  "nxdomain": {
+    "ancount": 0,
+    "answers": [],
+    "arcount": 0,
+    "flags": "0x8503",
+    "nscount": 0,
+    "qdcount": 1,
+    "question": "old-files.q007.test",
+    "raw_response_hex": "700785030001000000000000096f6c642d66696c6573047130303704746573740000010001",
+    "rcode": 3,
+    "source": "127.0.0.1:10553",
+    "transaction_id": "0x7007"
+  },
+  "repair_retests": [
+    {
+      "ancount": 1,
+      "answers": [
+        "10.77.7.10"
+      ],
+      "arcount": 0,
+      "flags": "0x8500",
+      "nscount": 0,
+      "qdcount": 1,
+      "question": "files.q007.test",
+      "raw_response_hex": "7004850000010001000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d070a",
+      "rcode": 0,
+      "source": "127.0.0.1:10553",
+      "transaction_id": "0x7004"
+    },
+    {
+      "ancount": 1,
+      "answers": [
+        "10.77.7.10"
+      ],
+      "arcount": 0,
+      "flags": "0x8500",
+      "nscount": 0,
+      "qdcount": 1,
+      "question": "files.q007.test",
+      "raw_response_hex": "7005850000010001000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d070a",
+      "rcode": 0,
+      "source": "127.0.0.1:10553",
+      "transaction_id": "0x7005"
+    },
+    {
+      "ancount": 1,
+      "answers": [
+        "10.77.7.10"
+      ],
+      "arcount": 0,
+      "flags": "0x8500",
+      "nscount": 0,
+      "qdcount": 1,
+      "question": "files.q007.test",
+      "raw_response_hex": "7006850000010001000000000566696c6573047130303704746573740000010001c00c000100010000001e00040a4d070a",
+      "rcode": 0,
+      "source": "127.0.0.1:10553",
+      "transaction_id": "0x7006"
+    }
+  ],
+  "result": "PASS",
+  "simulation": "Q007 / SIM-N3-DNS",
+  "started_utc": "2026-07-16T04:11:52+00:00",
+  "tests": {
+    "baseline_returns_exactly_one_correct_a_record": "PASS",
+    "fault_demonstrates_wrong_answer_consumption": "PASS",
+    "fault_response_contains_wrong_and_correct_records": "PASS",
+    "malformed_packet_does_not_crash_server": "PASS",
+    "malformed_packet_is_counted": "PASS",
+    "post_repair_answers_exclude_wrong_record": "PASS",
+    "server_thread_stopped": "PASS",
+    "startup_aborts_when_port_in_use": "PASS",
+    "three_post_repair_queries_return_only_correct_record": "PASS",
+    "udp_port_released_after_cleanup": "PASS",
+    "unknown_name_returns_nxdomain": "PASS"
+  },
+  "wrong_ip": "10.77.7.99"
+}

@@ -1,0 +1,46 @@
+Q007 CLOSEOUT VERIFICATION
+Date: 2026-07-15 MDT / 2026-07-16 UTC
+Boundary: loopback-only UDP DNS; no live DNS, AD, DHCP, Hyper-V, adapter, or host-resolver change
+
+SYNTAX
+command: python3 -m py_compile scripts/q007_dns_drill.py scripts/q007_verify_evidence.py
+result: PASS
+
+RETAINED EVIDENCE
+command: python3 scripts/q007_verify_evidence.py evidence/q007-run-results.json
+Q007_EVIDENCE_VERIFY=PASS
+authoritative_flags=PASS
+baseline_answers=10.77.7.10
+fault_answers=10.77.7.99,10.77.7.10
+fault_client_selected=10.77.7.99
+repair_retests=3
+nxdomain_rcode=3
+cleanup_port_release=PASS
+
+CLEAN-ROOM RERUN
+command: python3 scripts/q007_dns_drill.py --output-dir /tmp/q007-reverify
+Q007_RESULT=PASS
+
+command: python3 scripts/q007_verify_evidence.py /tmp/q007-reverify/q007-run-results.json
+Q007_EVIDENCE_VERIFY=PASS
+authoritative_flags=PASS
+baseline_answers=10.77.7.10
+fault_answers=10.77.7.99,10.77.7.10
+fault_client_selected=10.77.7.99
+repair_retests=3
+nxdomain_rcode=3
+cleanup_port_release=PASS
+
+FAILURE-HANDLING NOTE
+The first constrained attempt was denied all socket creation before bind. It
+made no network or live-system change and produced no retained project result.
+Cleanup error handling was hardened before the final retained and clean-room
+runs. Both final runs used only 127.0.0.1:10553 and passed.
+
+PROTOCOL-CORRECTION NOTE
+A final review caught a superseded draft response using RA instead of AA.
+The final responder uses flags 0x8500 for positive authoritative answers and
+0x8503 for authoritative NXDOMAIN. The independent decoder enforces both
+values, and all retained evidence and hashes were regenerated afterward.
+
+FINAL: PASS

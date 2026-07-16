@@ -96,7 +96,7 @@ across all family repositories.
 |---|---|---|---|
 | Q003 | [AD Recycle Bin test-object restore](projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | Early Project 11 recovery proof | ✅ Complete — restored the GUID-pinned disabled test user through both DCs in 0.51 minutes |
 | Q004 | [Test-GPO backup and restore](projects/project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/) | Early Project 11 recovery proof | ✅ Complete — exact custom-GPO restore passed in 0.1 minutes; RSoP and cleanup verified |
-| Q007 | [DNS failure-triage simulation](projects/project-03-dns-engineering/) | Project 03 reusable break/fix proof | ⏭️ Selected, not started — Q006 closed on 2026-07-15; ISO entry and live-change gates still apply |
+| Q007 | [DNS failure-triage simulation](projects/project-03-dns-engineering/q007-dns-failure-triage-simulation/) | Project 03 reusable break/fix proof | ✅ Complete — isolated wrong-record fault, repair, repeated retest, NXDOMAIN, cleanup, and Windows runbook passed on 2026-07-15 |
 
 ### Additional Windows Simulations And Capstone
 
