@@ -4,6 +4,51 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-15 (Q007 complete)
+
+### What I did
+
+- Passed the Q007 entry, dependency, WIP, and repository-lock gates.
+- Built and executed a loopback-only DNS responder/client that injected an
+  extra wrong A record, demonstrated wrong-first client selection, repaired
+  the record set, passed three positive retests and an NXDOMAIN negative test,
+  survived malformed input, and released its port after cleanup.
+- Added a separate raw-packet verifier, Windows operator runbook, complete
+  portfolio README, closeout, evidence, and exact dedicated Q007 links.
+- Incorporated Claude Fable's read-only conditional-GO findings and preserved
+  the honest boundary between isolated protocol proof and live Windows DNS.
+
+### Files created/modified
+
+- `projects/project-03-dns-engineering/q007-dns-failure-triage-simulation/`
+- `projects/project-03-dns-engineering/README.md`
+- `README.md`
+- `projects/README.md`
+- `CLAUDE-REVIEW.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+
+- Q007 is a dedicated P03 follow-on folder; it does not reopen or relabel the
+  completed core P03 project.
+- The executed fault is one extra wrong A record. P03 supplies the real NIC
+  pollution context, while the reusable runbook retains the forwarder branch.
+- Raw response hex plus a separate decoder substitutes for unavailable
+  `dig`/`nslookup` against the nonstandard high-port loopback target.
+- Final protocol review corrected the responder from a recursion-available
+  claim to authoritative-answer flags and regenerated all retained evidence.
+
+### Cross-family impacts
+
+- Q007 closes `SIM-N3-DNS` and selects Q008 in `homelab-management` without
+  starting it. Q006's immediate-successor text becomes a direct Q007 link.
+
+### Open questions for Claude
+
+- None. Q007 has no open review item or live follow-up required for closure.
+
+---
+
 ## Session — 2026-07-15 (Q007 queue handoff only)
 
 ### What I did

@@ -11,6 +11,35 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ---
 
+## Q007 DNS FAILURE-TRIAGE SIMULATION — 2026-07-15
+
+### 🟢 RESOLVED — Item Q007-01: Challenge and close the isolated design
+
+**Found by:** Claude Fable read-only peer review; resolved and verified by Codex
+
+**Evidence and resolution:**
+
+- The canonical queue selected Q007, Q002/CUR-B1 was complete, no urgent
+  preemption existed, and this review file had no conflicting OPEN claim.
+- Claude returned a conditional GO for the loopback standard-library DNS
+  harness. It required honest one-fault scope, evidence independent of the
+  live harness summary, demonstrated user impact, a dedicated Q007 subfolder,
+  and a Windows-mapped operator artifact.
+- Codex limited the executed claim to the extra-A-record fault, linked the P03
+  NIC/forwarder evidence, retained raw response-packet hex, added a separate
+  decoder, returned the wrong address first to demonstrate client impact, and
+  wrote the Windows record/NIC/forwarder/cache/rollback runbook.
+- The final retained run passed eleven assertions. A second `/tmp` run and the
+  independent decoder also passed. Both runs used only `127.0.0.1:10553` and
+  released the port after cleanup.
+- The complete review and disposition are in
+  `projects/project-03-dns-engineering/q007-dns-failure-triage-simulation/evidence/q007-claude-design-review-2026-07-15.md`.
+
+**Safety result:** No live DNS, AD, DHCP, Hyper-V, NIC, cache, resolver, or
+external network change occurred. Q007 has no carried-forward review blocker.
+
+---
+
 ## Q004 TEST-GPO BACKUP/RESTORE — 2026-07-14
 
 ### 🟢 RESOLVED — Item Q004-01: Independently review and correct the preparation package
