@@ -4,6 +4,37 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-15 (Q007 queue handoff only)
+
+### What I did
+
+- Reconciled the Windows family indexes after Q006 closed in
+  `homelab-management`.
+- Marked Q007 / `SIM-N3-DNS` selected and not started in `README.md` and
+  `projects/README.md`.
+- Preserved the ISO entry checks and all separate DNS/Windows live-change
+  approvals; no Q007 design or execution began.
+
+### Files created/modified
+
+- `README.md`
+- `projects/README.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+
+- Q007 remains a Project 03 follow-on simulation, while the completed Project
+  03 baseline remains unchanged.
+
+### Cross-family impacts
+
+- Q006 recovery-order evidence in `homelab-management` is complete and the
+  canonical family queue now points to this Windows-owned simulation.
+
+### Open questions for Claude
+
+- None. This was a documentation-only status handoff.
+
 ## Session — 2026-07-14 (P01 safety-check false-positive correction)
 
 ### What I did

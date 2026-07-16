@@ -21,7 +21,7 @@ the central YAML registry.
 |---|---|---|---|
 | Q003 | [AD Recycle Bin test-object restore](project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | P11 recovery test 1 | ✅ Complete — restored the GUID-pinned disabled test user through both DCs in 0.51 minutes |
 | Q004 | [Test-GPO backup and restore](project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/) | P11 recovery test 3 | ✅ Complete — exact custom-GPO restore, RSoP, cleanup, and final review passed |
-| Q007 | [DNS failure-triage simulation](project-03-dns-engineering/) | P03 break/fix evidence | ⬜ Planned in master order |
+| Q007 | [DNS failure-triage simulation](project-03-dns-engineering/) | P03 break/fix evidence | ⏭️ Selected, not started — ISO entry and live-change gates still apply |
 
 Later Windows portfolio queue positions are P05/Q031, P06/Q032, P07/Q033,
 P08/Q034, P09/Q035, P10/Q036, full P11/Q037, P12/Q041, and P13/Q079.
