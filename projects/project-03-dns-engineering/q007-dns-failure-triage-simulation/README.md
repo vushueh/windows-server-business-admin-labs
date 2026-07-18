@@ -117,6 +117,66 @@ because packet hex, decoded fields, and test output are the stronger evidence.
 | 8 | Independently Verify The Evidence | Complete | 2026-07-15 |
 | 9 | Close And Propagate | Complete | 2026-07-15 |
 
+## Windows Hands-On Evidence Gallery
+
+The accepted Windows practicum captures are embedded here so the Q007 landing
+page visibly carries the phase evidence. Full transcripts, paired notes, and
+integrity hashes remain in the [Windows hands-on evidence log](evidence/q007-windows-hands-on-evidence-log.md)
+and [hands-on manifest](evidence/q007-windows-hands-on-manifest.sha256).
+
+### Phase 0 — Host Precheck
+
+![Q007 Phase 0 Hyper-V precheck](evidence/screenshots/phase0-01-q007-hyperv-precheck.png)
+
+### Phase 2 — Private Switch And Isolated VM
+
+![Q007 Private switch](evidence/screenshots/phase2-01-q007-private-switch.png)
+
+![Q007 isolated VM network](evidence/screenshots/phase2-02-q007-vm-isolated-network.png)
+
+![Q007 Private switch manager](evidence/screenshots/phase2-03-q007-private-switch-manager.jpg)
+
+![Q007 Private switch properties](evidence/screenshots/phase2-04-q007-private-switch-properties.jpg)
+
+### Phase 3 — Standalone Guest Isolation
+
+![Q007 guest safety validation](evidence/screenshots/phase3-01-q007-guest-safety-precheck.png)
+
+![Q007 rename and workgroup](evidence/screenshots/phase3-02-q007-rename-workgroup.jpg)
+
+### Phase 4 — DNS Role And Baseline Zone
+
+![Q007 DNS role installed](evidence/screenshots/phase4-01-q007-dns-role-installed.png)
+
+![Q007 baseline DNS record](evidence/screenshots/phase4-02-q007-zone-baseline-record.png)
+
+![Q007 DNS role installation](evidence/screenshots/phase4-03-q007-dns-role-installation.jpg)
+
+![Q007 files record creation](evidence/screenshots/phase4-04-q007-files-record-creation.jpg)
+
+### Phase 5 — Baseline And Injected Wrong Record
+
+![Q007 baseline resolution](evidence/screenshots/phase5-01-q007-baseline-resolution.png)
+
+![Q007 two-record DNS fault](evidence/screenshots/phase5-02-q007-fault-two-a-records.png)
+
+### Phase 6 — Exact Repair And Retest
+
+![Q007 repair and retest PowerShell](evidence/screenshots/phase6-01-q007-repair-powershell.png)
+
+![Q007 repaired DNS Manager](evidence/screenshots/phase6-02-q007-repaired-dns-manager.png)
+
+### Phase 7 — Operator Validation
+
+![Q007 Windows operator validation](evidence/screenshots/phase7-01-q007-windows-operator-validation.png)
+
+### Phase 9 — Powered-Off Retention
+
+![Q007 VM powered off](evidence/screenshots/phase9-02-q007-vm-powered-off-retained.png)
+
+The Phase 9 capture proves the VM is `Off`; no separate cleanup screenshot was
+captured before shutdown, as documented in the paired evidence note.
+
 ## Phase 0 — Select And Gate Q007
 
 The authoritative queue selected Q007 after Q006 closed, and its only required
