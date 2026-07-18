@@ -1,0 +1,48 @@
+# Q007 Phase 2B Isolated VM Configuration
+
+- Captured: 2026-07-16 by Leonel
+- Source: Hyper-V host, elevated Windows PowerShell
+- Screenshot: `phase2-02-q007-vm-isolated-network.png`
+- Redaction: none required; no credential, public address, notification, or
+  unrelated Hyper-V object is visible
+
+## Searchable Extraction
+
+```powershell
+Get-VM 'Q007-DNS01' |
+  Format-List Name,State,Generation,ProcessorCount,MemoryStartup,DynamicMemoryEnabled
+```
+
+```text
+Name                 : Q007-DNS01
+State                : Off
+Generation           : 2
+ProcessorCount       : 2
+MemoryStartup        : 4294967296
+DynamicMemoryEnabled : False
+```
+
+```powershell
+@(Get-VMNetworkAdapter 'Q007-DNS01').Count
+```
+
+```text
+1
+```
+
+```powershell
+Get-VMNetworkAdapter 'Q007-DNS01' |
+  Format-List VMName,Name,SwitchName,Status
+```
+
+```text
+VMName     : Q007-DNS01
+Name       : Network Adapter
+SwitchName : Q007-Private
+Status     :
+```
+
+The blank adapter status is retained exactly as displayed while the VM was
+Off. This capture proves the host-side VM resource and switch attachment
+state; it does not prove that Windows Server installation completed inside the
+guest.

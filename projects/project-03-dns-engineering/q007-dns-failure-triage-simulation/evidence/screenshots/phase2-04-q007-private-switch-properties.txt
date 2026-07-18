@@ -1,0 +1,3 @@
+Source: Leonel-provided capture 002.JPG
+Phase: 2
+Observed: Q007-Private properties show Private network selected.

@@ -1,0 +1,6 @@
+QueryName           : files.q007.test
+DnsServer           : 10.77.7.2
+BaselineAnswerCount : 1
+BaselineAnswers     : 10.77.7.10
+BadAddressResponds  : False
+Phase5BaselinePass  : True

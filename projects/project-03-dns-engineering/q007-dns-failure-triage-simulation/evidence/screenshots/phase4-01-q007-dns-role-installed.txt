@@ -1,0 +1,10 @@
+Name               InstallState
+----               ------------
+AD-Domain-Services    Available
+DHCP                  Available
+DNS                   Installed
+RSAT-DNS-Server       Installed
+
+Name Status  StartType
+---- ------  ---------
+DNS  Running Automatic

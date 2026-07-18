@@ -1,0 +1,57 @@
+Q007 Phase 5 fault validation
+Captured: 2026-07-17 by Leonel
+Source: elevated Windows PowerShell inside Q007-DNS01
+Intake: pasted text inspected by Codex; no secret or redaction required
+
+Record state after injection:
+
+HostName RecordType IPv4Address TimeToLive
+-------- ---------- ----------- ----------
+files    A          10.77.7.10  01:00:00
+files    A          10.77.7.99  00:05:00
+
+Six direct full-answer queries:
+
+Query CompleteAnswerSet      AnswerCount ContainsGood ContainsBad Passed
+----- -----------------      ----------- ------------ ----------- ------
+    1 10.77.7.10, 10.77.7.99           2         True        True   True
+    2 10.77.7.10, 10.77.7.99           2         True        True   True
+    3 10.77.7.10, 10.77.7.99           2         True        True   True
+    4 10.77.7.10, 10.77.7.99           2         True        True   True
+    5 10.77.7.10, 10.77.7.99           2         True        True   True
+    6 10.77.7.10, 10.77.7.99           2         True        True   True
+
+Phase 5 summary:
+
+FaultRecordPass GoodReachable BadReachable Phase5FaultPass
+--------------- ------------- ------------ ---------------
+           True          True        False            True
+
+Expected Test-Connection result for the wrong address:
+
+Testing connection to computer '10.77.7.99' failed: A non-recoverable error
+occurred during a database lookup.
+
+Supplemental native ping result:
+
+- 10.77.7.10 returned two replies with zero loss.
+- 10.77.7.99 returned one timeout and an ICMP Destination host unreachable
+  response from 10.77.7.2.
+- ping.exe returned exit code 0 for both, so the first supplemental
+  ReachabilityPass assertion was False. That exit-code assumption was invalid
+  because the ICMP unreachable response counted as a ping response.
+
+Corrected Test-NetConnection summary:
+
+GoodPingSucceeded BadPingSucceeded ReachabilityPass
+----------------- ---------------- ----------------
+             True            False             True
+
+Claim boundary:
+- Proves exactly the good and wrong records existed, the wrong record used the
+  approved five-minute TTL, all six direct queries returned both values, the
+  good address was reachable, and the wrong address was not.
+- Preserves the failed supplemental exit-code assertion rather than editing it
+  into a pass; the corrected supported check passed.
+- Does not prove repair, repeated repaired-state queries, NXDOMAIN, cleanup,
+  transcript-file intake, or final powered-off state.

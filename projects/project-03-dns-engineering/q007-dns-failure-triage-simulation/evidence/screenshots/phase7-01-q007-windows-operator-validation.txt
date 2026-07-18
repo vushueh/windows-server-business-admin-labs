@@ -1,0 +1,2 @@
+Phase: 7
+Observed: DNS is Running with Automatic start; q007.test is Primary, non-AD-integrated, and DynamicUpdate None; only files A 10.77.7.10 remains; no default route is returned.

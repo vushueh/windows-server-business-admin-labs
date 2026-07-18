@@ -1,0 +1,34 @@
+Q007 Phase 4 resume verification
+Captured: 2026-07-17 by Leonel
+Source: elevated Windows PowerShell inside Q007-DNS01
+Intake: pasted text inspected by Codex; no secret or redaction required
+
+IPAddress   PrefixLength SkipAsSource
+---------   ------------ ------------
+10.77.7.10            24         True
+10.77.7.2             24        False
+
+ZoneName       : q007.test
+ZoneType       : Primary
+IsDsIntegrated : False
+DynamicUpdate  : None
+ZoneFile       : q007.test.dns
+
+HostName RecordType IPv4Address
+-------- ---------- -----------
+files    A          10.77.7.10
+
+ComputerName      : Q007-DNS01
+PartOfDomain      : False
+DnsService        : Running
+DnsServers        : 10.77.7.2
+DefaultRouteCount : 0
+TotalARecordCount : 1
+FilesAddresses    : 10.77.7.10
+ResumePass        : True
+
+Claim boundary:
+- Proves the accepted Phase 4 isolation and one-good-record baseline survived
+  the overnight shutdown and restart.
+- Does not prove a baseline DNS query, injected fault, repair, cleanup, or
+  final powered-off state.

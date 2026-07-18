@@ -1,0 +1,23 @@
+# Q007 Windows Hands-On Phase 2A Private Switch
+
+Captured: 2026-07-16 MDT by Leonel
+Source: elevated Windows PowerShell on `WIN-PRQD8TJG04M`
+Mode: approved Phase 2A host change and read-only validation
+Redaction: none required
+
+```text
+$Switch.Name
+Q007-Private
+
+$Switch.SwitchType
+Private
+
+[string]::IsNullOrEmpty([string]$Switch.NetAdapterInterfaceDescription)
+True
+```
+
+The final `True` means the Private switch has no physical-adapter interface
+description. This text is paired with
+`phase2-01-q007-private-switch.png`. It does not prove that the VM was created
+or connected.
+

@@ -1,0 +1,28 @@
+Q007 Phase 2 guest installation verification
+Captured: 2026-07-16 by Leonel
+Source: elevated Windows PowerShell inside Q007-DNS01
+Intake: pasted text inspected by Codex; no secret or redaction required
+
+Command:
+Get-CimInstance Win32_OperatingSystem |
+  Format-List Caption,Version,BuildNumber
+
+Output:
+Caption     : Microsoft Windows Server 2022 Standard Evaluation
+Version     : 10.0.20348
+BuildNumber : 20348
+
+Command:
+Get-CimInstance Win32_ComputerSystem |
+  Format-List Name,Domain,PartOfDomain
+
+Output:
+Name         : WIN-6FI395OD8C6
+Domain       : WORKGROUP
+PartOfDomain : False
+
+Claim boundary:
+- Proves Windows Server 2022 Standard Evaluation build 20348 completed startup
+  inside the guest and the guest was standalone in WORKGROUP at intake.
+- Does not prove the guest rename, fixed lab IP addresses, DNS client state,
+  DNS role, zone, record lifecycle, cleanup, or final power state.

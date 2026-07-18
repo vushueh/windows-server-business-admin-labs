@@ -54,6 +54,40 @@ adapter, DHCP, AD, Hyper-V, or host resolver configuration changed.
   result](evidence/q007-run-results.json), and [independent
   verification](evidence/q007-closeout-verification.txt).
 
+## Prepared Hands-On Operator Practicum
+
+The completed automated result above remains unchanged. A separately gated
+[Windows DNS operator practicum](hands-on/q007-windows-dns-operator-practicum.md)
+now mirrors Q007 phases 0–9 in one standalone VM on a Hyper-V Private switch.
+It includes the [screenshot plan](hands-on/q007-windows-screenshot-plan.md),
+[change-window plan](hands-on/q007-windows-lab-change-window.md), and
+[rollback plan](hands-on/q007-windows-lab-rollback-plan.md). Claude Fable's
+[bounded read-only review](hands-on/q007-claude-fable-practicum-review-2026-07-15.md)
+returned GO after five clarifications, all of which are applied in the guide.
+
+The practicum's [Phase 0 read-only precheck evidence](evidence/q007-windows-hands-on-evidence-log.md)
+has passed and been ingested. Leonel approved the exact Phase 2 scope on
+2026-07-15; on 2026-07-16, the accepted ISO was copied with an exact hash match
+and `Q007-Private` was created and verified as Private with no physical-adapter
+description. Phase 2B then created `Q007-DNS01` and its dynamic 40 GB VHDX.
+The accepted host-side capture proves an Off Generation 2 VM with 2 vCPU, 4 GB
+static startup memory, one adapter, and attachment only to `Q007-Private`.
+After the overnight pause, [guest-side CIM evidence](evidence/q007-phase2-guest-installation-verification.txt)
+proved Windows Server 2022 Standard Evaluation build 20348 was running in
+`WORKGROUP` with `PartOfDomain=False`. A separately approved Phase 3 then
+renamed the guest to `Q007-DNS01` and [proved its two fixed lab addresses,
+self-DNS, no default route, and standalone state](evidence/screenshots/phase3-01-q007-guest-safety-precheck.txt).
+A separately approved Phase 4 then installed only DNS and its tools and
+[created the file-backed `q007.test` zone with one correct `files` A
+record](evidence/screenshots/phase4-02-q007-zone-baseline-record.txt). No
+baseline query, fault, or repair is claimed. A separately approved Phase 5
+then [proved the exact baseline and the real two-record DNS Manager fault
+state](evidence/q007-phase5-fault-validation-2026-07-17.txt) through six direct
+queries and reachability checks. The wrong record remains active only in the
+isolated guest pending Phase 6 approval; no repair is claimed. This later
+evidence does not reopen or weaken the completed loopback proof and does not
+authorize production DNS, commit, push, merge, or deletion.
+
 ## My Test Boundary
 
 I used the reserved `.test` namespace, RFC1918 addresses, and a high UDP port
@@ -195,11 +229,21 @@ immediate successor remains a separate, unstarted project.
 - Cleanup stops the server and releases the UDP port.
 - The complete result is reproducible and independently decodable.
 - The exercise needs no live Windows DNS change or screenshot.
+- A later optional Windows practicum can add operator screenshots without
+  changing what the completed automated core proved.
 
 ## Technical Evidence
 
 - [Simulation run sheet](q007-simulation-run-sheet.md)
 - [Reusable Windows DNS failure-triage runbook](runbooks/q007-windows-dns-failure-triage.md)
+- [Prepared Windows DNS operator practicum](hands-on/q007-windows-dns-operator-practicum.md)
+- [Hands-on screenshot plan](hands-on/q007-windows-screenshot-plan.md)
+- [Hands-on change-window plan](hands-on/q007-windows-lab-change-window.md)
+- [Hands-on rollback plan](hands-on/q007-windows-lab-rollback-plan.md)
+- [Claude Fable hands-on plan review](hands-on/q007-claude-fable-practicum-review-2026-07-15.md)
+- [Windows hands-on evidence log](evidence/q007-windows-hands-on-evidence-log.md)
+- [Phase 2 guest installation verification](evidence/q007-phase2-guest-installation-verification.txt)
+- [Windows hands-on integrity manifest](evidence/q007-windows-hands-on-manifest.sha256)
 - [DNS drill source](scripts/q007_dns_drill.py)
 - [Independent evidence verifier](scripts/q007_verify_evidence.py)
 - [Sanitized protocol transcript](evidence/q007-sanitized-transcript.txt)

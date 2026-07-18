@@ -1,0 +1,3 @@
+Source: Leonel-provided capture 001.JPG
+Phase: 2
+Observed: Hyper-V Virtual Switch Manager shows Q007-Private selected as a Private virtual switch.

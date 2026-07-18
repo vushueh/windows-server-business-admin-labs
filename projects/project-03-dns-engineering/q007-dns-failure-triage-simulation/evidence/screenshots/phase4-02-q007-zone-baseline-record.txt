@@ -1,0 +1,7 @@
+DNS server: Q007-DNS01
+Forward lookup zone: q007.test
+Selected record: files
+Record type: Host (A)
+FQDN: files.q007.test
+IP address: 10.77.7.10
+Update associated pointer (PTR) record: unchecked

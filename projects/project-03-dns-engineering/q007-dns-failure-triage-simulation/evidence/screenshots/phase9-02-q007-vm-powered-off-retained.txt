@@ -1,0 +1,3 @@
+Phase: 9
+Observed: Hyper-V host PowerShell reports Q007-DNS01 State Off.
+Evidence boundary: This capture proves powered-off retention only; no separate screenshot captured the zone-removal command or empty-zone verification.
