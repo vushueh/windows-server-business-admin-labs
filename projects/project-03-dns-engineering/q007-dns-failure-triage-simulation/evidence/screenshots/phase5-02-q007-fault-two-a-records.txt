@@ -1,0 +1,4 @@
+DNS server: Q007-DNS01
+Forward lookup zone: q007.test
+Record: files | Host (A) | 10.77.7.10
+Record: files | Host (A) | 10.77.7.99

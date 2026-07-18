@@ -1239,3 +1239,241 @@ Codex writes here after every session. Claude reads this to stay in sync.
   returned `READY` with no material fix.
 - This was documentation-only work. No AD object, DC, replication setting,
   policy, identity, or other live system was accessed or changed.
+
+## Session — 2026-07-15 (Q007 Windows hands-on practicum preparation)
+
+- Preserved the completed Q007 automated proof and added a separately gated,
+  unexecuted Windows operator practicum that mirrors its phases 0–9.
+- Selected one standalone Generation 2 Windows Server VM on a Hyper-V Private
+  switch, with no domain join, external adapter, default route, production DNS,
+  AD, or DHCP contact.
+- Defined Leonel's hands-on role across Hyper-V Manager, Server Manager, DNS
+  Manager, and PowerShell; Codex validation gates; an exact change window;
+  four rollback levels; and a phase-aligned screenshot plan.
+- Claude Fable performed one bounded read-only review and returned GO after
+  five clarifications. Codex applied all five and added dual-stack default-route
+  validation.
+- No live system was accessed or changed. No screenshot was claimed, and no
+  commit, push, merge, deletion, or execution approval was inferred.
+
+## Session — 2026-07-15 (Q007 hands-on Phase 0 evidence intake)
+
+- Leonel ran the operator-led Phase 0 Hyper-V and media precheck. Both fixed
+  Q007 names were unused and the VHD volume had 904.7 GB free.
+- The first ISO candidate was rejected because its origin was not trusted and
+  its hash could not be corroborated. Each exact ISO inspection was separately
+  approved, read-only, and ended dismounted.
+- The accepted `SERVER_EVAL_x64FRE_en-us.iso` matched the pinned SHA-256,
+  contained the Windows installation/boot images, and passed Microsoft setup
+  and EFI signature checks.
+- Codex visually inspected Leonel's Phase 0 screenshot, found no secret or
+  unrelated infrastructure, preserved it byte-for-byte, paired it with a text
+  extraction, and linked it from the hands-on Phase 0 guide and evidence log.
+- No Q007 switch, VM, VHDX, guest, role, DNS object, or fault was created.
+  Phase 2 remains separately approval-gated. No commit, push, or merge occurred.
+
+### Phase 2 approval update
+
+- Leonel confirmed no active Hyper-V backup, migration, storage maintenance,
+  or host incident and approved the previously reviewed Phase 2 scope on
+  2026-07-15.
+- Authority is limited to the accepted ISO copy, `Q007-Private`, the fixed
+  `Q007-DNS01` VM, and standalone Windows Server installation. Guest IP/DNS
+  configuration, deletion, publication, commit, push, and merge remain outside
+  that approval.
+
+### Phase 2A execution update — 2026-07-16
+
+- Leonel copied the accepted ISO into the existing Hyper-V ISO library. The
+  destination hash exactly matched the pinned source, and the source remained.
+- Leonel created `Q007-Private` in Hyper-V Manager. PowerShell showed the exact
+  name, type `Private`, and no physical-adapter interface description.
+- Codex inspected and ingested the screenshot without alteration or redaction,
+  paired it with text, and stopped before VM/VHDX creation.
+
+### Phase 2B host-configuration evidence update — 2026-07-16
+
+- Leonel created `Q007-DNS01` and its dynamic 40 GB VHDX under the approved
+  Phase 2 scope. Incremental validation caught 1 vCPU, incorrect startup-memory
+  values, and the source ISO attachment before startup; Leonel corrected all
+  three while the VM remained Off.
+- Final host output showed Generation 2, 2 vCPU, 4 GB static startup memory,
+  one adapter on `Q007-Private`, Secure Boot using the Microsoft Windows
+  template, and the staged ISO path.
+- Codex inspected the Phase 2B PNG, found no secret or unrelated Hyper-V
+  object, preserved it byte-for-byte, paired it with searchable text, and
+  limited the claim to host-side configuration. Windows installation inside
+  the guest remains unverified.
+- No guest IP, default route, DNS role, zone, record, fault, production object,
+  deletion, commit, push, or merge was performed or claimed by Codex.
+
+### Phase 2B boot-remediation approval — 2026-07-16
+
+- The first installer start reached a Generation 2 boot summary: the DVD boot
+  loader did not continue, network boot had no image, and the empty VHDX had no
+  operating system. The clean screenshot was inspected but not promoted as a
+  success capture.
+- Leonel explicitly approved fixing only that Q007 VM boot path and starting
+  the standalone installation. The permitted repair is limited to powering
+  off the uninstalled VM, reasserting the staged DVD, Microsoft Windows Secure
+  Boot template, and DVD-first order, then restarting and completing Setup.
+- Leonel remains the manual console executor. Phase 3 guest IP/DNS work and all
+  deletion, commit, push, and merge actions remain unapproved.
+
+### Overnight handoff — 2026-07-16
+
+- After the approved DVD/Secure Boot/first-boot repair, Windows Setup started
+  successfully and reached 50%.
+- Leonel paused for the night with `Q007-DNS01` left running and isolated on
+  `Q007-Private`. Setup may finish, reboot, and wait at its next interactive
+  screen; no key should be pressed during an automatic DVD-boot prompt.
+- Resume by connecting to the VM, completing local Administrator setup if
+  necessary, signing in, and proving the OS edition plus `PartOfDomain=False`.
+  Do not repeat Phase 0–2, rename the guest, configure its IP/DNS, or start
+  Phase 3 before Codex accepts that output and records separate authority.
+- All current repository edits remain local and uncommitted. No push or merge
+  occurred.
+
+### Phase 2 guest-installation verification — 2026-07-16
+
+- Leonel resumed `Q007-DNS01`, signed in, and supplied read-only CIM output
+  from elevated Windows PowerShell inside the guest.
+- The output proved Microsoft Windows Server 2022 Standard Evaluation version
+  10.0.20348, build 20348, was running. The guest reported `WORKGROUP` and
+  `PartOfDomain=False`.
+- Codex preserved the pasted output as text evidence, updated the Phase 2
+  claim boundary, and accepted the guest-installation gate. No redaction was
+  needed.
+- Phase 3 guest rename, IP, and DNS-client configuration remain unapproved and
+  unstarted. No role, zone, record, fault, repair, deletion, commit, push, or
+  merge occurred.
+
+### Phase 3 approval — 2026-07-16
+
+- Leonel explicitly approved only the standalone guest rename/restart,
+  evidence transcript, `10.77.7.2/24` and `10.77.7.10/24` on the single
+  Private-switch adapter, no default gateway, and DNS client `10.77.7.2`.
+- The fresh precheck was the accepted Phase 2 output: Windows Server 2022
+  Standard Evaluation build 20348, `WORKGROUP`, and `PartOfDomain=False`.
+- Leonel remains the manual guest-console executor. DNS role, zone, record,
+  fault, repair, deletion, commit, and push remain outside this approval.
+
+### Phase 3 execution and evidence — 2026-07-16
+
+- Leonel renamed the standalone guest to `Q007-DNS01`, restarted it, created
+  the evidence transcript, and passed a fresh preconfiguration check with one
+  Up adapter, an APIPA address, no default route, and
+  `PartOfDomain=False`.
+- He configured only `10.77.7.2/24` and `10.77.7.10/24` on that adapter, set
+  the secondary address to `SkipAsSource=True`, and set the DNS client only to
+  `10.77.7.2`.
+- Final output showed exactly the two approved addresses, no IPv4 or IPv6
+  default route, `PartOfDomain=False`, and `Phase3Pass=True`.
+- Codex rejected the first screenshot because it included the local account
+  path. Leonel recaptured only the technical output; Codex inspected it, found
+  no secret or unrelated infrastructure, preserved it byte-for-byte, and
+  paired it with searchable text.
+- Phase 4 DNS-role and zone work remain unapproved and unstarted. No production
+  DNS, role, zone, record, fault, repair, deletion, commit, push, or merge
+  occurred.
+
+### Phase 4 approval — 2026-07-16
+
+- Leonel explicitly approved only installing the DNS Server role and tools in
+  the isolated standalone guest, creating file-backed primary zone
+  `q007.test` with dynamic updates disabled, and creating only the `files` A
+  record for `10.77.7.10`.
+- The accepted Phase 3 output is the fresh entry evidence: one Up adapter,
+  exactly two fixed lab addresses, self-DNS only, no default route,
+  `PartOfDomain=False`, and `Phase3Pass=True`.
+- Leonel remains the manual guest executor. AD DS, DHCP, other roles, PTRs,
+  forwarders, delegations, production DNS, fault injection, deletion, commit,
+  and push remain outside this approval.
+
+### Phase 4A execution and evidence — 2026-07-16
+
+- Leonel used Server Manager to install only the DNS Server role and its
+  management tools in `Q007-DNS01`.
+- PowerShell showed `DNS` and `RSAT-DNS-Server` Installed, while
+  `AD-Domain-Services` and `DHCP` remained Available. The DNS service was
+  Running with Automatic start.
+- Codex inspected the cropped capture, found no secret or unrelated content,
+  preserved it byte-for-byte, and paired it with searchable text.
+- Phase 4B zone and baseline-record creation remain approved but unstarted;
+  no zone, record, fault, repair, deletion, commit, push, or merge occurred.
+
+### Phase 4B execution, evidence, and overnight handoff — 2026-07-16
+
+- Leonel used DNS Manager to create file-backed primary zone `q007.test` with
+  dynamic updates disabled and only the `files` A record for `10.77.7.10`.
+- PowerShell proved the zone was Primary, non-AD-integrated, backed by
+  `q007.test.dns`, and contained exactly that one A record;
+  `Phase4Pass=True`.
+- Codex inspected the DNS Manager capture showing the zone, FQDN, exact IP,
+  and unchecked PTR option. It exposed no sensitive identifier, was preserved
+  byte-for-byte, and was paired with searchable text.
+- Leonel stopped for the day before Phase 5. The handoff is to stop the guest
+  transcript, shut down only `Q007-DNS01` normally, and retain it Off on
+  `Q007-Private`. Resume by starting the VM, appending to the same transcript,
+  and rerunning the Phase 4 baseline validation.
+- Phase 5 baseline query and fault injection are unapproved and unstarted. No
+  wrong record, repair, cleanup, deletion, commit, push, or merge occurred.
+
+### Phase 4 resume validation — 2026-07-17
+
+- Leonel started the retained `Q007-DNS01`, appended to the existing guest
+  transcript, and supplied the complete read-only resume output.
+- The guest still had exactly the two fixed addresses, self-DNS only, no
+  default route, `PartOfDomain=False`, and a running DNS service. The
+  file-backed non-AD zone still had dynamic updates disabled and exactly the
+  one good `files -> 10.77.7.10` A record; `ResumePass=True`.
+- Codex preserved the pasted output as dated text evidence. No redaction was
+  needed. Phase 5 remains unapproved and unstarted; no query, fault, record
+  change, repair, cleanup, deletion, commit, push, or merge occurred.
+
+### Phase 5 approval — 2026-07-17
+
+- Leonel explicitly approved only the exact direct baseline query,
+  `10.77.7.99` liveness check, one five-minute-TTL wrong A record, guest-only
+  cache clear, six full-answer direct queries, and good/wrong reachability
+  tests.
+- The fresh entry evidence is the accepted resume assertion with unchanged
+  isolation, service, zone, and one-good-record state.
+- Leonel remains the manual guest executor. PTR creation, other zones/settings,
+  production contact, repair/removal, cleanup, deletion, commit, and push
+  remain outside this approval. Injection waits for the baseline gate.
+
+### Phase 5 baseline gate and evidence — 2026-07-17
+
+- The direct `files.q007.test` query returned exactly `10.77.7.10`, the wrong
+  address `10.77.7.99` did not respond, and `Phase5BaselinePass=True`.
+- Codex rejected the first screenshot because it exposed the local account
+  path. Leonel recaptured only the six validation values; Codex found no
+  sensitive or unrelated content, preserved it byte-for-byte, and paired it
+  with searchable text.
+- Leonel requested GUI screenshots for actual Windows administrative state.
+  Future captures prefer Server Manager or DNS Manager; PowerShell remains for
+  proof the GUI cannot show, such as full answer sets and NXDOMAIN.
+- The approved one-record fault injection and full-answer tests remain
+  unstarted. No wrong record, repair, cleanup, deletion, commit, push, or merge
+  occurred.
+
+### Phase 5 fault execution and evidence — 2026-07-17
+
+- Leonel added only the approved `files -> 10.77.7.99` A record with a
+  five-minute TTL and cleared only the guest DNS-client cache.
+- DNS Manager showed the good and wrong records. All six direct queries
+  returned both values, the good address was reachable, the wrong address was
+  not, and `Phase5FaultPass=True`.
+- A supplemental `ping.exe` assertion incorrectly relied on process exit code;
+  the wrong target timed out and produced ICMP Destination host unreachable,
+  but ping exited zero. Codex preserved that failed assertion and replaced the
+  bad assumption with `Test-NetConnection`, which passed good `True`, bad
+  `False`, and `ReachabilityPass=True`.
+- Codex rejected the first GUI capture because it exposed the Hyper-V host in
+  the outer console title. Leonel cropped to DNS Manager only; Codex found no
+  sensitive or unrelated content, preserved the image byte-for-byte, and
+  paired it with searchable text and the full command-output record.
+- The wrong record remains active only in the isolated guest. Phase 6 repair
+  is unapproved and unstarted. No record removal, cleanup, deletion, commit,
+  push, or merge occurred.

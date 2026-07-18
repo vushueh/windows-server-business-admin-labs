@@ -1,0 +1,24 @@
+# Q007 Windows Hands-On Phase 0 Precheck
+
+Captured: 2026-07-15 MDT by Leonel
+Source: elevated Windows PowerShell on the Hyper-V host
+Mode: read-only precheck; the accepted ISO had already been dismounted
+Redaction: none required
+
+```text
+VMExists          : False
+SwitchExists      : False
+FreeSpaceGB       : 904.7
+ISOFile           : SERVER_EVAL_x64FRE_en-us.iso
+SHA256Match       : True
+SetupSigned       : True
+EfiBootSigned     : True
+ISOIsDismounted   : True
+Q007Phase0Pass    : True
+```
+
+This extracted text is paired with
+`phase0-01-q007-hyperv-precheck.png`. It records only the values visible in
+that screenshot. It does not prove that a switch or VM was later created, that
+Windows was installed, or that any DNS exercise was executed.
+

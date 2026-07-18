@@ -13,6 +13,64 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ## Q007 DNS FAILURE-TRIAGE SIMULATION — 2026-07-15
 
+### 🟢 RESOLVED — Item Q007-02: Review the Windows operator practicum
+
+**Found by:** Claude Fable read-only peer review; resolved and verified by Codex
+
+**Evidence and resolution:**
+
+- Codex prepared a separately gated, unexecuted practicum using one standalone
+  Windows Server VM, one Hyper-V Private switch, no domain join, and no default
+  route. The automated Q007 result remains Complete and unchanged.
+- Claude returned GO after the change-window approval gate, with no Critical or
+  High findings. It identified two Medium learner-clarity issues and three Low
+  clarifications.
+- Codex added Generation 2 DVD-boot and Secure Boot guidance, explained the
+  expected wrong-address ping timeout, forbade adding a resolver before the DNS
+  role exists, explained TTL scope, and linked a missing-record error directly
+  to rollback Level 1.
+- Codex also required absence of both IPv4 and IPv6 default routes, retained
+  exact-record `-WhatIf` and `-RecordData` controls, and kept VM/switch deletion
+  behind separate approval.
+- The full review and dispositions are in
+  `projects/project-03-dns-engineering/q007-dns-failure-triage-simulation/hands-on/q007-claude-fable-practicum-review-2026-07-15.md`.
+- Leonel later ran the Phase 0 technical precheck. Two explicitly approved,
+  read-only ISO inspections both dismounted cleanly: an untrusted-origin image
+  was rejected, while the accepted evaluation image matched the pinned hash
+  and passed Microsoft setup/EFI signature checks. The final screenshot shows
+  both fixed names absent, 904.7 GB free, the accepted media checks, dismount,
+  and `Q007Phase0Pass=True`.
+- Codex inspected and ingested the original PNG without alteration or
+  redaction, paired it with searchable text, and recorded the claim boundary
+  in `evidence/q007-windows-hands-on-evidence-log.md`.
+
+**Safety result:** The Hyper-V host was accessed for read-only discovery and
+the two exact ISO mount/dismount inspections authorized by Leonel. No Q007 VM,
+switch, VHDX, guest, route, DNS, AD, DHCP, NIC, or production configuration was
+created or changed. Leonel approved the exact Phase 2 ISO copy, Private switch,
+fixed VM, and standalone Windows installation scope on 2026-07-15; execution
+began on 2026-07-16. The accepted ISO copy retained the pinned hash and source,
+and `Q007-Private` was verified Private with no physical-adapter description.
+No VM or VHDX existed at the Phase 2A stop point. Phase 2B then created the
+fixed VM and dynamic 40 GB VHDX. Final host evidence shows the VM Off with
+Generation 2, 2 vCPU, 4 GB static memory, one adapter on `Q007-Private`, Secure
+Boot, and the staged ISO. Guest-side CIM evidence later proved Windows Server
+2022 Standard Evaluation build 20348 was running in `WORKGROUP` with
+`PartOfDomain=False`. After separate Phase 3 approval, Leonel renamed the
+standalone guest, configured only the two fixed lab addresses and self-DNS on
+its one Private-switch adapter, and passed no-default-route,
+`PartOfDomain=False`, and combined `Phase3Pass=True` validation. Phase 4
+was then separately approved: only DNS and its tools were installed, AD DS and
+DHCP remained uninstalled, and DNS ran automatically. The file-backed,
+non-AD-integrated `q007.test` primary zone has dynamic updates disabled and
+exactly one A record, `files -> 10.77.7.10`; `Phase4Pass=True`. Phase 5 remains
+was separately approved and passed: the exact baseline preceded one
+five-minute wrong A record, DNS Manager showed both values, all six direct
+queries returned both answers, the good target was reachable, and the wrong
+target was not. A failed supplemental `ping.exe` exit-code assertion was
+preserved and corrected with `Test-NetConnection`. Phase 6 remains unstarted
+and separately approval-gated.
+
 ### 🟢 RESOLVED — Item Q007-01: Challenge and close the isolated design
 
 **Found by:** Claude Fable read-only peer review; resolved and verified by Codex

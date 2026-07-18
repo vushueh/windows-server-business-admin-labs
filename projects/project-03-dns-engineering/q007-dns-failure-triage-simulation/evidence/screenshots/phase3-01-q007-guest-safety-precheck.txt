@@ -1,0 +1,11 @@
+IPAddress   PrefixLength SkipAsSource
+---------   ------------ ------------
+10.77.7.10            24         True
+10.77.7.2             24        False
+
+ComputerName      : Q007-DNS01
+AdapterName       : Ethernet
+DnsServers        : 10.77.7.2
+DefaultRouteCount : 0
+PartOfDomain      : False
+Phase3Pass        : True
