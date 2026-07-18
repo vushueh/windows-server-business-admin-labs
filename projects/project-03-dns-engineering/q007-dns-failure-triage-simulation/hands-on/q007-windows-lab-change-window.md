@@ -2,7 +2,7 @@
 
 | Field | Prepared value |
 |---|---|
-| Status | Phases 0–5 complete / wrong record active / Phase 6 not approved |
+| Status | Phases 0–9 complete / VM retained Off / no production change |
 | Change owner and operator | Leonel |
 | Guide and validation | Codex |
 | Target host | Existing Hyper-V host; exact current state to be recorded privately at Phase 0 |
@@ -157,7 +157,7 @@ deletion, commit, or push.
   `q007.test` primary zone with dynamic updates disabled and only the `files`
   A record for `10.77.7.10`. PowerShell returned `Phase4Pass=True`; DNS Manager
   showed the exact record properties and no PTR selection.
-- **Current stop point:** Phase 4 evidence is accepted. Stop the transcript,
+- **Historical stop point after Phase 4:** Phase 4 evidence was accepted. Stop the transcript,
   shut down only `Q007-DNS01` normally, and retain the VM Off on
   `Q007-Private` overnight. Phase 5 is not started or approved. Resume with a
   fresh read-only Phase 4 validation and append to the same transcript before
@@ -165,7 +165,7 @@ deletion, commit, or push.
 - **2026-07-17 — Resume validation:** Leonel started the retained VM, appended
   to the transcript, and passed the full isolation, DNS service, zone, and
   single-good-record check with `ResumePass=True` before the Phase 5 approval.
-- **Current stop point:** Phase 5 is approved, but its baseline query and
+- **Historical stop point before Phase 5:** Phase 5 was approved, but its baseline query and
   bad-address liveness gate have not started. Fault injection must wait for
   Codex to accept that output.
 - **2026-07-17 — Phase 5 baseline gate:** the direct query returned exactly
@@ -178,13 +178,20 @@ deletion, commit, or push.
   values, the good target was reachable, the bad target was not, and
   `Phase5FaultPass=True`. A failed supplemental `ping.exe` exit-code assertion
   was preserved and corrected with passing `Test-NetConnection` semantics.
-- **Current stop point:** the wrong record is intentionally active only in the
+- **Historical stop point after Phase 5:** the wrong record was intentionally active only in the
   isolated guest. Phase 6 exact preview/removal and repaired-state tests are
   not started or approved. Do not remove either record without that approval.
-- **2026-07-17 — Resume validation:** Leonel started the retained VM, appended
-  to the transcript, and passed the full isolation, DNS service, zone, and
-  single-good-record check with `ResumePass=True`. Phase 5 remains unstarted
-  and unapproved.
+- **2026-07-17 — Phase 6:** Leonel previewed and removed only
+  `files -> 10.77.7.99`, cleared only the guest DNS client cache, passed three
+  exact-good direct queries, confirmed the wrong record was absent, verified
+  NXDOMAIN for `old-files.q007.test`, and returned `Phase6Pass=True`.
+- **2026-07-17 — Phase 7:** the operator closeout confirmed DNS running
+  automatically, the file-backed non-AD zone with dynamic updates disabled,
+  only `files -> 10.77.7.10`, and no default route.
+- **2026-07-17 — Phase 9:** after exact approval, Leonel removed the disposable
+  zone, stopped the transcript, shut down only `Q007-DNS01`, and supplied a
+  host capture showing the VM Off. No separate screenshot captured the
+  empty-zone verification, so that visual claim remains unproven.
 
 | Gate | Change | Required validation before continuing |
 |---:|---|---|

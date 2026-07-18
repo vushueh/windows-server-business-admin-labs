@@ -4,11 +4,11 @@
 |---|---|
 | Status | Complete |
 | Queue / simulation ID | `Q007` / `SIM-N3-DNS` |
-| Completed | July 15, 2026 MDT |
+| Completed | Automated core: July 15, 2026 MDT; Windows practicum: July 17, 2026 MDT |
 | Owner | Leonel |
 | Scope | Extra wrong A record, diagnosis, repair, retest, cleanup, and reusable Windows runbook |
-| Risk / execution | ISO / loopback-only repository harness |
-| Live changes | None |
+| Risk / execution | Loopback-only repository harness plus isolated standalone Windows VM |
+| Live changes | Approved disposable `Q007-DNS01` and `q007.test` objects only; no production change |
 | Production systems contacted | None |
 | Named artifact | [Windows DNS failure-triage runbook](runbooks/q007-windows-dns-failure-triage.md) |
 
@@ -36,10 +36,12 @@ first, decoded the real UDP response packets, removed the wrong answer, repeated
 the successful query three times, required NXDOMAIN for an unknown name, and
 proved the server stopped and released its port.
 
-**Result:** All eleven assertions passed. The saved packets independently
-decode to one correct baseline record, a wrong-first two-record fault, three
-correct repaired responses, and RCODE 3 for the negative test. No live DNS,
-adapter, DHCP, AD, Hyper-V, or host resolver configuration changed.
+**Result:** All eleven automated assertions passed. The saved packets
+independently decode to one correct baseline record, a wrong-first two-record
+fault, three repaired responses, and RCODE 3 for the negative test. The later
+Windows practicum repeated the operator workflow only in the isolated
+`Q007-DNS01` guest and made no production DNS, DHCP, AD, or host-resolver
+change.
 
 ## How To Read This Project
 
@@ -54,39 +56,26 @@ adapter, DHCP, AD, Hyper-V, or host resolver configuration changed.
   result](evidence/q007-run-results.json), and [independent
   verification](evidence/q007-closeout-verification.txt).
 
-## Prepared Hands-On Operator Practicum
+## Windows Hands-On Operator Practicum
 
 The completed automated result above remains unchanged. A separately gated
 [Windows DNS operator practicum](hands-on/q007-windows-dns-operator-practicum.md)
-now mirrors Q007 phases 0–9 in one standalone VM on a Hyper-V Private switch.
+mirrored Q007 phases 0–9 in one standalone VM on a Hyper-V Private switch.
 It includes the [screenshot plan](hands-on/q007-windows-screenshot-plan.md),
 [change-window plan](hands-on/q007-windows-lab-change-window.md), and
 [rollback plan](hands-on/q007-windows-lab-rollback-plan.md). Claude Fable's
 [bounded read-only review](hands-on/q007-claude-fable-practicum-review-2026-07-15.md)
 returned GO after five clarifications, all of which are applied in the guide.
 
-The practicum's [Phase 0 read-only precheck evidence](evidence/q007-windows-hands-on-evidence-log.md)
-has passed and been ingested. Leonel approved the exact Phase 2 scope on
-2026-07-15; on 2026-07-16, the accepted ISO was copied with an exact hash match
-and `Q007-Private` was created and verified as Private with no physical-adapter
-description. Phase 2B then created `Q007-DNS01` and its dynamic 40 GB VHDX.
-The accepted host-side capture proves an Off Generation 2 VM with 2 vCPU, 4 GB
-static startup memory, one adapter, and attachment only to `Q007-Private`.
-After the overnight pause, [guest-side CIM evidence](evidence/q007-phase2-guest-installation-verification.txt)
-proved Windows Server 2022 Standard Evaluation build 20348 was running in
-`WORKGROUP` with `PartOfDomain=False`. A separately approved Phase 3 then
-renamed the guest to `Q007-DNS01` and [proved its two fixed lab addresses,
-self-DNS, no default route, and standalone state](evidence/screenshots/phase3-01-q007-guest-safety-precheck.txt).
-A separately approved Phase 4 then installed only DNS and its tools and
-[created the file-backed `q007.test` zone with one correct `files` A
-record](evidence/screenshots/phase4-02-q007-zone-baseline-record.txt). No
-baseline query, fault, or repair is claimed. A separately approved Phase 5
-then [proved the exact baseline and the real two-record DNS Manager fault
-state](evidence/q007-phase5-fault-validation-2026-07-17.txt) through six direct
-queries and reachability checks. The wrong record remains active only in the
-isolated guest pending Phase 6 approval; no repair is claimed. This later
-evidence does not reopen or weaken the completed loopback proof and does not
-authorize production DNS, commit, push, merge, or deletion.
+The [evidence log](evidence/q007-windows-hands-on-evidence-log.md) records each
+approval and result. The practicum proved the Private-switch boundary,
+standalone workgroup state, two fixed lab addresses, self-DNS, and no default
+route. It installed only DNS and its tools, created the file-backed
+`q007.test` zone, demonstrated the correct baseline and two-record fault,
+removed only `10.77.7.99`, passed three exact-good retests and NXDOMAIN, and
+finished with `Q007-DNS01` powered off. The Phase 9 image proves only the VM's
+Off state because the empty-zone check was not captured separately. This
+isolated evidence does not authorize any production DNS or Windows change.
 
 ## My Test Boundary
 
@@ -99,8 +88,10 @@ I exercised one catalog fault: an extra wrong A record. I did not claim that
 this run executes a Windows NIC-order or forwarder fault. The parent P03
 [break/fix log](../troubleshooting/break-fix-log.md) supplies the real prior
 multi-homed DC context, while the new operator runbook keeps the NIC and
-forwarder branches available for diagnosis. No screenshots were required
-because packet hex, decoded fields, and test output are the stronger evidence.
+forwarder branches available for diagnosis. The automated core needed no
+screenshots because packet hex, decoded fields, and test output are stronger
+for that proof; the later Windows practicum supplied GUI and PowerShell
+operator evidence separately.
 
 ## Phase Status
 
@@ -117,66 +108,6 @@ because packet hex, decoded fields, and test output are the stronger evidence.
 | 8 | Independently Verify The Evidence | Complete | 2026-07-15 |
 | 9 | Close And Propagate | Complete | 2026-07-15 |
 
-## Windows Hands-On Evidence Gallery
-
-The accepted Windows practicum captures are embedded here so the Q007 landing
-page visibly carries the phase evidence. Full transcripts, paired notes, and
-integrity hashes remain in the [Windows hands-on evidence log](evidence/q007-windows-hands-on-evidence-log.md)
-and [hands-on manifest](evidence/q007-windows-hands-on-manifest.sha256).
-
-### Phase 0 — Host Precheck
-
-![Q007 Phase 0 Hyper-V precheck](evidence/screenshots/phase0-01-q007-hyperv-precheck.png)
-
-### Phase 2 — Private Switch And Isolated VM
-
-![Q007 Private switch](evidence/screenshots/phase2-01-q007-private-switch.png)
-
-![Q007 isolated VM network](evidence/screenshots/phase2-02-q007-vm-isolated-network.png)
-
-![Q007 Private switch manager](evidence/screenshots/phase2-03-q007-private-switch-manager.jpg)
-
-![Q007 Private switch properties](evidence/screenshots/phase2-04-q007-private-switch-properties.jpg)
-
-### Phase 3 — Standalone Guest Isolation
-
-![Q007 guest safety validation](evidence/screenshots/phase3-01-q007-guest-safety-precheck.png)
-
-![Q007 rename and workgroup](evidence/screenshots/phase3-02-q007-rename-workgroup.jpg)
-
-### Phase 4 — DNS Role And Baseline Zone
-
-![Q007 DNS role installed](evidence/screenshots/phase4-01-q007-dns-role-installed.png)
-
-![Q007 baseline DNS record](evidence/screenshots/phase4-02-q007-zone-baseline-record.png)
-
-![Q007 DNS role installation](evidence/screenshots/phase4-03-q007-dns-role-installation.jpg)
-
-![Q007 files record creation](evidence/screenshots/phase4-04-q007-files-record-creation.jpg)
-
-### Phase 5 — Baseline And Injected Wrong Record
-
-![Q007 baseline resolution](evidence/screenshots/phase5-01-q007-baseline-resolution.png)
-
-![Q007 two-record DNS fault](evidence/screenshots/phase5-02-q007-fault-two-a-records.png)
-
-### Phase 6 — Exact Repair And Retest
-
-![Q007 repair and retest PowerShell](evidence/screenshots/phase6-01-q007-repair-powershell.png)
-
-![Q007 repaired DNS Manager](evidence/screenshots/phase6-02-q007-repaired-dns-manager.png)
-
-### Phase 7 — Operator Validation
-
-![Q007 Windows operator validation](evidence/screenshots/phase7-01-q007-windows-operator-validation.png)
-
-### Phase 9 — Powered-Off Retention
-
-![Q007 VM powered off](evidence/screenshots/phase9-02-q007-vm-powered-off-retained.png)
-
-The Phase 9 capture proves the VM is `Off`; no separate cleanup screenshot was
-captured before shutdown, as documented in the paired evidence note.
-
 ## Phase 0 — Select And Gate Q007
 
 The authoritative queue selected Q007 after Q006 closed, and its only required
@@ -185,6 +116,12 @@ preemption and no OPEN or in-flight Q007 claim in `CLAUDE-REVIEW.md`. The
 [run sheet](q007-simulation-run-sheet.md) records those checks and fixed the
 execution path at ISO/repository-only, so design could begin without live
 authority.
+
+### Windows Host Precheck
+
+<p><strong>Proof:</strong> The later operator practicum confirmed the fixed Q007 VM and switch names were unused before creation and the read-only gate passed. <a href="evidence/screenshots/phase0-01-q007-hyperv-precheck.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase0-01-q007-hyperv-precheck.png" alt="Q007 Hyper-V precheck" width="900">
 
 ## Phase 1 — Review The Business Failure
 
@@ -205,6 +142,22 @@ show why this is credible when combined with the existing Windows incident
 evidence. With no path to a household resolver, I could define the exact
 failure without building a VM or touching a domain controller.
 
+I later reproduced the isolation design in one standalone Windows Server VM on
+the `Q007-Private` Hyper-V switch. Additional GUI views are in the
+[Windows evidence details](evidence/q007-windows-evidence-details.md#phase-2--private-switch-and-isolated-vm).
+
+### Private Switch Validation
+
+<p><strong>Proof:</strong> `Q007-Private` is a Private Hyper-V switch with no physical-adapter binding. <a href="evidence/screenshots/phase2-01-q007-private-switch.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase2-01-q007-private-switch.png" alt="Q007 Private Hyper-V switch" width="900">
+
+### Isolated VM Network
+
+<p><strong>Proof:</strong> `Q007-DNS01` has one adapter attached only to `Q007-Private`. <a href="evidence/screenshots/phase2-02-q007-vm-isolated-network.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase2-02-q007-vm-isolated-network.png" alt="Q007 isolated VM network" width="900">
+
 ## Phase 3 — Define Safety And Evidence
 
 Before execution, I named the transcript, JSON result, raw packet proof,
@@ -214,6 +167,21 @@ failed assertion, or any need for external access. Claude Fable's
 [read-only design review](evidence/q007-claude-design-review-2026-07-15.md)
 challenged the single-fault scope, self-attesting evidence risk, and missing
 user-impact proof; resolving those findings established the execution gate.
+
+The Windows extension then proved the guest remained standalone, used only the
+approved lab addresses, had no default route, and used itself as DNS.
+
+### Standalone Guest Safety Check
+
+<p><strong>Proof:</strong> The guest passed the combined name, workgroup, addressing, self-DNS, and no-default-route assertions. <a href="evidence/screenshots/phase3-01-q007-guest-safety-precheck.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase3-01-q007-guest-safety-precheck.png" alt="Q007 guest safety validation" width="900">
+
+### Rename And Workgroup Membership
+
+<p><strong>Proof:</strong> The Computer Name dialog shows `Q007-DNS01` remaining in `WORKGROUP`. <a href="evidence/screenshots/phase3-02-q007-rename-workgroup.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase3-02-q007-rename-workgroup.jpg" alt="Q007 rename and workgroup" width="900">
 
 ## Phase 4 — Build The Harness And Runbook
 
@@ -225,6 +193,22 @@ also drafted the [Windows operator runbook](runbooks/q007-windows-dns-failure-tr
 which connected the lab record fault to record, NIC, forwarder, cache,
 approval, rollback, and service-retest steps.
 
+The approved Windows build installed only DNS and its management tools, then
+created the file-backed `q007.test` zone with one correct `files` record.
+Additional GUI creation views are in the [Windows evidence details](evidence/q007-windows-evidence-details.md#phase-4--dns-role-and-baseline-zone).
+
+### DNS Role Validation
+
+<p><strong>Proof:</strong> DNS and its management tools are installed, the DNS service runs automatically, and AD DS and DHCP remain uninstalled. <a href="evidence/screenshots/phase4-01-q007-dns-role-installed.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase4-01-q007-dns-role-installed.png" alt="Q007 DNS role validation" width="900">
+
+### Baseline Zone And Record
+
+<p><strong>Proof:</strong> DNS Manager shows `q007.test` with the single correct `files` A record for `10.77.7.10` and no PTR selection. <a href="evidence/screenshots/phase4-02-q007-zone-baseline-record.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase4-02-q007-zone-baseline-record.png" alt="Q007 baseline DNS record" width="900">
+
 ## Phase 5 — Establish Baseline And Inject Fault
 
 The baseline response contained one A record, `10.77.7.10`, with RCODE 0. I
@@ -233,6 +217,22 @@ the correct record second. The [protocol transcript](evidence/q007-sanitized-tra
 shows ANCOUNT changing from one to two and the naive client selecting the
 wrong first answer, which demonstrated the business impact rather than merely
 asserting that two records existed.
+
+The Windows practicum repeated that progression with direct queries against
+`10.77.7.2`, first proving the single-answer baseline and then the two-record
+fault state.
+
+### Exact Baseline Answer
+
+<p><strong>Proof:</strong> The direct query returned only `10.77.7.10`, the wrong address did not respond, and the baseline gate passed. <a href="evidence/screenshots/phase5-01-q007-baseline-resolution.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase5-01-q007-baseline-resolution.png" alt="Q007 baseline DNS resolution" width="900">
+
+### Injected Two-Record Fault
+
+<p><strong>Proof:</strong> DNS Manager shows both the correct `10.77.7.10` and injected `10.77.7.99` A records. <a href="evidence/screenshots/phase5-02-q007-fault-two-a-records.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase5-02-q007-fault-two-a-records.png" alt="Q007 two-record DNS fault" width="900">
 
 ## Phase 6 — Repair, Retest, And Clean Up
 
@@ -244,6 +244,22 @@ the server, the server thread stops, and the port can be rebound. These eleven
 [structured assertions](evidence/q007-run-results.json) completed the isolated
 fault, repair, retest, and cleanup path.
 
+The Windows repair previewed and removed only `10.77.7.99`, cleared only the
+guest DNS cache, passed three exact-good retests, and confirmed NXDOMAIN for
+`old-files.q007.test`.
+
+### Repair And Retest Output
+
+<p><strong>Proof:</strong> PowerShell shows one good record, three exact-good retests, the wrong record absent, NXDOMAIN, and `Phase6Pass=True`. <a href="evidence/screenshots/phase6-01-q007-repair-powershell.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase6-01-q007-repair-powershell.png" alt="Q007 repair and retest" width="900">
+
+### Repaired DNS Manager State
+
+<p><strong>Proof:</strong> DNS Manager shows only `files` pointing to `10.77.7.10`. <a href="evidence/screenshots/phase6-02-q007-repaired-dns-manager.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase6-02-q007-repaired-dns-manager.png" alt="Q007 repaired DNS Manager" width="900">
+
 ## Phase 7 — Map The Drill To Windows Operations
 
 The lab deliberately avoided live Windows administration, so I mapped each
@@ -254,6 +270,12 @@ clear guidance because the loopback server has no cache layer, and I kept
 every repair behind exact current-state, backup, rollback, and dated approval.
 That made the artifact reusable without turning it into permission for a live
 change.
+
+### Windows Operator Closeout
+
+<p><strong>Proof:</strong> DNS runs automatically, the zone is non-AD-integrated with updates disabled, only the good record remains, and no default route is present. <a href="evidence/screenshots/phase7-01-q007-windows-operator-validation.txt">Paired evidence note</a>.</p>
+
+<img src="evidence/screenshots/phase7-01-q007-windows-operator-validation.png" alt="Q007 Windows operator validation" width="900">
 
 ## Phase 8 — Independently Verify The Evidence
 
@@ -273,6 +295,16 @@ Q006 predecessor handoff, and vault reflection. The [project
 closeout](project-closeout.md) records that Q007 is closed and that its
 immediate successor remains a separate, unstarted project.
 
+The separately approved Windows cleanup retained the disposable VM in the Off
+state. No separate screenshot captured the empty-zone check before shutdown,
+so the evidence claim remains limited to what the final image proves.
+
+### Powered-Off VM Retention
+
+<p><strong>Proof:</strong> Hyper-V host PowerShell reports `Q007-DNS01` in the `Off` state. <a href="evidence/screenshots/phase9-02-q007-vm-powered-off-retained.txt">Paired evidence note and limitation</a>.</p>
+
+<img src="evidence/screenshots/phase9-02-q007-vm-powered-off-retained.png" alt="Q007 VM powered off" width="900">
+
 ## What I Proved
 
 - A real DNS response can be successful while containing a harmful extra A
@@ -288,9 +320,10 @@ immediate successor remains a separate, unstarted project.
   server.
 - Cleanup stops the server and releases the UDP port.
 - The complete result is reproducible and independently decodable.
-- The exercise needs no live Windows DNS change or screenshot.
-- A later optional Windows practicum can add operator screenshots without
-  changing what the completed automated core proved.
+- The automated exercise needed no live Windows DNS change or screenshot.
+- The isolated Windows practicum reproduced the baseline, fault, exact repair,
+  repeated retest, NXDOMAIN, and powered-off retention path without changing
+  what the automated core proved.
 
 ## Technical Evidence
 
@@ -302,6 +335,7 @@ immediate successor remains a separate, unstarted project.
 - [Hands-on rollback plan](hands-on/q007-windows-lab-rollback-plan.md)
 - [Claude Fable hands-on plan review](hands-on/q007-claude-fable-practicum-review-2026-07-15.md)
 - [Windows hands-on evidence log](evidence/q007-windows-hands-on-evidence-log.md)
+- [Windows overflow screenshot details](evidence/q007-windows-evidence-details.md)
 - [Phase 2 guest installation verification](evidence/q007-phase2-guest-installation-verification.txt)
 - [Windows hands-on integrity manifest](evidence/q007-windows-hands-on-manifest.sha256)
 - [DNS drill source](scripts/q007_dns_drill.py)

@@ -2,7 +2,7 @@
 
 | Practicum fact | Value |
 |---|---|
-| Status | Phases 0–6 complete; repaired state verified |
+| Status | Phases 0–9 complete; repaired, validated, and powered off |
 | Relationship to Q007 | Optional hands-on extension to the completed automated proof |
 | Operator | Leonel |
 | Guide, evidence intake, and documentation | Codex |
@@ -238,7 +238,8 @@ The [paired text](../evidence/screenshots/phase2-01-q007-private-switch.txt)
 retains the three displayed property checks. This evidence does not prove VM
 creation or attachment.
 
-Supplementary GUI captures: [switch creation](../evidence/screenshots/phase2-03-q007-private-switch-manager.jpg) and [Private switch properties](../evidence/screenshots/phase2-04-q007-private-switch-properties.jpg).
+The two additional GUI views are displayed with their paired notes in the
+[Windows evidence details](../evidence/q007-windows-evidence-details.md#phase-2--private-switch-and-isolated-vm).
 
 ### 2B. Create The Standalone VM In Hyper-V Manager
 
@@ -379,7 +380,9 @@ evidence shows `Q007-DNS01`, `PartOfDomain=False`, `10.77.7.2/24`,
 `10.77.7.10/24` with `SkipAsSource=True`, DNS client `10.77.7.2`, no default
 route, and `Phase3Pass=True`.
 
-Supplementary GUI capture: [rename and WORKGROUP membership](../evidence/screenshots/phase3-02-q007-rename-workgroup.jpg).
+<p><strong>Proof:</strong> The Computer Name dialog shows `Q007-DNS01` remaining in `WORKGROUP`. <a href="../evidence/screenshots/phase3-02-q007-rename-workgroup.txt">Paired evidence note</a>.</p>
+
+<img src="../evidence/screenshots/phase3-02-q007-rename-workgroup.jpg" alt="Q007 rename and workgroup" width="900">
 
 **Codex validation gate:** passed on 2026-07-16. Phase 4 DNS-role and zone
 configuration remain separately approval-gated.
@@ -418,7 +421,8 @@ byte-for-byte and required no redaction. Its SHA-256 matches the source.
 The [paired text](../evidence/screenshots/phase4-01-q007-dns-role-installed.txt)
 retains the visible role and service values.
 
-Supplementary GUI capture: [DNS role installation](../evidence/screenshots/phase4-03-q007-dns-role-installation.jpg).
+The additional role-installation GUI view is displayed with its paired note in
+the [Windows evidence details](../evidence/q007-windows-evidence-details.md#phase-4--dns-role-and-baseline-zone).
 
 ### 4B. Create The Standalone Zone With DNS Manager
 
@@ -461,7 +465,8 @@ the primary zone is file-backed and non-AD-integrated, dynamic updates are
 disabled, the zone file is `q007.test.dns`, exactly one A record exists, and
 `Phase4Pass=True`.
 
-Supplementary GUI capture: [files record creation confirmation](../evidence/screenshots/phase4-04-q007-files-record-creation.jpg).
+The additional record-creation GUI view is displayed with its paired note in
+the [Windows evidence details](../evidence/q007-windows-evidence-details.md#phase-4--dns-role-and-baseline-zone).
 
 **Codex validation gate:** passed on 2026-07-16. Phase 5 baseline query and
 fault injection remain separately approval-gated.
@@ -670,14 +675,17 @@ follow [rollback Level 1](q007-windows-lab-rollback-plan.md#level-1--wrong-recor
 Required result: all three `Passed` values are `True`; the server contains
 only `10.77.7.10`; and `nslookup` reports the unknown name does not exist.
 
-**Evidence accepted:** [PowerShell repair and retest](../evidence/screenshots/phase6-01-q007-repair-powershell.png)
-shows the single good record, three exact-good retests, absent wrong record,
-NXDOMAIN result, and `Phase6Pass=True`. [DNS Manager](../evidence/screenshots/phase6-02-q007-repaired-dns-manager.png)
-shows exactly one `files` A record for `10.77.7.10`.
+### Repair And Retest Output
 
-The [paired PowerShell note](../evidence/screenshots/phase6-01-q007-repair-powershell.txt)
-and [DNS Manager note](../evidence/screenshots/phase6-02-q007-repaired-dns-manager.txt)
-are retained beside the images.
+<p><strong>Proof:</strong> PowerShell shows one good record, three exact-good retests, the wrong record absent, NXDOMAIN, and `Phase6Pass=True`. <a href="../evidence/screenshots/phase6-01-q007-repair-powershell.txt">Paired evidence note</a>.</p>
+
+<img src="../evidence/screenshots/phase6-01-q007-repair-powershell.png" alt="Q007 repair and retest" width="900">
+
+### Repaired DNS Manager State
+
+<p><strong>Proof:</strong> DNS Manager shows exactly one `files` A record for `10.77.7.10`. <a href="../evidence/screenshots/phase6-02-q007-repaired-dns-manager.txt">Paired evidence note</a>.</p>
+
+<img src="../evidence/screenshots/phase6-02-q007-repaired-dns-manager.png" alt="Q007 repaired DNS Manager" width="900">
 
 **Codex validation gate:** passed on 2026-07-17. Phase 6 is complete; zone
 cleanup and VM shutdown require separate approval.
@@ -704,11 +712,13 @@ Required result: DNS is running; the disposable zone is authoritative and
 non-AD-integrated; only the good record remains; and there is still no default
 route.
 
-**Evidence accepted:** [Phase 7 operator validation](../evidence/screenshots/phase7-01-q007-windows-operator-validation.png)
-and its [paired note](../evidence/screenshots/phase7-01-q007-windows-operator-validation.txt)
-show DNS running automatically, the non-AD-integrated zone with dynamic updates
-disabled, only the good A record, and no default route. The Codex validation gate
-passed on 2026-07-17.
+### Windows Operator Closeout
+
+<p><strong>Proof:</strong> DNS runs automatically, the zone is non-AD-integrated with updates disabled, only the good A record remains, and no default route is present. <a href="../evidence/screenshots/phase7-01-q007-windows-operator-validation.txt">Paired evidence note</a>.</p>
+
+<img src="../evidence/screenshots/phase7-01-q007-windows-operator-validation.png" alt="Q007 Windows operator validation" width="900">
+
+The Codex validation gate passed on 2026-07-17.
 
 ## Phase 8 — Package And Validate Evidence
 
@@ -737,12 +747,15 @@ Get-DnsServerZone -Name 'q007.test' -ErrorAction SilentlyContinue
 Stop-Transcript
 ```
 
-Required result: the verification command returns no zone. The accepted final
-capture [proves Q007-DNS01 is Off](../evidence/screenshots/phase9-02-q007-vm-powered-off-retained.png).
-No separate cleanup screenshot was captured before shutdown, so the evidence
-record does not claim independent visual proof of the empty-zone check.
-The [paired note](../evidence/screenshots/phase9-02-q007-vm-powered-off-retained.txt)
-records the same evidence boundary.
+Required result: the verification command returns no zone. No separate cleanup
+screenshot was captured before shutdown, so the evidence record does not claim
+independent visual proof of the empty-zone check.
+
+### Powered-Off VM Retention
+
+<p><strong>Proof:</strong> Hyper-V host PowerShell reports `Q007-DNS01` in the `Off` state. <a href="../evidence/screenshots/phase9-02-q007-vm-powered-off-retained.txt">Paired evidence note and limitation</a>.</p>
+
+<img src="../evidence/screenshots/phase9-02-q007-vm-powered-off-retained.png" alt="Q007 VM powered off" width="900">
 
 Keep the VM, VHDX, and `Q007-Private` switch until Codex accepts the cleanup
 evidence. Their deletion is destructive and requires a separate exact

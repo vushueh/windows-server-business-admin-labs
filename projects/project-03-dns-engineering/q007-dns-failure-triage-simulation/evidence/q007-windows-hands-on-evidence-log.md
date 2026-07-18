@@ -1,6 +1,6 @@
 # Evidence Log — Q007 Windows Hands-On Practicum
 
-**Captured:** 2026-07-15 to 2026-07-16 by Leonel  
+**Captured:** 2026-07-15 to 2026-07-17 by Leonel
 **Source system:** Hyper-V host and `Q007-DNS01`, elevated Windows PowerShell,
 operator-led precheck and approved Q007 object configuration  
 **Redaction check done:** yes — no password, token, public WAN address,
@@ -29,6 +29,15 @@ notification, unrelated VM name, or unrelated switch name was visible
 | 17 | [`screenshots/phase5-02-q007-fault-two-a-records.png`](screenshots/phase5-02-q007-fault-two-a-records.png) | DNS Manager shows the real `q007.test` fault state with both `files` A records, `10.77.7.10` and `10.77.7.99` | Cropped Phase 5 DNS Manager zone view |
 | 18 | [`screenshots/phase5-02-q007-fault-two-a-records.txt`](screenshots/phase5-02-q007-fault-two-a-records.txt) | Searchable extraction of the records visible in the Phase 5 fault PNG | Manual evidence extraction, values unaltered |
 | 19 | [`q007-phase5-fault-validation-2026-07-17.txt`](q007-phase5-fault-validation-2026-07-17.txt) | Wrong-record TTL, six full-answer queries, reachability results, failed supplemental exit-code assertion, and corrected check | Leonel-pasted PowerShell validation |
+| 20 | [`screenshots/phase2-03-q007-private-switch-manager.jpg`](screenshots/phase2-03-q007-private-switch-manager.jpg) + [note](screenshots/phase2-03-q007-private-switch-manager.txt) | Virtual Switch Manager shows `Q007-Private` as a Private switch | Hyper-V GUI |
+| 21 | [`screenshots/phase2-04-q007-private-switch-properties.jpg`](screenshots/phase2-04-q007-private-switch-properties.jpg) + [note](screenshots/phase2-04-q007-private-switch-properties.txt) | `Q007-Private` properties show Private network selected | Hyper-V GUI |
+| 22 | [`screenshots/phase3-02-q007-rename-workgroup.jpg`](screenshots/phase3-02-q007-rename-workgroup.jpg) + [note](screenshots/phase3-02-q007-rename-workgroup.txt) | Computer Name shows `Q007-DNS01` in `WORKGROUP` | Windows System Properties |
+| 23 | [`screenshots/phase4-03-q007-dns-role-installation.jpg`](screenshots/phase4-03-q007-dns-role-installation.jpg) + [note](screenshots/phase4-03-q007-dns-role-installation.txt) | DNS Server and its management tools were selected for installation | Add Roles and Features Wizard |
+| 24 | [`screenshots/phase4-04-q007-files-record-creation.jpg`](screenshots/phase4-04-q007-files-record-creation.jpg) + [note](screenshots/phase4-04-q007-files-record-creation.txt) | DNS Manager confirms `files.q007.test` creation for `10.77.7.10` with no PTR selection | DNS Manager |
+| 25 | [`screenshots/phase6-01-q007-repair-powershell.png`](screenshots/phase6-01-q007-repair-powershell.png) + [note](screenshots/phase6-01-q007-repair-powershell.txt) | One good record, three exact-good retests, wrong record absent, NXDOMAIN, and `Phase6Pass=True` | Guest PowerShell |
+| 26 | [`screenshots/phase6-02-q007-repaired-dns-manager.png`](screenshots/phase6-02-q007-repaired-dns-manager.png) + [note](screenshots/phase6-02-q007-repaired-dns-manager.txt) | DNS Manager shows only `files -> 10.77.7.10` | DNS Manager |
+| 27 | [`screenshots/phase7-01-q007-windows-operator-validation.png`](screenshots/phase7-01-q007-windows-operator-validation.png) + [note](screenshots/phase7-01-q007-windows-operator-validation.txt) | DNS service, zone, good record, and no-default-route closeout checks passed | Guest PowerShell |
+| 28 | [`screenshots/phase9-02-q007-vm-powered-off-retained.png`](screenshots/phase9-02-q007-vm-powered-off-retained.png) + [note](screenshots/phase9-02-q007-vm-powered-off-retained.txt) | Hyper-V reports `Q007-DNS01` Off | Host PowerShell |
 
 ## Command Output
 
@@ -250,24 +259,28 @@ failure. `Test-NetConnection` then returned good `True`, bad `False`, and
   record at the approved five-minute TTL.
 - All six direct queries returned both values; the good address was reachable,
   the wrong address was not, and the combined fault assertion passed.
+- Phase 6 removed only `10.77.7.99`; three direct retests returned only
+  `10.77.7.10`, the wrong record was absent, the unknown name returned
+  NXDOMAIN, and `Phase6Pass=True`.
+- Phase 7 confirmed DNS running automatically, the non-AD-integrated zone with
+  dynamic updates disabled, only the good record, and no default route.
+- The final host capture proves `Q007-DNS01` was retained in the Off state.
 
 ## Facts This Evidence Does Not Establish
 
 - It does not prove an External, Internal, or production switch was absent;
   it proves only that the fixed new name `Q007-Private` was unused.
 - It does not prove that the Hyper-V host has no unrelated health event.
-- It does not prove repair, cleanup, or a final powered-off state; those remain
-  outside the accepted Phase 5 scope.
+- It does not independently prove the Phase 9 empty-zone verification because
+  no separate cleanup screenshot was captured before shutdown.
 - It does not prove that unrelated Hyper-V objects were unchanged; it proves
   only the displayed Q007 VM and switch properties.
 
 ## Follow-Ups
 
-- Phase 5 technical, GUI, and reachability evidence is accepted. Phase 6 then
-  previewed and removed only `10.77.7.99`, cleared only the guest DNS client
-  cache, passed three exact-good direct queries, confirmed the wrong record was
-  absent, and verified `old-files.q007.test` returned NXDOMAIN. Phase 6 is
-  complete; no further DNS change is authorized.
+- Phases 0–7 and the Phase 9 powered-off state are documented. The VM, VHDX,
+  and Private switch remain retained; their deletion requires separate exact
+  approval. No further DNS or production change is authorized.
 
 ## Integrity
 

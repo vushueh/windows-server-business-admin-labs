@@ -4,6 +4,47 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-17 (Q007 screenshot documentation repair)
+
+### What I did
+
+- Re-read the canonical project-documentation, evidence-intake, Windows
+  evidence-documentation, screenshot-wrapper, and redaction standards after
+  Leonel reported that Q007 screenshots were poorly integrated.
+- Removed the standalone Markdown gallery and embedded reviewed screenshots
+  inside the phases they prove, using the shared HTML wrapper at `width="900"`.
+- Limited the README and practicum to two images per phase, placed every proof
+  sentence and paired text note beside its image, and routed Phase 2/4 overflow
+  to `evidence/q007-windows-evidence-details.md`.
+- Reconciled stale practicum, change-window, screenshot-plan, and evidence-log
+  status text through the Phase 9 powered-off result while preserving the
+  missing empty-zone screenshot limitation.
+- Asked Claude for a bounded read-only review of the actual corrected README,
+  practicum, and details file. Claude returned PASS with no blocking finding
+  after checking counts, sizing, pairing, placement, overflow, and Phase 9.
+
+### Files created/modified
+
+- `projects/project-03-dns-engineering/q007-dns-failure-triage-simulation/README.md`
+- `projects/project-03-dns-engineering/q007-dns-failure-triage-simulation/evidence/q007-windows-evidence-details.md`
+- Q007 hands-on practicum, change-window, screenshot-plan, evidence-log, and
+  both integrity manifests
+
+### Architecture decisions made
+
+- The project README displays only the strongest two images per phase. Extra
+  GUI views remain visible in one linked evidence-details page instead of a
+  detached gallery.
+
+### Cross-family impacts
+
+- None. This repair changes only Windows Q007 documentation presentation and
+  does not alter the already-published Q006-to-Q007 handoff link.
+
+### Open questions for Claude
+
+- None. The final bounded read-only review passed.
+
 ## Session — 2026-07-15 (Q007 complete)
 
 ### What I did

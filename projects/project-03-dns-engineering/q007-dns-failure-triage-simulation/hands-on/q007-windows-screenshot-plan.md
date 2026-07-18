@@ -1,7 +1,7 @@
 # Q007 Windows Hands-On Screenshot Plan
 
-- **Status:** Phases 0 through 6 evidence inspected and ingested; Phase 6
-  repair and retest passed. Zone cleanup remains unapproved.
+- **Status:** Phases 0 through 7 and the Phase 9 powered-off capture were
+  inspected and ingested. No separate empty-zone screenshot was captured.
 - **Destination after intake:** `evidence/screenshots/`
 - **Rule:** do not add image links to the project README until the real files
   exist and Codex has inspected them.
@@ -42,11 +42,11 @@ normalize names during evidence intake.
 | 4 | `phase4-02-q007-zone-baseline-record.png` | DNS Manager zone view plus selected `files` record | `q007.test` contains only `10.77.7.10` | Server tree outside local Q007 zone |
 | 5 | `phase5-01-q007-baseline-resolution.png` | Baseline `Resolve-DnsName` output | One correct A answer before fault | Unrelated console history |
 | 5 | `phase5-02-q007-fault-two-a-records.png` | Six-query table and/or DNS Manager record view | Both good and wrong values exist; full set was inspected | Claims based only on record order |
-| 6 | `phase6-01-q007-exact-record-repair.png` | Post-removal resource-record output | Only `10.77.7.10` remains after targeted repair | Any production zone tree |
-| 6 | `phase6-02-q007-retest-nxdomain.png` | Three `Passed=True` rows and `nslookup` nonexistence result | Repeated positive and negative retests passed | Cropped-away failures |
+| 6 | `phase6-01-q007-repair-powershell.png` | Accepted post-removal record, three-retest, wrong-record-absence, and NXDOMAIN output | Only `10.77.7.10` remains and `Phase6Pass=True` | Any production zone tree |
+| 6 | `phase6-02-q007-repaired-dns-manager.png` | Accepted DNS Manager repaired state | Exactly one `files` record remains for `10.77.7.10` | Other zones and unrelated server windows |
 | 7 | `phase7-01-q007-windows-operator-validation.png` | Final role, zone, record, and route output | Runbook closeout state is correct and still isolated | Unrelated services or routes |
 | 8 | None | Evidence packaging only | Transcript and screenshots are the artifacts | No folder-only screenshot |
-| 9 | `phase9-01-q007-zone-cleanup.png` | DNS Manager without `q007.test` or empty `Get-DnsServerZone` result with command visible | Disposable zone is absent | Other zone names |
+| 9 | `phase9-01-q007-zone-cleanup.png` — not captured | Planned empty-zone verification | No independent screenshot proof is claimed | Do not substitute the powered-off capture for this missing proof |
 | 9 | `phase9-02-q007-vm-powered-off-retained.png` | Cropped Hyper-V Manager or `Get-VM Q007-DNS01` | Q007 VM is Off and retained pending deletion approval | Other VM inventory |
 
 ## Evidence Intake Checklist
