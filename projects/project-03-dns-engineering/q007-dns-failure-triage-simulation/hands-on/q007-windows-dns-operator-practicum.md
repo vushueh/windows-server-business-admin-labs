@@ -238,6 +238,8 @@ The [paired text](../evidence/screenshots/phase2-01-q007-private-switch.txt)
 retains the three displayed property checks. This evidence does not prove VM
 creation or attachment.
 
+Supplementary GUI captures: [switch creation](../evidence/screenshots/phase2-03-q007-private-switch-manager.jpg) and [Private switch properties](../evidence/screenshots/phase2-04-q007-private-switch-properties.jpg).
+
 ### 2B. Create The Standalone VM In Hyper-V Manager
 
 1. Select **New > Virtual Machine** and name it `Q007-DNS01`.
@@ -377,6 +379,8 @@ evidence shows `Q007-DNS01`, `PartOfDomain=False`, `10.77.7.2/24`,
 `10.77.7.10/24` with `SkipAsSource=True`, DNS client `10.77.7.2`, no default
 route, and `Phase3Pass=True`.
 
+Supplementary GUI capture: [rename and WORKGROUP membership](../evidence/screenshots/phase3-02-q007-rename-workgroup.jpg).
+
 **Codex validation gate:** passed on 2026-07-16. Phase 4 DNS-role and zone
 configuration remain separately approval-gated.
 
@@ -413,6 +417,8 @@ byte-for-byte and required no redaction. Its SHA-256 matches the source.
 
 The [paired text](../evidence/screenshots/phase4-01-q007-dns-role-installed.txt)
 retains the visible role and service values.
+
+Supplementary GUI capture: [DNS role installation](../evidence/screenshots/phase4-03-q007-dns-role-installation.jpg).
 
 ### 4B. Create The Standalone Zone With DNS Manager
 
@@ -454,6 +460,8 @@ retains the visible DNS Manager values. Transcript output separately proved
 the primary zone is file-backed and non-AD-integrated, dynamic updates are
 disabled, the zone file is `q007.test.dns`, exactly one A record exists, and
 `Phase4Pass=True`.
+
+Supplementary GUI capture: [files record creation confirmation](../evidence/screenshots/phase4-04-q007-files-record-creation.jpg).
 
 **Codex validation gate:** passed on 2026-07-16. Phase 5 baseline query and
 fault injection remain separately approval-gated.
@@ -667,6 +675,10 @@ shows the single good record, three exact-good retests, absent wrong record,
 NXDOMAIN result, and `Phase6Pass=True`. [DNS Manager](../evidence/screenshots/phase6-02-q007-repaired-dns-manager.png)
 shows exactly one `files` A record for `10.77.7.10`.
 
+The [paired PowerShell note](../evidence/screenshots/phase6-01-q007-repair-powershell.txt)
+and [DNS Manager note](../evidence/screenshots/phase6-02-q007-repaired-dns-manager.txt)
+are retained beside the images.
+
 **Codex validation gate:** passed on 2026-07-17. Phase 6 is complete; zone
 cleanup and VM shutdown require separate approval.
 
@@ -729,6 +741,8 @@ Required result: the verification command returns no zone. The accepted final
 capture [proves Q007-DNS01 is Off](../evidence/screenshots/phase9-02-q007-vm-powered-off-retained.png).
 No separate cleanup screenshot was captured before shutdown, so the evidence
 record does not claim independent visual proof of the empty-zone check.
+The [paired note](../evidence/screenshots/phase9-02-q007-vm-powered-off-retained.txt)
+records the same evidence boundary.
 
 Keep the VM, VHDX, and `Q007-Private` switch until Codex accepts the cleanup
 evidence. Their deletion is destructive and requires a separate exact
