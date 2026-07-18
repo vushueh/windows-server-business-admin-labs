@@ -5,7 +5,8 @@
 - **Vault note:** `homelab-obsidian-vault/08-simulations/sim-dhcp-dns-outage-vlan20.md`
 - **Stage at execution:** in progress / isolated lab
 - **Risk:** ISO
-- **Case-study candidate:** yes — input to `CS-001` after Q008
+- **Case-study candidate:** yes — input to `CS-001` after the completed
+  [Q008 postmortem](https://github.com/vushueh/homelab-management/tree/main/projects/q008-dns-incident-postmortem)
 - **Video status:** not recorded
 
 ## Design Gates
@@ -158,7 +159,7 @@ desktop, notifications, or unrelated systems.
 | 6 | Diagnose, repair, retest, and clean up | Three positive retests, wrong IP absent, NXDOMAIN, server stopped, port free |
 | 7 | Map the lab to Windows operations | Reusable runbook covers record, NIC, forwarder, cache, rollback, and approval gates |
 | 8 | Package and independently verify evidence | Transcript, JSON, raw packet decode, review, hashes, and links pass |
-| 9 | Close and propagate | Q007 Complete; Q008 selected but not started; Q006 links directly to Q007 |
+| 9 | Close and propagate | At Q007 close, Q008 was selected but not started; Q006 linked directly to Q007 |
 
 ## Verification
 
@@ -208,7 +209,7 @@ Filled after execution in `evidence/q007-evidence-manifest.sha256`.
 
 - [ ] Stays as lab evidence only.
 - [x] Becomes supporting evidence for case-study candidate `CS-001` after the
-      queue-selected Q008 postmortem.
+      completed [Q008 postmortem](https://github.com/vushueh/homelab-management/tree/main/projects/q008-dns-incident-postmortem).
 - [ ] Needs more evidence before deciding.
 
 ## Open Questions
