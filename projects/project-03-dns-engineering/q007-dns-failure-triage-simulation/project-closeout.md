@@ -48,7 +48,7 @@
 | Repository / layer | File or area | Closeout change |
 |---|---|---|
 | Windows Server labs | Q007 folder, indexes, bridge files | Dedicated project, evidence, runbook, Complete status, and exact navigation |
-| Family playbook | Goal registry, current state, portfolio map | Q007 Complete and Q008 selected but not started |
+| Family playbook | Goal registry, current state, portfolio map | At Q007 close, Q007 was Complete and Q008 was selected but not started |
 | Homelab management | Q006 predecessor handoff and queue directory | Q007 text becomes a direct GitHub `main` link to the completed documentation |
 | Obsidian vault | N3 card, simulation index, hot context, session log | Human-facing reflection of the owner-repo closeout and Q008 handoff |
 
@@ -56,7 +56,7 @@
 
 | Item | Location | Owner / trigger |
 |---|---|---|
-| Q008 blameless DNS/network incident postmortem | Authoritative queue and homelab-management | Starts only in a later Q008 session |
+| [Q008 blameless DNS incident postmortem](https://github.com/vushueh/homelab-management/tree/main/projects/q008-dns-incident-postmortem) | `homelab-management` | Completed 2026-07-18; Q008 now owns the next queue handoff |
 | Any live Windows DNS adoption | Q007 operator runbook | New exact change window, current discovery, rollback, and Leonel approval |
 | NIC-order and forwarder execution | P03 evidence and Q007 operator runbook | Only when a future incident or approved isolated Windows lab requires it |
 
@@ -144,6 +144,7 @@ and RA flag semantics before regenerating and re-verifying all evidence.
 
 ## What Happens Next
 
-Q008 — DNS Or Network Incident Postmortem is the immediate successor. It is
-selected but not started and requires its own entry check. Nothing in this
-closeout authorizes Q008 or any live DNS action.
+[Q008 — DNS Incident Postmortem And Blameless
+Review](https://github.com/vushueh/homelab-management/tree/main/projects/q008-dns-incident-postmortem)
+is the completed immediate successor. Q008 owns the next queue handoff; nothing
+in this historical closeout authorizes live DNS or later queue work.

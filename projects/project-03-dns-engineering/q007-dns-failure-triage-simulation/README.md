@@ -417,6 +417,8 @@ adapter, cache, or service state persists.
 
 ## What Happens Next
 
-Q007 is closed. Q008 — DNS Or Network Incident Postmortem is next in the
-[authoritative queue](../../../../docs/homelab-goals.yaml). It is selected but
-not started; this handoff does not start or authorize Q008.
+Q007 is closed. Its immediate successor, [Q008 — DNS Incident Postmortem And
+Blameless Review](https://github.com/vushueh/homelab-management/tree/main/projects/q008-dns-incident-postmortem),
+is also complete. That completed project owns the next queue handoff; this link
+does not authorize any further DNS, AD, network, case-study, or publication
+work.
