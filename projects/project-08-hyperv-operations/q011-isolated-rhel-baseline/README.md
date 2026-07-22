@@ -1,5 +1,12 @@
 # Q011 — Isolated RHEL 10.2 Baseline On Hyper-V
 
+> **Frozen public mirror — 2026-07-22:** The canonical maintained record moved
+> to [`enterprise-linux-administration-labs`](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q011-isolated-rhel-baseline).
+> That repository is private until publication review passes. This copy remains
+> temporarily so the completed public portfolio evidence does
+> not disappear while the new repository completes its publication gate. Do
+> not add new Linux project evidence here.
+
 **Status:** ✅ Complete — Phase 9 retained the verified RHEL baseline Off,
 disconnected, Untagged at VLAN 0, DVD-empty, and checkpoint-free with
 `Phase9RetentionPass=True`  
@@ -735,9 +742,11 @@ value—was used to correct the record without changing the guest.
 
 ## What Happens Next
 
-Q011 is complete as a retained RHEL 10.2 baseline. Its immediate successor is
-**Q012 — systemd Break/Fix Lab**, which remains planned and requires its own
-selection, design, hands-on evidence plan, and approval before execution. A
+Q011 is complete as a retained RHEL 10.2 baseline. Its immediate successor,
+[Q012 — systemd Break/Fix Lab](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q012-systemd-breakfix-lab),
+is active in the Linux portfolio with its repository design complete. Q012
+Phase 4 still requires an exact approval before the protected offline clone
+and healthy baseline may be created. A
 future backup/restore test or replay of the manual rebuild record also remains
 outside Q011. Any later start, network attachment, patch, export, clone,
 repurpose, Red Hat lifecycle action, OPNsense reservation change, or disposal

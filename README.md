@@ -97,7 +97,8 @@ across all family repositories.
 | Q003 | [AD Recycle Bin test-object restore](projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | Early Project 11 recovery proof | ✅ Complete — restored the GUID-pinned disabled test user through both DCs in 0.51 minutes |
 | Q004 | [Test-GPO backup and restore](projects/project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/) | Early Project 11 recovery proof | ✅ Complete — exact custom-GPO restore passed in 0.1 minutes; RSoP and cleanup verified |
 | Q007 | [DNS failure-triage simulation](projects/project-03-dns-engineering/q007-dns-failure-triage-simulation/) | Project 03 reusable break/fix proof | ✅ Complete — isolated wrong-record fault, repair, repeated retest, NXDOMAIN, cleanup, and Windows runbook passed on 2026-07-15 |
-| Q011 | [Isolated RHEL 10.2 baseline on Hyper-V](projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/) | Early Project 08 Hyper-V execution proof | ✅ Complete — verified RHEL baseline retained Off and isolated; `Phase9RetentionPass=True` |
+| Q011 | [Isolated RHEL 10.2 baseline on Hyper-V](projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/) | Historical Project 08 platform proof; canonical Linux record moved to [`enterprise-linux-administration-labs`](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q011-isolated-rhel-baseline) (private until publication review) | ✅ Complete — this public mirror is frozen pending the new repository's publication gate |
+| Q012 | [RHEL systemd break-fix lab](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q012-systemd-breakfix-lab) (private until publication review) | Linux portfolio project using the Windows-owned Hyper-V boundary | 🟡 Design complete — Phase 4 clone/baseline requires exact approval |
 
 ### Additional Windows Simulations And Capstone
 
@@ -119,7 +120,7 @@ across all family repositories.
 | [05](projects/project-05-gpo-security-baselines/) | **Group Policy Security Baselines** | Firewall GPO, audit policy, DefaultInboundAction | Q031 | ⬜ Planned |
 | [06](projects/project-06-file-server-access-governance/) | **File Server, NTFS, and Access Governance** | Dept shares, AGDLP, auditing | Q032 | ⬜ Planned |
 | [07](projects/project-07-windows-client-lifecycle/) | **Windows Client Lifecycle** | Domain join, RSAT, workstation hardening | Q033 | ⬜ Planned |
-| [08](projects/project-08-hyperv-operations/) | **Hyper-V Operations** | VM inventory, RDS farm migration, virtual switch, backup; includes early [Q011 isolated RHEL baseline](projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/) | Q034 plus early Q011 execution proof | 🟡 Q011 retained baseline complete; full P08 still planned |
+| [08](projects/project-08-hyperv-operations/) | **Hyper-V Operations** | VM inventory, RDS farm migration, virtual switch, backup; retains the historical Hyper-V platform record for [Q011](projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/) | Q034 plus early Q011 execution proof | 🟡 Q011 complete and migrated to the Linux portfolio; full P08 still planned |
 | [09](projects/project-09-powershell-admin-platform/) | **PowerShell Administration Platform** | User provisioning, AD reports, repeatable scripts | Q035 | ⬜ Planned |
 | [10](projects/project-10-security-monitoring-ir/) | **Security Monitoring and Incident Response** | Event forwarding, lockout tracking, Wazuh/SIEM | Q036 | ⬜ Planned |
 | [11](projects/project-11-backup-disaster-recovery/) | **Backup, Restore, and Disaster Recovery** | System state backup, tested runbooks | Q037 full project; Q003/Q004 early proofs | 🟡 Q003/Q004 proofs complete; full P11 planned |
