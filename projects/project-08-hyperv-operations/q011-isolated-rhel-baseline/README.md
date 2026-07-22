@@ -64,8 +64,8 @@ two safe Hyper-V views to confirm the same retained state without starting or
 changing the VM.
 
 The project-scoped names `Q011-RHEL102-BASELINE` and `q011-rhel01` do not amend
-the Windows server naming standard. The former Proxmox record is predecessor
-discovery evidence, not a competing execution owner.
+the Windows server naming standard. The imported former Proxmox discovery is
+predecessor evidence, not a competing execution owner.
 
 ## Phase Status
 
@@ -107,8 +107,25 @@ point-in-time capacity, no Q011 name collision, and no proven safe VLAN path.
 The [imported discovery summary](evidence/q011-imported-discovery-summary.md)
 therefore supported Hyper-V with the adapter disconnected.
 
-This command-only phase has sanitized text instead of a screenshot because a
-picture of terminal inventory would not add independent proof.
+The host inventory itself remains sanitized text because a terminal picture
+would not add independent proof. I retained the two safe GUI views from the
+network-policy check because they show why the disconnected design was
+necessary.
+
+### VLAN 70 first-match policy
+
+<p><strong>Proof:</strong> The VLAN 70 rules view shows the broad first-match allow path that could not prove an isolated installation boundary.</p>
+
+<img src="evidence/screenshots/q011-phase1c-01-vlan70-firewall-rules.png" alt="OPNsense VLAN 70 firewall rules showing the broad first-match allow path" width="900">
+
+### Outbound NAT context
+
+<p><strong>Proof:</strong> The outbound NAT view records the existing policy context without changing it.</p>
+
+<img src="evidence/screenshots/q011-phase1c-02-vlan70-outbound-nat.png" alt="OPNsense outbound NAT policy viewed read-only during Q011 discovery" width="900">
+
+The exact image hashes are in the
+[Phase 1 screenshot manifest](evidence/q011-phase1-screenshots.sha256).
 
 ## Phase 2C — Freeze The Hyper-V Design
 
@@ -718,10 +735,10 @@ value—was used to correct the record without changing the guest.
 
 ## What Happens Next
 
-Q011 is complete as a retained RHEL 10.2 baseline. The highest-value future
-proof would be a separately approved backup/restore test or an actual replay
-of the manual rebuild record; neither is claimed here. Any later start,
-network attachment, patch, export, clone, repurpose, Red Hat lifecycle action,
-OPNsense reservation change, or disposal is a new change window outside this
-completed project. Selection of the next portfolio project is likewise
-separate from Q011 closure.
+Q011 is complete as a retained RHEL 10.2 baseline. Its immediate successor is
+**Q012 — systemd Break/Fix Lab**, which remains planned and requires its own
+selection, design, hands-on evidence plan, and approval before execution. A
+future backup/restore test or replay of the manual rebuild record also remains
+outside Q011. Any later start, network attachment, patch, export, clone,
+repurpose, Red Hat lifecycle action, OPNsense reservation change, or disposal
+is a new change window outside this completed project.

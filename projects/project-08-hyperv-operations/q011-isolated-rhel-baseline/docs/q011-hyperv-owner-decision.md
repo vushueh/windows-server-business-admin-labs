@@ -24,8 +24,9 @@ Hyper-V host, its VM lifecycle, its local storage paths, and its evidence
 standards. Q011 remains a Linux learning project, but its live control plane is
 Windows Hyper-V.
 
-The Proxmox project becomes a read-only predecessor/handoff record. It must not
-retain a competing active run sheet after coordinated publication.
+The minimum Proxmox discovery facts and safe policy images move into this
+Windows-owned record. The obsolete Proxmox draft worktree must not retain a
+competing active run sheet after coordinated publication.
 
 ## Consequences
 

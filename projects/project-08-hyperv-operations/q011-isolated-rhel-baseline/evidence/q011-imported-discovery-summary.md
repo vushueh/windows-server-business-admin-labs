@@ -1,9 +1,10 @@
 # Q011 Imported Sanitized Discovery Summary
 
 This record imports only the minimum facts needed to design the Hyper-V build.
-The original sanitized command evidence remains in the Proxmox predecessor
-worktree until coordinated publication. No credential or per-guest
-configuration is copied here.
+The completed Windows record now owns those facts. The obsolete Proxmox draft
+worktree was retired during coordinated publication after the two safe policy
+screenshots were copied here. No credential or per-guest configuration was
+copied.
 
 ## Media Identity
 
@@ -50,6 +51,7 @@ boundary. Q011 therefore starts with its single Hyper-V adapter unconnected.
 
 The Hyper-V discovery used only approved host-level inventory and exact-path
 access checks. It did not query an individual VM configuration, open a guest,
-stage media, create a VM, change networking, or use credentials. No screenshot
-was captured because the phase was command-only; actual GUI screenshots begin
-with the first approved hands-on change.
+stage media, create a VM, change networking, or use credentials. Host command
+evidence remains searchable text. Two safe OPNsense policy views were retained
+to support the disconnected-design decision; they show read-only state and do
+not claim a firewall or NAT change.
