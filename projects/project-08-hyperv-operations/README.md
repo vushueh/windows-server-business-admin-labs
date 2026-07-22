@@ -1,15 +1,18 @@
 # Project 08 — Hyper-V Operations
 
-**Status:** ⬜ Full P08 planned (requires Projects 06 and 07 complete); ✅ early Q011 retained baseline complete with `Phase9RetentionPass=True`
+**Status:** ⬜ Full P08 planned (requires Projects 06 and 07 complete); ✅ Q011 platform proof complete and migrated to the Linux portfolio; 🟡 Q012 uses this Hyper-V boundary but is owned by the Linux portfolio
 **Skill:** `/winserver-p08` — written when this project starts
 
 ## Early Master-Queue Execution Proof
 
 [Q011 — Isolated RHEL 10.2 Baseline on Hyper-V](q011-isolated-rhel-baseline/)
-is an earlier, separately gated master-queue project placed here because this
-repository owns the selected Hyper-V host. Q011 does not start or complete the
-broader P08 inventory, switch redesign, RDS migration, checkpoint-policy, or
-backup scope.
+is the frozen public mirror of an earlier, separately gated master-queue
+project executed here because this repository owns the selected Hyper-V host.
+The canonical project record moved to
+[`enterprise-linux-administration-labs`](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q011-isolated-rhel-baseline)
+on 2026-07-22; that repository remains private until publication review
+passes. Q011 does not start or complete the broader P08 inventory,
+switch redesign, RDS migration, checkpoint-policy, or backup scope.
 
 Q011 has passed its disconnected Minimal Install, service/security baseline,
 corrected OPNsense DHCP reservation, NetworkManager autoconnect persistence,
@@ -31,6 +34,15 @@ changes, and evidence-linked rebuild record before returning
 branch and confirmed the exact VM remained Off, disconnected, Untagged VLAN
 0, DVD-empty, and checkpoint-free with `Phase9RetentionPass=True`. Q011 is
 complete; the broader P08 scope remains planned.
+
+[Q012 — RHEL systemd Break-Fix Lab](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q012-systemd-breakfix-lab)
+is Q011's immediate queue successor and is owned by the private-staging Linux
+portfolio. Its
+design uses a hash-verified offline copy of Q011's VHDX, a disconnected clone,
+and one disposable custom service. This repository owns only the Hyper-V
+platform boundary. Q011 remains off, disconnected, checkpoint-free, and
+unmodified. Q012 live work has not started: clone/baseline creation and later
+fault/repair/revert are separate exact approval gates.
 
 The Q011 read-only discovery on 2026-07-19 found 20 host-level VM identity rows,
 superseding the older 13-VM planning estimate for Q011 capacity/collision

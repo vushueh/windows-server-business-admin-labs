@@ -4,6 +4,46 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-22 — Q012 owner reconciliation and repository design
+
+### What I did
+
+- Recovered Q012 as the dependency-ready successor to completed Q011.
+- Reconciled the stale Proxmox owner with the actual retained Hyper-V baseline,
+  prepared Q012 under Project 08, then moved it before commit into Leonel's
+  approved `enterprise-linux-administration-labs` portfolio.
+- Prepared a disconnected clone design, healthy custom systemd fixture,
+  intentional wrong-`ExecStart` override, two exact live change windows,
+  rollback plan, evidence expectations, and stop conditions.
+- Used one bounded read-only Claude consultation for the owner/platform
+  decision, then independently verified the material claims against the local
+  repository instructions and queue state.
+
+### Files created/modified
+
+- Windows root, project index, Project 08 navigation, Q011 frozen-mirror
+  banner, `CLAUDE-REVIEW.md`, and this log
+
+### Architecture decisions made
+
+- Q011 remains off, disconnected, checkpoint-free, and unmodified.
+- Q012 uses a hash-verified offline VHDX copy and remains disconnected.
+- The custom oneshot unit touches only a lab marker file; the sole fault is a
+  drop-in that points `ExecStart` to a nonexistent executable.
+- Phase 4 clone/baseline and Phase 5–6 fault/repair/revert require separate
+  exact approvals. No live authority is implied by this design.
+
+### Cross-family impacts
+
+- Q011/Q012 and Q042-Q047 transfer into the dedicated Linux portfolio. Windows
+  remains the Hyper-V platform owner, not the Linux project owner.
+- The complete Q011 tree remains here only as a frozen public mirror until the
+  new repository passes its public-visibility gate.
+
+### Open questions for Claude
+
+- None for Q012 design. Live Phase 4 remains approval-gated.
+
 ## Session — 2026-07-21 — Q011 successor handoff correction
 
 ### What I did

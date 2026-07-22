@@ -4,6 +4,31 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ---
 
+## Q012 RHEL SYSTEMD BREAK-FIX LAB — 2026-07-22
+
+### 🟢 RESOLVED — Item Q012-01: Reconcile owner and prepare isolated design
+
+**Owner:** Codex queue recovery and repository design; Claude bounded read-only
+owner/platform consultation; Leonel future live-window approval and execution
+
+The queue originally assigned Q012 to the Proxmox family, but the dependency
+VM is the retained Hyper-V Q011 baseline and the Proxmox repository is barred
+from managing Hyper-V VMs. The temporary Windows placement resolved the
+platform conflict; Leonel then approved a dedicated
+`enterprise-linux-administration-labs` owner for Q011/Q012 and Q042-Q047.
+
+The design protects Q011 and uses a hash-verified offline VHDX copy for a new,
+disconnected `Q012-RHEL102-SYSTEMD` VM. A purpose-built oneshot service and one
+wrong-`ExecStart` drop-in make the fault deterministic without touching an OS,
+network, authentication, or security service. Q012 alone receives the clean
+checkpoint. Clone/baseline and fault/repair/revert remain two separate exact
+approval gates.
+
+**Migration result:** Q012 moved before it entered Windows history. Q011's
+canonical 148-file record was byte-verified in the private Linux repository;
+this repository retains a frozen public mirror until the publication gate.
+No host, VM, VHDX, checkpoint, guest, network, or credential action occurred.
+
 ## Status Key
 - 🔴 OPEN — must be resolved before proceeding
 - 🟡 IN PROGRESS — Codex is working on it
