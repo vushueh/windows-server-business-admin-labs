@@ -1,0 +1,14 @@
+ebb81d400a8620bf4423e7ae4449d509df7d207902a72c8c2e6a0704c1e0a600  screenshots/q011-phase5-03-core-baseline-via-ssh-clean.png
+a3d796afc79cd32f95397fa083e9602ada7b9627924e77f243b18487d658e8d5  screenshots/q011-phase5-04-firewall-ssh-baseline-via-ssh.png
+314ea0717b24186755515951d79e95334ec67d317d54c29f233aeacf57274236  screenshots/q011-phase5-05-listeners-selinux-hashes.png
+4f048a191192d32b04b7bb90c448241fe89719c9f43f0821d2b54a36a5d34270  screenshots/q011-phase5-06-network-storage-registration.png
+b50075ca13cb509b606458948383129dc873534edd09297bb852c31ef58a1560  screenshots/q011-phase5-07-offline-end-state.png
+e2bb2de67cc954daaae036a4f5da29172fdb87d021578e317eaa4cfbcdd2e0dc  screenshots/q011-phase5-process-01-console-core-baseline-initial.png
+7a294bcf92dce2ac04003b2b4ad8a891fc98a7b7e6aa79690e2d165841f5a42d  screenshots/q011-phase5-process-02-console-service-checks.png
+374354e75f3cf54a928cfbfa7ce2a27ad65a4a4c908f01424664d47caf4bab89  screenshots/q011-phase5-process-03-core-baseline-with-sudo-prompt.png
+29816bb42a2e24be5c88bdc604d8136bf47ab8ffd44f70e72dddc90cd6d07eec  screenshots/q011-phase5n-d-01-networkmanager-discovery.png
+ad3c34d9151fd47eb09a72aa1db8135063c2d43e0f6060d5690b6b94b27807e8  screenshots/q011-phase5n-d2-01-networkmanager-dhcp-lease-log.png
+87b66de03cdca123ef9668e8019f5aaa10d566ff90d1e3ec5d83bcae5187d1ee  screenshots/q011-phase5n-d3-01-dhcp-source-options.png
+0e0513cabab5f9bbb6b5a2c64fe6d582595ec100514a8690f3d261fbf7df5255  screenshots/q011-phase5n-e-01-opnsense-dhcp-lease.png
+5675cbd4491596653b3631dadf9198bce3636109edc14e98340109a6957cdc66  screenshots/q011-phase5n-e-02-ssh-verified.png
+7f5b82a3437f783486230cfb23b8197acf35f6f9df28a75217ca6b826c52c8b9  screenshots/q011-phase5n-process-01-operator-confirmation-gate.png

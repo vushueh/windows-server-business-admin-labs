@@ -97,6 +97,7 @@ across all family repositories.
 | Q003 | [AD Recycle Bin test-object restore](projects/project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | Early Project 11 recovery proof | ✅ Complete — restored the GUID-pinned disabled test user through both DCs in 0.51 minutes |
 | Q004 | [Test-GPO backup and restore](projects/project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/) | Early Project 11 recovery proof | ✅ Complete — exact custom-GPO restore passed in 0.1 minutes; RSoP and cleanup verified |
 | Q007 | [DNS failure-triage simulation](projects/project-03-dns-engineering/q007-dns-failure-triage-simulation/) | Project 03 reusable break/fix proof | ✅ Complete — isolated wrong-record fault, repair, repeated retest, NXDOMAIN, cleanup, and Windows runbook passed on 2026-07-15 |
+| Q011 | [Isolated RHEL 10.2 baseline on Hyper-V](projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/) | Early Project 08 Hyper-V execution proof | ✅ Complete — verified RHEL baseline retained Off and isolated; `Phase9RetentionPass=True` |
 
 ### Additional Windows Simulations And Capstone
 
@@ -118,7 +119,7 @@ across all family repositories.
 | [05](projects/project-05-gpo-security-baselines/) | **Group Policy Security Baselines** | Firewall GPO, audit policy, DefaultInboundAction | Q031 | ⬜ Planned |
 | [06](projects/project-06-file-server-access-governance/) | **File Server, NTFS, and Access Governance** | Dept shares, AGDLP, auditing | Q032 | ⬜ Planned |
 | [07](projects/project-07-windows-client-lifecycle/) | **Windows Client Lifecycle** | Domain join, RSAT, workstation hardening | Q033 | ⬜ Planned |
-| [08](projects/project-08-hyperv-operations/) | **Hyper-V Operations** | VM inventory, RDS farm migration, virtual switch, backup | Q034 | ⬜ Planned |
+| [08](projects/project-08-hyperv-operations/) | **Hyper-V Operations** | VM inventory, RDS farm migration, virtual switch, backup; includes early [Q011 isolated RHEL baseline](projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/) | Q034 plus early Q011 execution proof | 🟡 Q011 retained baseline complete; full P08 still planned |
 | [09](projects/project-09-powershell-admin-platform/) | **PowerShell Administration Platform** | User provisioning, AD reports, repeatable scripts | Q035 | ⬜ Planned |
 | [10](projects/project-10-security-monitoring-ir/) | **Security Monitoring and Incident Response** | Event forwarding, lockout tracking, Wazuh/SIEM | Q036 | ⬜ Planned |
 | [11](projects/project-11-backup-disaster-recovery/) | **Backup, Restore, and Disaster Recovery** | System state backup, tested runbooks | Q037 full project; Q003/Q004 early proofs | 🟡 Q003/Q004 proofs complete; full P11 planned |
@@ -186,7 +187,7 @@ across all family repositories.
 ## Master Program Placement
 
 The forced queue is owned by `../docs/homelab-goals.yaml`. This repo supplies
-Q007 DNS triage, Q003-Q004 recovery proof, Q031-Q041 Windows P05-P12 and
+Q007 DNS triage, the completed retained Q011 Hyper-V RHEL baseline, Q003-Q004 recovery proof, Q031-Q041 Windows P05-P12 and
 related simulations, Q079 P13 identity integration, and Q086 onboarding
 capstone. P05 cannot begin before B1/W2/B3 gates close. `/goal next` selects
 the project; all AD/GPO/DNS/DHCP mutations still need Leonel's dated approval.

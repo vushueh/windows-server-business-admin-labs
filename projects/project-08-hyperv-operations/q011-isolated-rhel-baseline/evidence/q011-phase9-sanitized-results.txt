@@ -1,0 +1,26 @@
+Q011 Phase 9 sanitized results
+Executed=2026-07-21
+Decision=RETAIN-Q011
+ComputerName=WIN-PRQD8TJG04M
+VmName=Q011-RHEL102-BASELINE
+State=Off
+AdapterCount=1
+Disconnected=True
+VlanRecordCount=1
+OperationMode=Untagged
+AccessVlanId=0
+DvdEmpty=True
+DiskExact=True
+VhdPresent=True
+SnapshotCount=0
+AutomaticCheckpoints=False
+AutomaticStartAction=Nothing
+IsoPresent=True
+IsoBytes=11059986432
+Phase9RetentionPass=True
+VmStarted=False
+VmChanged=False
+NetworkChanged=False
+DisposalSelected=False
+DeletionPerformed=False
+Q011Disposition=RetainedOffIsolated

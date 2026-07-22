@@ -1,7 +1,41 @@
 # Project 08 — Hyper-V Operations
 
-**Status:** ⬜ Planned (requires Projects 06 and 07 complete)
+**Status:** ⬜ Full P08 planned (requires Projects 06 and 07 complete); ✅ early Q011 retained baseline complete with `Phase9RetentionPass=True`
 **Skill:** `/winserver-p08` — written when this project starts
+
+## Early Master-Queue Execution Proof
+
+[Q011 — Isolated RHEL 10.2 Baseline on Hyper-V](q011-isolated-rhel-baseline/)
+is an earlier, separately gated master-queue project placed here because this
+repository owns the selected Hyper-V host. Q011 does not start or complete the
+broader P08 inventory, switch redesign, RDS migration, checkpoint-policy, or
+backup scope.
+
+Q011 has passed its disconnected Minimal Install, service/security baseline,
+corrected OPNsense DHCP reservation, NetworkManager autoconnect persistence,
+Windows 11 SSH path, interactive Red Hat registration, BaseOS/AppStream
+repository checks, and final Off/disconnected proof. Its Phase 7 patch window
+stopped fail-closed when DNF requested three unapproved GPG-key imports; all
+were declined, no package transaction or reboot occurred, and
+`Phase7RecoveryPass=True`. Phase 7G then proved an intact package-owned key
+file, valid digests for two repository-scoped cached RPM samples, and an empty
+RPM trust list before returning `Phase7GEndStatePass=True`. Phase 7K then
+imported exactly the three packaged Red Hat certificates, authenticated both
+retained samples, invoked no DNF command, and returned
+`Phase7KEndStatePass=True`. Phase 7P then completed one supported DNF history
+transaction, booted the newest installed kernel, passed the final update and
+control checks, and returned `Phase7PEndStatePass=True`. Phase 8 then proved
+the stable controls, intended registration/trust/network/kernel/history
+changes, and evidence-linked rebuild record before returning
+`Phase8EndStatePass=True`. Phase 9 then selected the read-only retention
+branch and confirmed the exact VM remained Off, disconnected, Untagged VLAN
+0, DVD-empty, and checkpoint-free with `Phase9RetentionPass=True`. Q011 is
+complete; the broader P08 scope remains planned.
+
+The Q011 read-only discovery on 2026-07-19 found 20 host-level VM identity rows,
+superseding the older 13-VM planning estimate for Q011 capacity/collision
+purposes only. P08 still requires its own approved full inventory when it
+starts.
 
 ## Objective
 

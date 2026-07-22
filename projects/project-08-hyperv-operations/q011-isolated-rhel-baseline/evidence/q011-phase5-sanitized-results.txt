@@ -1,0 +1,81 @@
+Q011 Phase 5 sanitized results
+Capture date: 2026-07-20
+Host: WIN-PRQD8TJG04M
+VM: Q011-RHEL102-BASELINE
+Guest: q011-rhel01
+
+Core baseline
+Release=Red Hat Enterprise Linux release 10.2 (Coughlan)
+Hostname=q011-rhel01
+SELinux=Enforcing
+RootPasswordState=L
+LeonelWheelMember=True
+SystemState=running
+FailedUnitCount=0
+OpenSSHServer=openssh-server-9.9p1-23.el10_2.x86_64
+Firewalld=firewalld-2.4.0-1.el10_1.noarch
+PolicyCoreUtils=policycoreutils-3.10-1.el10.x86_64
+SELinuxPolicyTargeted=selinux-policy-targeted-42.1.18-4.el10_2.noarch
+
+Service and policy baseline
+SshdEnabled=True
+SshdActive=True
+FirewalldEnabled=True
+FirewalldActive=True
+FirewalldState=running
+FirewalldCheckConfig=success
+FirewalldDefaultZone=public
+FirewalldActiveInterface=eth0
+FirewalldServices=cockpit,dhcpv6-client,ssh
+FirewalldForward=True
+PermitRootLogin=without-password
+PasswordAuthentication=yes
+PubkeyAuthentication=yes
+Tcp22IPv4Listening=True
+Tcp22IPv6Listening=True
+SELinuxCurrentMode=enforcing
+SshdConfigSHA256=a7329525af126b8280fd52036f81df62a8f893ce8d917d787ac06ad6d6d1adaf
+SELinuxConfigSHA256=80134a263d874d1687a43513a09b6cc8fdc2998e623c1c1670cb5769a85ce942
+
+Network investigation and controlled access
+InitialUnexpectedAddress=172.16.70.52/24
+InitialDhcpServer=172.16.70.1
+InitialRouter=172.16.70.1
+InitialDns=8.8.8.8,1.1.1.1
+InitialLeaseSeconds=43200
+RepositoryIdentityFor172.16.70.1=Cisco ASA inside interface
+Containment=ASA user-confirmed powered off
+CorrectedAddress=192.168.70.140/24
+CorrectedDhcpServer=192.168.70.1
+CorrectedGateway=192.168.70.1
+CorrectedDns=192.168.70.1
+CorrectedLeaseSeconds=86400
+WindowsServerTcp22=False
+Windows11InteractiveSsh=True
+SshUser=leonel
+SshHostname=q011-rhel01
+DhcpReservationConfigured=False
+
+Storage and registration
+VolumeGroup=rhel
+LogicalVolumes=home,root,swap
+RootFilesystem=/dev/mapper/rhel-root
+ConsumerCertificateAbsentExit=0
+Registered=False
+
+Final host state
+State=Off
+AdapterCount=1
+Disconnected=True
+AccessVlanId=0
+DvdEmpty=True
+SnapshotCount=0
+AutomaticCheckpoints=False
+AutomaticStartAction=Nothing
+Phase5EndStatePass=True
+
+Claim boundary
+The corrected DHCP lease is not a reservation and may change after a later
+approved reconnect. The ASA must remain isolated from VLAN 70 until its legacy
+172.16.70.0/24 segment is redesigned. Phase 5 did not register, patch, update,
+reconfigure, back up, or harden the guest.

@@ -1,0 +1,109 @@
+Q011 PHASE 4C SANITIZED RESULTS
+Date: 2026-07-19
+Host: WIN-PRQD8TJG04M
+VM: Q011-RHEL102-BASELINE
+Guest: q011-rhel01
+Executor: Leonel through Hyper-V Manager, VMConnect, Windows PowerShell, and the local RHEL console
+
+FRESH PREFLIGHT
+ComputerName=WIN-PRQD8TJG04M
+VmName=Q011-RHEL102-BASELINE
+State=Off
+Generation=2
+ProcessorCount=2
+StartupMemoryGiB=6
+DynamicMemoryEnabled=False
+Disconnected=True
+VhdVirtualSizeGiB=60
+IsoName=rhel-10.2-x86_64-dvd.iso
+IsoBytes=11059986432
+IsoSHA256=e15cb333529c332e76e4b1b946efe3515c99f996546675aec18e8effdf2540a5
+ZoneIdentifierPresent=False
+SecureBootTemplate=MicrosoftUEFICertificateAuthority
+DvdFirst=True
+DiskSecond=True
+SnapshotCount=0
+FreeMemoryGiB=38.2
+DFreeGiB=876.9
+AverageCpuLoadPercent=1
+PeakCpuLoadPercent=1
+TransitioningVmCount=0
+NoCompetingWorkConfirmed=True
+Phase4CPreflightPass=True
+
+INSTALLATION CHOICES
+Release=Red Hat Enterprise Linux 10.2
+SoftwareSelection=Minimal Install
+Storage=Single 60 GiB Microsoft virtual disk; automatic LVM; no encryption
+Hostname=q011-rhel01
+LocalAdministrator=leonel; wheel membership verified
+RootPasswordState=L
+Registration=Absent
+Network=Hyper-V adapter Not connected; guest eth0 unavailable
+
+DVD EJECTION
+PreEjectPass=True
+InitialImmediateDvdEmpty=False
+InitialImmediatePhase4CEjectPass=False
+ExactRetryInspectionAttachedMedia=<empty>
+ExactRetryMutationExecuted=False
+AlreadyEjectedDvdController=SCSI 0:1
+AlreadyEjectedDvdEmpty=True
+AlreadyEjectedDisconnected=True
+AlreadyEjectedSnapshotCount=0
+AlreadyEjectedIsoFileRetained=True
+AlreadyEjectedIsoBytes=11059986432
+AlreadyEjectedIsoSHA256=e15cb333529c332e76e4b1b946efe3515c99f996546675aec18e8effdf2540a5
+AlreadyEjectedIsoStableDuringCheck=True
+Phase4CAlreadyEjectedPass=True
+
+GUEST VERIFICATION
+Release=Red Hat Enterprise Linux release 10.2 (Coughlan)
+Hostname=q011-rhel01
+SELinux=Enforcing
+RootPasswordState=L
+LeonelInWheel=True
+SystemState=running
+FailedUnitCount=0
+GlobalIPv4Count=0
+GlobalIPv6Count=0
+DefaultIPv4RouteCount=0
+DefaultIPv6RouteCount=0
+ConnectedNonLoopbackCount=0
+PhysicalVolume=/dev/sda3; LVM2; 57.41 GiB
+VolumeGroup=rhel; 1 PV; 3 LVs
+LogicalVolumes=home, root, swap
+RootSource=/dev/mapper/rhel-root
+RootFilesystem=xfs
+ConsumerCertificatePresent=False
+SubscriptionManagerPresent=True
+SubscriptionManagerPackage=subscription-manager-1.30.12-1.el10.x86_64
+SubscriptionIdentityRegistered=False
+CombinedManualVerificationPass=True
+
+VMConnect Type Clipboard Text rejected the long verification block and emitted
+atkbd unknown-key messages. Leonel stopped using clipboard injection and ran
+the same read-only assertions as short manual commands. The combined result is
+therefore a reviewed manual evidence set rather than one machine-generated
+Phase4CPass object.
+
+FINAL HOST STATE
+ComputerName=WIN-PRQD8TJG04M
+VmName=Q011-RHEL102-BASELINE
+State=Off
+AdapterCount=1
+Disconnected=True
+VhdPath=D:\Hyper-V\Virtual Hard Disks\Q011-RHEL102-BASELINE.vhdx
+DvdEmpty=True
+SnapshotCount=0
+AutomaticCheckpoints=False
+AutomaticStartAction=Nothing
+Phase4CEndStatePass=True
+
+CLAIM BOUNDARY
+Phase 4C proves a disconnected minimal RHEL 10.2 installation, automatic LVM,
+local administrative access, locked root password, SELinux Enforcing, no
+registration, no non-loopback connectivity, exact ISO retention, normal guest
+shutdown, and the final safe Hyper-V state. It does not prove patch currency,
+SSH reachability, firewalld policy, network segmentation, backup, hardening,
+or production readiness.

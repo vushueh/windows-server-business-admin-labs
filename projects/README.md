@@ -22,6 +22,7 @@ the central YAML registry.
 | Q003 | [AD Recycle Bin test-object restore](project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) | P11 recovery test 1 | ✅ Complete — restored the GUID-pinned disabled test user through both DCs in 0.51 minutes |
 | Q004 | [Test-GPO backup and restore](project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/) | P11 recovery test 3 | ✅ Complete — exact custom-GPO restore, RSoP, cleanup, and final review passed |
 | Q007 | [DNS failure-triage simulation](project-03-dns-engineering/q007-dns-failure-triage-simulation/) | P03 follow-on break/fix proof | ✅ Complete — isolated wrong-record fault, repair, repeated retest, NXDOMAIN, cleanup, and reusable runbook passed |
+| Q011 | [Isolated RHEL 10.2 baseline on Hyper-V](project-08-hyperv-operations/q011-isolated-rhel-baseline/) | Early P08 Hyper-V execution proof | ✅ Complete — verified RHEL baseline retained Off and isolated; `Phase9RetentionPass=True` |
 
 Later Windows portfolio queue positions are P05/Q031, P06/Q032, P07/Q033,
 P08/Q034, P09/Q035, P10/Q036, full P11/Q037, P12/Q041, and P13/Q079.
@@ -68,7 +69,7 @@ without touching the other families.
 | [project-05-gpo-security-baselines](project-05-gpo-security-baselines/) | Password/lockout policy, Windows Firewall GPO, audit policy, logon restrictions | ⬜ Planned |
 | [project-06-file-server-access-governance](project-06-file-server-access-governance/) | Department shares, AGDLP groups, auditing, access reviews, ransomware-resistant structure | ⬜ Planned |
 | [project-07-windows-client-lifecycle](project-07-windows-client-lifecycle/) | Domain join, RSAT, local admin control, baseline GPOs, test users, workstation hardening | ⬜ Planned |
-| [project-08-hyperv-operations](project-08-hyperv-operations/) | Virtual switch design, VLANs, checkpoints policy, VM inventory, backup, recovery | ⬜ Planned |
+| [project-08-hyperv-operations](project-08-hyperv-operations/) | Virtual switch design, VLANs, checkpoints policy, VM inventory, backup, recovery; early Q011 isolated RHEL proof | 🟡 Q011 retained baseline complete; full P08 planned |
 | [project-09-powershell-admin-platform](project-09-powershell-admin-platform/) | User provisioning, AD reports, stale account cleanup, Hyper-V reports, repeatable scripts | ⬜ Planned |
 | [project-10-security-monitoring-ir](project-10-security-monitoring-ir/) | Event forwarding, lockout tracking, account lockout investigation, Defender, Wazuh/SIEM | ⬜ Planned |
 | [project-11-backup-disaster-recovery](project-11-backup-disaster-recovery/) | System state backup, file restore, AD recovery planning, tested restore runbooks; [Q003](project-11-backup-disaster-recovery/q003-ad-recycle-bin-test-object-restore/) and [Q004](project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/) are earlier master-queue proofs | 🟡 Q003/Q004 proofs complete; full P11 planned |

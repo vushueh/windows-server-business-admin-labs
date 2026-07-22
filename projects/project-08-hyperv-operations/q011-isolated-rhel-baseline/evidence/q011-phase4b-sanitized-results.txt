@@ -1,0 +1,89 @@
+Q011 Phase 4B sanitized results
+Date: 2026-07-19
+Host: WIN-PRQD8TJG04M
+
+[Initial read-only preflight — expected safe stop]
+ComputerName              : WIN-PRQD8TJG04M
+IsAdmin                   : True
+VmmsStatus                : Running
+VmNameAbsent              : True
+VhdAbsent                 : True
+IsoBytes                  : 11059986432
+IsoSHA256                 : e15cb333529c332e76e4b1b946efe3515c99f996546675aec18e8effdf2540a5
+IsoStableThroughPreflight : True
+ZoneIdentifierPresent     : True
+FreeMemoryGiB             : 38.5
+DFreeGiB                  : 876.9
+TransitioningVmCount      : 0
+NoCompetingWorkConfirmed  : False
+PreflightPass             : False
+Result                    : stopped before VM/VHDX creation
+
+[Separately approved exact ISO metadata correction]
+IsoName               : rhel-10.2-x86_64-dvd.iso
+BytesBefore            : 11059986432
+BytesAfter             : 11059986432
+SHA256Before           : e15cb333529c332e76e4b1b946efe3515c99f996546675aec18e8effdf2540a5
+SHA256After            : e15cb333529c332e76e4b1b946efe3515c99f996546675aec18e8effdf2540a5
+ZonePresentBefore      : True
+ZonePresentAfter       : False
+OtherStreamsPreserved  : True
+VMAbsentAfter          : True
+VhdAbsentAfter         : True
+UnblockPass            : True
+
+[First post-correction retry — expected operator-confirmation stop]
+ZoneIdentifierPresent     : False
+NoCompetingWorkConfirmed  : False
+PreflightPass             : False
+Result                    : stopped before VM/VHDX creation
+
+[Final read-only preflight]
+ComputerName              : WIN-PRQD8TJG04M
+IsAdmin                   : True
+VmmsStatus                : Running
+VmNameAbsent              : True
+VhdAbsent                 : True
+VhdDirectoryPresent       : True
+IsoName                   : rhel-10.2-x86_64-dvd.iso
+IsoBytes                  : 11059986432
+IsoSHA256                 : e15cb333529c332e76e4b1b946efe3515c99f996546675aec18e8effdf2540a5
+IsoStableThroughPreflight : True
+ZoneIdentifierPresent     : False
+FreeMemoryGiB             : 38.4
+DFreeGiB                  : 876.9
+AverageCpuLoadPercent     : 1.3
+PeakCpuLoadPercent        : 2.5
+TransitioningVmCount      : 0
+NoCompetingWorkConfirmed  : True
+PreflightPass             : True
+
+[Final Off-state verification]
+ComputerName             : WIN-PRQD8TJG04M
+VMName                   : Q011-RHEL102-BASELINE
+State                    : Off
+Generation               : 2
+ProcessorCount           : 2
+StartupMemoryGiB         : 6
+DynamicMemoryEnabled     : False
+AutomaticCheckpoints     : False
+AutomaticStartAction     : Nothing
+AdapterCount             : 1
+SwitchName               :
+Disconnected             : True
+VhdPath                  : D:\Hyper-V\Virtual Hard Disks\Q011-RHEL102-BASELINE.vhdx
+VhdType                  : Dynamic
+VhdVirtualSizeGiB        : 60
+IsoPath                  : D:\Hyper-V\ISO\rhel-10.2-x86_64-dvd.iso
+IsoSHA256                : e15cb333529c332e76e4b1b946efe3515c99f996546675aec18e8effdf2540a5
+SecureBoot               : On
+SecureBootTemplate       : MicrosoftUEFICertificateAuthority
+DvdFirst                 : True
+DiskSecond               : True
+SnapshotCount            : 0
+Phase4BPass              : True
+
+[End state]
+VM retained Off. No console opened, guest started, switch attached, checkpoint
+created, other VM changed, rollback run, commit made, or remote publication
+performed.

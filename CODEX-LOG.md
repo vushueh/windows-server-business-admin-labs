@@ -4,6 +4,487 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-21 — Q011 Phase 9 retention intake and closure
+
+### What I did
+
+- Copied both reviewed safe Phase 9 Hyper-V screenshots byte-for-byte into
+  Q011 evidence and recorded their exact SHA-256 manifest.
+- Documented `RETAIN-Q011`, the complete structured read-only retention
+  result, and `Phase9RetentionPass=True` without claiming a VM change.
+- Embedded the two Phase 9 images inside the phase narrative and retained the
+  linked two-image walkthrough and searchable result.
+- Converted the Phase 9 decision run sheet and screenshot plan into historical
+  records, marked Q011 complete, and added its final collaboration
+  retrospective and next-step boundary.
+- Synchronized Q011, Project 08, project-index, root navigation, review, and
+  session status while keeping the broader P08 project planned.
+- Re-parsed the Phase 9 Windows PowerShell fence, matched both source/copy
+  hashes, verified the screenshot manifest and links/images, enforced the
+  README phase-image limit, and passed stale-status, secret, conflict, and
+  diff-whitespace checks.
+- Performed no live host/VM access, infrastructure change, credential access,
+  commit, push, merge, GitHub action, or publication during local closure.
+
+### Files created/modified
+
+- two Phase 9 PNGs under Q011 `evidence/screenshots/`
+- `evidence/q011-phase9-evidence.md`
+- `evidence/q011-phase9-sanitized-results.txt`
+- `evidence/q011-phase9-visual-walkthrough.md`
+- `evidence/q011-phase9-screenshots.sha256`
+- Phase 9 decision and screenshot-plan historical status
+- Q011 README, Project 08, project/root navigation, `CLAUDE-REVIEW.md`, and
+  this log
+
+### Architecture decisions made
+
+- Q011 is retained because no backup/export proof or replayed rebuild exists.
+- Retention preserves the verified VM, VHDX, RHEL lifecycle state, OPNsense
+  reservation, and shared ISO without authorizing a start or mutation.
+- Backup/restore, replayed rebuild, future patching, cloning, repurposing, and
+  disposal are separate change windows outside completed Q011.
+- The broader Project 08 inventory, switch, RDS, checkpoint, and backup work
+  remains planned; Q011 completion does not complete P08.
+
+### Open questions for Claude
+
+- None. Q011-11 is resolved and Q011 is complete locally. Publication remains
+  separately approval-gated.
+
+## Session — 2026-07-21 — Q011 Phase 8 intake and Phase 9 preparation
+
+### What I did
+
+- Copied all three reviewed safe Phase 8 screenshots byte-for-byte into Q011
+  evidence and recorded their exact SHA-256 manifest.
+- Documented passing host/network gates, stable controls, intended
+  registration/trust/network/kernel/history changes,
+  `Phase8GuestBaselinePass=true`, and `Phase8EndStatePass=True` isolation.
+- Recorded the initial unprivileged empty SSH-hash collection and the approved
+  retry. The current hash matched the original Phase 5 screenshot, so Codex
+  corrected only the two-character local text transcription and expected
+  value; no guest state changed.
+- Embedded the two strongest Phase 8 images inside the phase narrative and
+  used all three in the linked visual walkthrough.
+- Created an evidence-linked manual rebuild record that does not overclaim a
+  replayed rebuild, export, backup, or unattended build.
+- Prepared a mutually exclusive Phase 9 decision run sheet. Retention is
+  recommended and read-only; disposal intent stops before deletion and
+  requires three later owner-specific windows.
+- Ran one bounded read-only Claude Fable review. Claude returned `PASS` with
+  four minor/informational findings; Codex applied VLAN, ISO-evidence, and
+  screenshot-boundary clarifications and retained exact lifecycle identifiers
+  for safe targeting.
+- Re-parsed every new Bash and Windows PowerShell fence, matched all Phase 8
+  source/copy hashes, verified the manifest and links/images, enforced the
+  README phase-image limit, and passed secret/conflict/diff checks.
+- Performed no live host/VM access, package/service/network change,
+  registration/OPNsense/deletion action, credential access, commit, push,
+  merge, GitHub action, or publication during local intake/preparation.
+
+### Files created/modified
+
+- three Phase 8 PNGs under Q011 `evidence/screenshots/`
+- `evidence/q011-phase8-evidence.md`
+- `evidence/q011-phase8-sanitized-results.txt`
+- `evidence/q011-phase8-visual-walkthrough.md`
+- `evidence/q011-phase8-screenshots.sha256`
+- `docs/q011-manual-rebuild-record.md`
+- `docs/q011-phase9-retention-disposal-decision.md`
+- `evidence/q011-phase9-claude-review.md`
+- Phase 8 run-sheet status, Q011 README, screenshot plan, Project 08,
+  family/root navigation, `CLAUDE-REVIEW.md`, and this log
+
+### Architecture decisions made
+
+- Retention is recommended because the verified baseline has no backup/export
+  and the manual rebuild record has not been replayed.
+- The retention branch is read-only; the disposal branch records intent only.
+- Red Hat lifecycle, OPNsense reservation cleanup, and destructive Hyper-V
+  VM/VHDX cleanup require separate future owner-specific windows.
+- The verified shared RHEL ISO is never a disposable Q011 object.
+- Phase 9 hands-on retention uses two safe Hyper-V GUI captures; repository-
+  only planning has no screenshot because it proves no live state.
+
+### Open questions for Claude
+
+- None. Q011-10 is resolved. Leonel must choose exactly `RETAIN-Q011` or
+  `PLAN-DISPOSAL-Q011` before Phase 9 can proceed.
+
+## Session — 2026-07-21 — Q011 Phase 7P intake and Phase 8 preparation
+
+### What I did
+
+- Copied all four reviewed safe Phase 7P screenshots byte-for-byte into Q011
+  evidence and recorded their exact SHA-256 manifest.
+- Documented the one successful DNF history transaction, newest installed
+  kernel, one reboot, healthy post-reboot controls, zero final updates, and
+  `Phase7PEndStatePass=True` final isolation.
+- Recorded the lost immediate shell-exit capture honestly and based the
+  success claim on DNF history `Return-Code: Success`, installed kernels, and
+  post-reboot evidence; no exit value was reconstructed.
+- Embedded the two strongest Phase 7P images inside the phase narrative and
+  used all four in the linked visual walkthrough.
+- Updated the Phase 7P change/recovery sheets to historical executed records
+  and synchronized Q011, Project 08, family, and root status links.
+- Prepared a separate repository-only Phase 8 read-only post-patch comparison,
+  manual rebuild-evidence, safe screenshot, shutdown, and isolation run sheet
+  with a paired failure-containment plan.
+- Ran one bounded read-only Claude Fable review. Claude returned
+  `CONDITIONAL` with three Medium and three Low findings; Codex corrected the
+  semantic output gates, repository parser, shutdown polling, guarded object
+  diagnostics, and attachment-failure containment.
+- Re-parsed every new Bash and Windows PowerShell fence, matched all source
+  and destination screenshot hashes, verified the manifest and links/images,
+  enforced the README image limit, and passed secret/conflict/diff checks.
+- Performed no live host/VM access, package/configuration action, credential
+  access, commit, push, merge, GitHub action, or publication.
+
+### Files created/modified
+
+- four Phase 7P PNGs under Q011 `evidence/screenshots/`
+- `evidence/q011-phase7p-evidence.md`
+- `evidence/q011-phase7p-sanitized-results.txt`
+- `evidence/q011-phase7p-visual-walkthrough.md`
+- `evidence/q011-phase7p-screenshots.sha256`
+- `docs/q011-phase8-postpatch-validation-and-rebuild-evidence.md`
+- `docs/q011-phase8-failure-containment.md`
+- `evidence/q011-phase8-claude-review.md`
+- Phase 7P run-sheet status, Q011 README, screenshot plan, Project 08,
+  family/root navigation, `CLAUDE-REVIEW.md`, and this log
+
+### Architecture decisions made
+
+- Phase 8 is guest-read-only; a comparison failure is evidence and
+  containment, never authority to repair.
+- Phase 5 remains the stable-control baseline, while Phase 6 registration,
+  DHCP persistence, Phase 7K trust, and Phase 7P package/kernel/history state
+  are classified as intended differences.
+- A Markdown screenshot is not rebuild proof. The manual rebuild record must
+  cite the existing hands-on installation, networking, trust, patch, and
+  validation evidence.
+- Phase 8 requires three safe hands-on images, with no more than two embedded
+  in the project README.
+
+### Open questions for Claude
+
+- None. Q011-09 is resolved. Live Phase 8 remains separately approval-gated.
+
+## Session — 2026-07-21 — Q011 Phase 7K intake and Phase 7P preparation
+
+### What I did
+
+- Copied all three reviewed safe Phase 7K screenshots byte-for-byte into Q011
+  evidence and recorded their exact SHA-256 manifest.
+- Documented the passing zero-key preflight, exact imported three-certificate
+  Red Hat trust set, both retained cached RPM samples returning dual-signature
+  and digest `OK`, no DNF invocation, and
+  `Phase7KEndStatePass=True` final isolation.
+- Embedded the two strongest Phase 7K images inside the phase narrative and
+  used all three in the linked visual walkthrough.
+- Updated the Phase 7K run sheet from a prepared plan to a historical executed
+  record and synchronized Q011, Project 08, family, and root status links.
+- Prepared a separate repository-only Phase 7P single-transaction patch,
+  reboot validation, failure containment, final isolation, and four-image
+  future hands-on capture plan.
+- Ran one bounded read-only Claude Fable review. Claude returned `CONDITIONAL`
+  with three Medium and two Low findings; Codex corrected timeout containment,
+  update-state disposition, kernel-optional transaction handling,
+  repository-error handling, and package-process matching.
+- Performed no host/VM access, DNF command, package/service/network change,
+  credential access, commit, push, merge, GitHub action, or publication.
+
+### Files created/modified
+
+- three Phase 7K PNGs under Q011 `evidence/screenshots/`
+- `evidence/q011-phase7k-evidence.md`
+- `evidence/q011-phase7k-sanitized-results.txt`
+- `evidence/q011-phase7k-visual-walkthrough.md`
+- `evidence/q011-phase7k-screenshots.sha256`
+- `docs/q011-phase7p-controlled-patch-retry-change-window.md`
+- `docs/q011-phase7p-controlled-patch-retry-recovery.md`
+- `evidence/q011-phase7p-claude-review.md`
+- Phase 7K run-sheet status, Q011 README, screenshot plan, Project 08,
+  family/root navigation, `CLAUDE-REVIEW.md`, and this log
+
+### Architecture decisions made
+
+- Trust repair and package transaction remain separate executed/approval
+  boundaries; Phase 7K makes no patch claim.
+- A successful DNF transaction does not require repository content still to
+  include the originally proposed kernel. `new_kernel_present` is recorded
+  separately, while post-reboot success requires the newest installed kernel.
+- Final update exit `100` is an explicit `UpdatesRemain` controlled stop, not
+  a currentness claim or authority for a second transaction.
+- Shutdown timeout proves network containment separately from Off-state
+  recovery; forced power-off remains outside the prepared window.
+- Phase 7P hands-on work must capture the transaction review, transaction
+  success, post-reboot validation, and final safe state without secrets.
+
+### Open questions for Claude
+
+- None. Q011-08 is resolved. Live Phase 7P remains separately
+  approval-gated.
+
+## Session — 2026-07-21 — Q011 Phase 7G intake and Phase 7K preparation
+
+### What I did
+
+- Copied the three reviewed safe Phase 7G screenshots byte-for-byte into Q011
+  evidence and verified their exact SHA-256 manifest.
+- Documented the passing package/key-file integrity, filtered BaseOS and
+  AppStream trust fields, empty RPM trust list, 93 cached RPMs, two exact
+  repository-scoped samples with all digests `OK` and signatures `NOKEY`, and
+  final `Phase7GEndStatePass=True` isolation.
+- Corrected the previously split read-only `awk` predicate in the historical
+  Phase 7G run sheet and synchronized Q011, Project 08, family, and root status
+  links.
+- Prepared a repository-only Phase 7K native-RPM trust import, same-block
+  exact rollback, two-sample signature verification, final isolation, and
+  three-image future hands-on capture plan. The window contains no DNF action.
+- Ran one bounded read-only Claude Fable review with one exact-path
+  clarification. Claude returned `CONDITIONAL` with three Medium and four Low
+  findings. Codex independently corrected the rollback continuity,
+  display-parser, identity wording, entry count, inherited paths, `pipefail`
+  probes, and final PowerShell terminating-error behavior.
+- Verified RPM's documented `KEYHASH` delete contract and upstream
+  `rpmkeys.c` list/delete implementation before replacing display parsing with
+  the machine-readable `%{VERSION}-%{RELEASE}` query.
+- Performed no host/VM access, key import, DNF command, infrastructure change,
+  credential access, commit, push, merge, GitHub action, or publication.
+
+### Files created/modified
+
+- three Phase 7G PNGs under Q011 `evidence/screenshots/`
+- `evidence/q011-phase7g-evidence.md`
+- `evidence/q011-phase7g-sanitized-results.txt`
+- `evidence/q011-phase7g-visual-walkthrough.md`
+- `evidence/q011-phase7g-screenshots.sha256`
+- `evidence/q011-phase7k-claude-review.md`
+- `docs/q011-phase7g-gpg-trust-read-only-investigation.md`
+- `docs/q011-phase7k-rpm-trust-repair-change-window.md`
+- `docs/q011-phase7k-rpm-trust-repair-rollback.md`
+- Q011, Project 08, family/root status/navigation, screenshot plan,
+  `CLAUDE-REVIEW.md`, and this log
+
+### Architecture decisions made
+
+- Trust repair and DNF retry remain separate approvals and change windows.
+- The exact installed-package verification and pinned whole-bundle SHA-256 are
+  the primary input-identity controls; the configured-source fingerprint
+  comparison supplies the published trust link, while short IDs are
+  post-import set evidence rather than standalone authentication.
+- Ordinary post-import gate failures invoke rollback within the same pasted
+  shell block. An SSH transport loss or RPM query failure stops and requires
+  isolation plus exact recovery rather than a broad erase.
+- Future Phase 7K hands-on work captures safe trust-list, cached-signature, and
+  final-isolation screenshots; repository-only preparation has an explicit
+  no-screenshot rationale.
+
+### Open questions for Claude
+
+- None. Q011-07 is resolved. Live Phase 7K remains separately approval-gated.
+
+## Session — 2026-07-20 — Q011 Phase 7 stop intake and Phase 7G preparation
+
+### What I did
+
+- Visually reviewed all five Phase 7 screenshots for safe retention, copied
+  them byte-for-byte into the Q011 evidence directory, and recorded exact
+  SHA-256 hashes.
+- Documented the passing preflight and pre-update baseline, reviewed
+  five-install/88-upgrade transaction, three declined Red Hat signing-key
+  prompts, `upgrade_exit=1`, unchanged original DNF history, no observed
+  package modification or reboot, and `Phase7RecoveryPass=True`.
+- Embedded the two strongest truthful images inside the Phase 7 README
+  narrative at width 900 and placed all five in the linked walkthrough with
+  explicit proves/does-not-prove text. The uncreated post-update screenshot is
+  explicitly recorded rather than fabricated.
+- Converted the Phase 7 change window and recovery plan into historical
+  stopped-window records and synchronized the Q011, Project 08, family, and
+  root status/navigation files.
+- Prepared a repository-only Phase 7G read-only GPG trust investigation and
+  paired containment plan. The future window inspects only the package-owned
+  key file, filtered repository trust fields, RPM public-key state, and two
+  existing repository-scoped cached RPM signatures.
+- Used the verified native Claude CLI with the Fable model for one bounded
+  review and one response-format clarification. Every Claude tool was
+  disabled. Codex resolved its VLAN start-gating, DNF side-effect,
+  cached-sample provenance, option clarity, fingerprint wording, ASA boundary,
+  and shutdown-wait findings.
+- Performed no live host/VM access, key import, DNF retry, cache cleanup,
+  package action, Git/GitHub operation, commit, push, merge, or publication.
+
+### Files created/modified
+
+- five Phase 7 PNGs under the Q011 `evidence/screenshots/` directory
+- `evidence/q011-phase7-evidence.md`
+- `evidence/q011-phase7-sanitized-results.txt`
+- `evidence/q011-phase7-visual-walkthrough.md`
+- `evidence/q011-phase7-screenshots.sha256`
+- `docs/q011-phase7-controlled-patching-change-window.md`
+- `docs/q011-phase7-controlled-patching-rollback.md`
+- `docs/q011-phase7g-gpg-trust-read-only-investigation.md`
+- `docs/q011-phase7g-gpg-trust-investigation-containment.md`
+- `evidence/q011-phase7g-claude-review.md`
+- Q011, Project 08, family/root navigation, screenshot plan,
+  `CLAUDE-REVIEW.md`, and this log
+
+### Architecture decisions made
+
+- An unexpected signing-key import is a fail-closed stop, not an implicit
+  extension of package-change authority.
+- Phase 7G contains no DNF invocation, repository contact, download, import,
+  package transaction, or cache cleanup.
+- Q011 cannot start until the temporary adapter is re-read and proves the exact
+  `vSwitch-LAN` Access VLAN 70 state; any setup error restores disconnected
+  Untagged VLAN 0.
+- A successful Phase 7G diagnosis still ends Off and isolated. Any later key
+  import or patch retry requires a separate supported change window.
+
+### Open questions for Claude
+
+- None. Q011-06 is resolved. Live Phase 7G remains separately approval-gated.
+
+## Session — 2026-07-20 — Q011 Phase 6 intake and Phase 7 preparation
+
+### What I did
+
+- Reviewed and copied all twelve safe Phase 6 practice captures into the Q011
+  evidence directory without altering their pixels. The two strongest images
+  appear inside the Phase 6 README narrative at width 900; all twelve appear
+  with explicit claim boundaries in the linked visual walkthrough.
+- Recorded the complete Phase 6A–6E result, including the OPNsense reservation,
+  the first failed automatic-activation claim, the narrow existing-profile
+  autoconnect correction, automatic reboot persistence, Windows 11 SSH,
+  Boolean-only registration/repository checks, and final isolation.
+- Created searchable Phase 6 results and an exact SHA-256 screenshot manifest;
+  all twelve retained images pass the manifest.
+- Prepared a repository-only Phase 7 controlled-patching draft and paired
+  recovery plan. The draft requires the Phase 6 safe state, one package
+  transaction, explicit acceptance that no current image backup/checkpoint
+  exists, repository checks, one reboot, exact final isolation verification,
+  and three planned hands-on screenshots.
+- The normal Claude npm wrapper remained broken after reset, so Codex used the
+  valid installed Windows native binary without changing the installation.
+  Claude Fable returned a conditional approval with one High, four Medium,
+  and three Low findings. Codex verified and corrected all eight findings.
+- Moved the actual package transaction from SSH to VMConnect, removed
+  unattended `-y`, scripted the root-space gate, narrowed post-reboot exit
+  `100`, added lost-console accounting, and made a shutdown timeout contain
+  Q011's network before stopping. Phase 7 is now reviewed and prepared but
+  remains unexecuted and separately approval-gated.
+- Updated the Windows family and Project 08 indexes through the completed
+  Phase 6 result. No host, VM, network, credential, Git, GitHub, commit, push,
+  merge, or publication action occurred.
+
+### Files created/modified
+
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase6-evidence.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase6-sanitized-results.txt`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase6-visual-walkthrough.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase6-screenshots.sha256`
+- twelve Phase 6 PNGs under `evidence/screenshots/`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase7-controlled-patching-change-window.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase7-controlled-patching-rollback.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase7-claude-review.md`
+- Q011, Project 08, family navigation, screenshot plan, review bridge, and this
+  log
+
+### Architecture decisions made
+
+- The OPNsense reservation and existing-profile autoconnect correction remain
+  the accepted persistence design; no guest static address is introduced.
+- Phase 7 does not call evidence a backup and does not promise a blind
+  `dnf history undo`. A failed update is contained; a prior kernel may be
+  selected once, while a rebuild from the verified ISO requires new approval.
+- Crossing the package-transaction boundary requires a separate exact operator
+  confirmation that no current checkpoint, VM export, or image backup exists.
+- The package transaction runs interactively at VMConnect, not SSH, so Leonel
+  can inspect the transaction and an SSH interruption cannot kill it.
+- The Phase 7 README will display at most two primary screenshots; final
+  Off/disconnected proof is retained in the linked walkthrough.
+
+### Cross-family impacts
+
+- The live OPNsense Dnsmasq reservation already created during Phase 6 is
+  documented here as Q011 evidence. No OPNsense, canonical, vault, Proxmox, or
+  other repository was changed in this local intake.
+
+### Open questions for Claude
+
+- None. The bounded Phase 7 review is resolved. Live execution still requires
+  Leonel's separate exact approval.
+
+## Session — 2026-07-19 (Q011 Phase 4A ISO staged and evidenced)
+
+### What I did
+
+- Guided Leonel through exact host/admin/destination preflight, safe
+  cancellation of a non-responsive scripted attempt, and fresh-session cleanup
+  verification.
+- Guided the manual exact-file copy and a separately approved correction from
+  accidental `D:\Hyper-V\ISOs` to frozen `D:\Hyper-V\ISO`.
+- Verified the final 11,059,986,432-byte local ISO against the pinned SHA-256;
+  `SizePass=True`, `ChecksumPass=True`, `OldFileAbsent=True`,
+  `VMCreated=False`, and `NetworkChanged=False`.
+- Reviewed Leonel's final File Properties screenshot, copied the original PNG
+  unchanged into phase evidence, recorded its SHA-256, and embedded it inside
+  the Phase 4A narrative at width 900.
+- Recorded the visible Windows Unblock control as a Phase 4B read-only
+  preflight item. No unblock, VM, VHDX, switch, network, commit, push, merge,
+  or GitHub action occurred.
+
+### Cross-family impacts
+
+- Proxmox remains predecessor evidence. Canonical and vault state now show
+  Phase 4A complete in the Windows owner and Phase 4B separately gated.
+
+### Open questions for Claude
+
+- None for Phase 4A. Phase 4B requires a new exact design/preflight approval.
+
+## Session — 2026-07-19 (Q011 Phase 2C Hyper-V owner/design)
+
+### What I did
+
+- Recorded Leonel's decision to use Hyper-V and moved Q011 execution ownership
+  into the Project 08 family without claiming the broader P08 project complete.
+- Created the frozen disconnected Generation 2 VM specification, exact local
+  ISO-staging change window, exact rollback plan, screenshot instructions,
+  owner decision, and sanitized imported discovery summary.
+- Used a bounded no-tools Claude review. Applied its useful rollback,
+  cleanup, just-in-time capacity, and explicit vNIC-disconnection findings;
+  independently disproved its checksum-length concern.
+- Prepared coordinated predecessor, canonical, and vault link/status updates.
+  No media, VM, Hyper-V, network, credential, commit, push, merge, publication,
+  or GitHub action occurred.
+
+### Files created/modified
+
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/`
+- Windows root/project navigation, this log, and `CLAUDE-REVIEW.md`
+- Local predecessor/canonical/vault Q011 handoff records
+
+### Architecture decisions made
+
+- `WIN-PRQD8TJG04M` is the selected host; `pve` remains rejected for RHEL 10.
+- Q011 installs disconnected with one unconnected vNIC and a locally staged,
+  independently verified DVD.
+- The next live action is Phase 4A media staging only, not VM creation.
+- Phase 2C has a written screenshot exception; every hands-on phase has a
+  named actual-practice screenshot and safe-capture instructions.
+
+### Cross-family impacts
+
+- The Proxmox record becomes predecessor discovery/handoff evidence.
+- Canonical queue and vault ownership move to this Windows repository.
+
+### Open questions for Claude
+
+- None. Phase 4A awaits Leonel's separate exact approval.
+
 ## Session — 2026-07-18 (Q007 successor handoff updated after Q008 closeout)
 
 ### What I did
@@ -1529,3 +2010,261 @@ Codex writes here after every session. Claude reads this to stay in sync.
 - The wrong record remains active only in the isolated guest. Phase 6 repair
   is unapproved and unstarted. No record removal, cleanup, deletion, commit,
   push, or merge occurred.
+
+## Session — 2026-07-19 — Q011 Phase 4B repository preparation
+
+### What I did
+
+- Confirmed the prior read-only Hyper-V inventory supports the frozen 2-vCPU,
+  6-GiB-static, 60-GiB-dynamic VM design, while retaining fresh live capacity
+  and load gates.
+- Prepared the exact Phase 4B fresh preflight, Hyper-V Manager creation,
+  Off-state verification, failed-creation rollback, and two-image hands-on
+  capture instructions.
+- Corrected the Phase 2C example to use the supported `Set-VMProcessor` and
+  `Set-VMMemory -DynamicMemoryEnabled $false` cmdlets.
+- Sent the bounded package through the verified direct Claude CLI bridge for
+  one read-only review. Claude returned a conditional pass with no Critical or
+  High finding.
+- Applied the rollback mismatch and wizard-location clarifications, recorded
+  the accepted Low residual hash timing risk, and resolved Q011-02.
+
+### Files created/modified
+
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase4b-disconnected-vm-change-window.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase4b-rollback-plan.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase2c-disconnected-vm-design.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-screenshot-plan.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase4b-claude-review.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/README.md`
+- `CLAUDE-REVIEW.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+
+- Leonel remains the hands-on Hyper-V Manager operator; searchable PowerShell
+  supplies the fail-closed preflight and exact final proof.
+- The VM stays Off with exactly one Not Connected adapter. VM start, console,
+  RHEL installation, and network attachment remain separate gates.
+- A present `Zone.Identifier` is a hard stop. Phase 4B does not imply or
+  authorize an unblock operation.
+
+### Cross-family impacts
+
+- None. The Proxmox Q011 record remains predecessor discovery only, and no
+  live system or cross-repository status was changed in this session.
+
+### Open questions for Claude
+
+- None. The bounded Phase 4B preparation review is resolved; live execution
+  still requires Leonel's exact separate approval.
+
+## Session — 2026-07-19 — Q011 Phase 4B execution evidence intake
+
+### What I did
+
+- Guided Leonel screen-by-screen through the separately approved Hyper-V
+  creation while keeping the VM Off and the one adapter Not connected.
+- Validated the initial preflight stop on `Zone.Identifier`, the separately
+  approved exact metadata removal with unchanged bytes/hash, two safe
+  operator-confirmation stops, and the final passing preflight.
+- Caught Generation 1 selected in the wizard before creation; Leonel corrected
+  it to Generation 2 and completed the frozen 2-vCPU, 6-GiB-static,
+  60-GiB-dynamic design.
+- Reviewed images 001 through 013. Copied all thirteen Q011 captures
+  byte-for-byte into the evidence folder, selected two final-state images for
+  the project narrative, and used the full set in a linked visual walkthrough.
+- Recorded the searchable results, integrity hashes, exact claim boundary, and
+  synchronized only the local Windows/Q011 owner status records.
+
+### Files created/modified
+
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/README.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase4b-disconnected-vm-change-window.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase4b-rollback-plan.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-screenshot-plan.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase4b-evidence.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase4b-sanitized-results.txt`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase4b-visual-walkthrough.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase4b-screenshots.sha256`
+- thirteen Phase 4B PNGs under `evidence/screenshots/`
+- `README.md`, `projects/README.md`, and
+  `projects/project-08-hyperv-operations/README.md`
+- `CLAUDE-REVIEW.md` and `CODEX-LOG.md`
+
+### Architecture decisions made
+
+- Phase 4B stops with `Q011-RHEL102-BASELINE` Off. Phase 4C start, console,
+  and disconnected RHEL installation remain separate approvals.
+- The project README displays only the final disconnected-adapter and firmware
+  images. The linked walkthrough uses the other eleven captures, including the
+  safely corrected Generation 1 near-miss, without violating the two-inline
+  screenshot limit.
+
+### Cross-family impacts
+
+- None. No Proxmox, OPNsense, canonical, vault, or other repository record was
+  changed under this owner-only intake approval.
+
+### Open questions for Claude
+
+- None for Phase 4B. Phase 4C must be designed and separately approved before
+  first power-on.
+
+## Session — 2026-07-19 — Q011 Phase 4C repository preparation
+
+### What I did
+
+- Prepared the exact disconnected RHEL 10.2 first-power-on and installation
+  run sheet without accessing the Hyper-V host.
+- Froze Minimal Install, automatic LVM expectation, hostname `q011-rhel01`,
+  one local `leonel` administrator, root locked, no registration, and network
+  off behind a fresh fail-closed host/VM/media preflight.
+- Added the pre-reboot exact ISO-ejection preview/change/proof, local-console
+  guest assertions, normal shutdown, host Off-state verification, and
+  stage-specific failure containment.
+- Planned two primary and three supporting hands-on screenshots. The
+  repository-only preparation has an explicit no-screenshot exception because
+  Markdown would not prove live practice.
+- Sent the package through one bounded read-only Claude review. Claude returned
+  a conditional pass with no Critical or High finding.
+- Applied both actionable corrections: removed two fragile PowerShell
+  continuation characters and made registration verification independent of
+  whether Minimal Install ships `subscription-manager`.
+- Revalidated three PowerShell blocks with Windows PowerShell 5.1, the Bash
+  block with `bash -n`, and the documentation diff with `git diff --check`.
+
+### Files created/modified
+
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase4c-disconnected-rhel-installation.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase4c-failure-containment.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-screenshot-plan.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase4c-claude-review.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/README.md`
+- `CLAUDE-REVIEW.md`
+- `CODEX-LOG.md`
+
+### Architecture decisions made
+
+- The ISO is detached and verified while the installer waits on its completed
+  screen, before the one allowed reboot. An empty first DVD entry is retained;
+  UEFI then falls through to the installed disk.
+- `Begin Installation` is the irreversible boundary. Before it, the operator
+  can return the existing VM to Off. After it, failed or partial VHDX state is
+  preserved for a separately approved diagnosis instead of being deleted.
+- Registration absence uses local identity evidence without installing a
+  package. Subscription Manager adds a second signal only when present.
+- Phase 4C ends with a normal in-guest poweroff and host proof that the VM is
+  Off, disconnected, DVD-empty, and checkpoint-free.
+
+### Cross-family impacts
+
+- None. The Proxmox predecessor record, canonical state, vault, and other
+  repositories were not changed under this Windows-owner preparation scope.
+
+### Open questions for Claude
+
+- None. Q011-03 is resolved. Live Phase 4C remains separately approval-gated.
+
+## Session — 2026-07-19 — Q011 Phase 4C execution evidence intake
+
+### What I did
+
+- Guided Leonel through the separately approved fresh preflight, VMConnect
+  installation, exact pre-reboot DVD ejection, local verification, normal
+  shutdown, and host final-state proof.
+- Verified Minimal RHEL 10.2, automatic LVM, `q011-rhel01`, SELinux Enforcing,
+  locked root status `L`, `leonel` in `wheel`, zero failed units, no
+  registration, and no non-loopback connectivity.
+- Preserved two fail-closed deviations: the immediate DVD query returned a
+  stale attached path before a later approved read found it empty, and
+  VMConnect rejected the long clipboard payload before Leonel switched to
+  short manual commands.
+- Reviewed the Phase 4C captures, copied seven safe PNGs byte-for-byte, selected
+  two for the project narrative, and used all seven in a linked walkthrough.
+- Excluded the hardware-address image and three password-prompt diagnostic
+  images; none contained the password itself.
+- Recorded searchable results, exact image hashes, claim boundaries, and
+  `Phase4CEndStatePass=True`.
+
+### Files created/modified
+
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/README.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase4c-disconnected-rhel-installation.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-screenshot-plan.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase4c-evidence.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase4c-sanitized-results.txt`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase4c-visual-walkthrough.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase4c-screenshots.sha256`
+- seven Phase 4C PNGs under `evidence/screenshots/`
+- Windows root/project navigation, `CLAUDE-REVIEW.md`, and this log
+
+### Architecture decisions made
+
+- The installed shadow-utils root-lock code `L` is accepted alongside `LK` in
+  the reusable verification logic.
+- The long VMConnect clipboard path is not retried; short manual console
+  commands are the supported hands-on method for later phases.
+- The missed boot-menu image is replaced honestly by a Welcome-screen capture,
+  not relabeled as proof that was never taken.
+- Phase 4C closes with the VM Off, disconnected, DVD-empty, and
+  checkpoint-free; it does not claim patch, remote SSH, firewall, or network
+  readiness.
+
+### Cross-family impacts
+
+- None. No Proxmox, OPNsense, canonical, vault, or other repository record was
+  changed under this Windows-owner intake.
+
+### Open questions for Claude
+
+- None for the completed Phase 4C live result. Later network and patch phases
+  remain separately designed and approval-gated.
+
+## Session — 2026-07-19 — Q011 Phase 5 repository preparation
+
+### What I did
+
+- Prepared Phase 5 as a disconnected, read-only before-state for OpenSSH,
+  firewalld, SELinux, listeners, packages, configuration hashes, registration,
+  LVM, system health, and networking.
+- Added a fresh Off/disconnected/DVD-empty Hyper-V preflight, short manually
+  typed console commands, two primary screenshots plus one supporting capture,
+  normal shutdown, final host proof, and fail-closed handling.
+- Kept service/package/firewall/SSH/SELinux changes, registration, repository
+  contact, network attachment, patching, checkpoints, and another VM outside
+  the prepared window.
+- Sent the Phase 4C intake and Phase 5 package through the requested single
+  bounded read-only Claude review. Claude returned a conditional pass with no
+  Critical or High finding and no technical safety defect.
+- Applied both required bridge-file traceability corrections and both optional
+  clarity corrections, including the deliberate 12-GiB Phase 5 memory floor
+  and the unvalidated post-execution DVD polling note.
+
+### Files created/modified
+
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-phase5-disconnected-service-baseline.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/evidence/q011-phase5-claude-review.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/README.md`
+- `projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/docs/q011-screenshot-plan.md`
+- Windows root/project navigation, `CLAUDE-REVIEW.md`, and this log
+
+### Architecture decisions made
+
+- Phase 5 measures the unpatched disconnected baseline before any network,
+  registration, or patch design. An inactive service or missing package is a
+  finding, not authority to repair it.
+- The VM returns to the same Off, disconnected, DVD-empty, checkpoint-free
+  state. No configuration rollback is needed because the phase changes no
+  guest setting.
+- The 12-GiB free-memory floor is deliberate for one installed 6-GiB guest;
+  Phase 4C retained 16 GiB for the installer workload.
+
+### Cross-family impacts
+
+- None. This preparation changed only the local Windows-owner worktree.
+
+### Open questions for Claude
+
+- None. The bounded review is resolved. Phase 5 live execution remains
+  separately approval-gated.
