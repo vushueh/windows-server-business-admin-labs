@@ -4,6 +4,25 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-21 — Q011 successor handoff correction
+
+### What I did
+
+- Kept the completed Q011 documentation and evidence unchanged.
+- Replaced its generic future-work paragraph with the required immediate
+  successor handoff to Q012 — systemd Break/Fix Lab.
+- Migrated the two safe Phase 1 OPNsense policy screenshots and their hashes
+  from the obsolete Proxmox draft worktree before retiring it.
+- Kept Q012 plain text because it is planned, not completed, and made clear
+  that Q011 closure grants no live authority.
+- Coordinated the owner change with the Proxmox predecessor, canonical queue,
+  and vault relationship records.
+
+### Safety boundary
+
+- Repository-only documentation update; no Hyper-V host, VM, VHDX, ISO,
+  network, credential, Git history, or live-system action occurred.
+
 ## Session — 2026-07-21 — Q011 Phase 9 retention intake and closure
 
 ### What I did
