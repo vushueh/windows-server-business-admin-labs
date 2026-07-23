@@ -98,7 +98,7 @@ across all family repositories.
 | Q004 | [Test-GPO backup and restore](projects/project-11-backup-disaster-recovery/q004-test-gpo-backup-restore/) | Early Project 11 recovery proof | ✅ Complete — exact custom-GPO restore passed in 0.1 minutes; RSoP and cleanup verified |
 | Q007 | [DNS failure-triage simulation](projects/project-03-dns-engineering/q007-dns-failure-triage-simulation/) | Project 03 reusable break/fix proof | ✅ Complete — isolated wrong-record fault, repair, repeated retest, NXDOMAIN, cleanup, and Windows runbook passed on 2026-07-15 |
 | Q011 | [Isolated RHEL 10.2 baseline on Hyper-V](projects/project-08-hyperv-operations/q011-isolated-rhel-baseline/) | Historical Project 08 platform proof; canonical Linux record moved to [`enterprise-linux-administration-labs`](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q011-isolated-rhel-baseline) (private until publication review) | ✅ Complete — this public mirror is frozen pending the new repository's publication gate |
-| Q012 | [RHEL systemd break-fix lab](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q012-systemd-breakfix-lab) (private until publication review) | Linux portfolio project using the Windows-owned Hyper-V boundary | 🟡 Design complete — Phase 4 clone/baseline requires exact approval |
+| Q012 | [RHEL systemd break-fix lab](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q012-systemd-breakfix-lab) (private until publication review) | Linux portfolio project using the Windows-owned Hyper-V boundary | ✅ Complete — clone, fault, repair, checkpoint restore, merge, and final platform isolation verified on 2026-07-22 |
 
 ### Additional Windows Simulations And Capstone
 

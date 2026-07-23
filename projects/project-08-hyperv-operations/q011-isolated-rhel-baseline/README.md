@@ -744,10 +744,8 @@ value—was used to correct the record without changing the guest.
 
 Q011 is complete as a retained RHEL 10.2 baseline. Its immediate successor,
 [Q012 — systemd Break/Fix Lab](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q012-systemd-breakfix-lab),
-is active in the Linux portfolio with its repository design complete. Q012
-Phase 4 still requires an exact approval before the protected offline clone
-and healthy baseline may be created. A
-future backup/restore test or replay of the manual rebuild record also remains
-outside Q011. Any later start, network attachment, patch, export, clone,
-repurpose, Red Hat lifecycle action, OPNsense reservation change, or disposal
-is a new change window outside this completed project.
+completed on 2026-07-22 with protected-source proof, a deterministic
+`203/EXEC` diagnosis, reboot-tested repair, independent checkpoint restore,
+clean merge, and final isolation. Any later Q011 start, network change, patch,
+export, clone, repurpose, Red Hat lifecycle action, OPNsense reservation
+change, or disposal is a new change window outside this completed project.

@@ -6,6 +6,98 @@ Claude writes items here. Codex must resolve all OPEN items before starting new 
 
 ## Q012 RHEL SYSTEMD BREAK-FIX LAB — 2026-07-22
 
+### 🟢 RESOLVED — Item Q012-02: Restore Q011 platform isolation before Phase 4
+
+**Owner:** Leonel exact approval; Codex bounded execution and verification;
+Windows repository platform record
+
+A read-only preflight on 2026-07-22 found `Q011-RHEL102-BASELINE` Off with
+automatic checkpoints disabled, one adapter, and zero checkpoints. However,
+at discovery the adapter was attached to `vSwitch-LAN` in Access mode on VLAN 70,
+contradicting the completed Phase 9 Off/disconnected/Untagged retention proof.
+`Q012-RHEL102-SYSTEMD` and its target path do not exist.
+
+Q012 Phase 4 explicitly excludes modifying Q011. Restore only Q011's adapter
+to disconnected and Untagged/VLAN-zero state under a separate exact approval,
+then verify Q011 remains Off with one adapter and zero checkpoints and rerun
+the read-only Q012 preflight. The prior attached state is the rollback target.
+Stop on any unexpected VM state, adapter count, checkpoint, Q012 artifact, or
+command error. The cause of drift remains unknown; no mutation occurred during
+discovery.
+
+**Resolution:** Leonel approved only the Q011 source-isolation restoration and
+explicitly excluded Q012 creation. Exact prechecks matched the observed
+rollback state. Codex disconnected Q011's single adapter and set it
+Untagged/VLAN 0. Immediate verification and a separate fresh preflight proved
+Q011 remained Off with one adapter and zero checkpoints, while Q012 and its
+target path remained absent. `Q011IsolationRestorePass=True` and
+`FreshPhase4PreflightPass=True` returned. The drift cause remains unknown.
+
+**Superseded for future Phase 4 scope — 2026-07-22:** The earlier Phase 4
+design excluded every Q011 modification. Leonel later clarified that after the
+offline VHDX copy hash matches, Q011—not Q012—must return to
+`vSwitch-LAN` in Access mode on VLAN 70 while remaining Off and
+checkpoint-free. The revised window keeps Q011 disconnected/Untagged through
+the copy, restores that isolation on any reattachment error before Q012
+creation, and leaves Q012 disconnected. This clarification does not alter the
+successful restoration evidence and does not authorize cloning or
+reattachment.
+
+**Approved Phase 4 host-stage result — 2026-07-22:** Leonel later approved the
+exact revised Phase 4 window. Claude executed the Windows-owned host block and
+returned exit code 0 plus `Q011PostCopyAttachPass=True`. A separate readback
+proved Q011 Off on `vSwitch-LAN`/Access VLAN 70 with zero checkpoints and Q012
+Off with the exact planned Generation 2 hardware, Secure Boot, one disconnected
+Untagged adapter, automatic checkpoints disabled, and zero checkpoints. A
+second full source/target calculation returned `HashMatch=True`. Claude stopped
+before Q012 start, guest access, reboot, or checkpoint creation. The next stage
+is Leonel's credentialed Q012 console baseline; fault injection remains
+excluded.
+
+**Disconnected transfer update — 2026-07-22:** Q012 is now Running with its
+single adapter still disconnected/Untagged and zero checkpoints. Two separately
+approved Guest Service Interface transfers failed safely: first `0x800710DF`,
+then one exact retry with the guest daemon active returned `0x80004005`.
+Containment disabled Guest Service Interface, removed host staging, and Leonel
+proved `hypervfcopyd` inactive/disabled. Claude's read-only fallback review
+found no current Q012 DVD drive; its clarification proved the existing IMAPI2
+and ADODB COM objects support no-install ISO authoring. Adding a temporary Q012
+DVD, creating/attaching/deleting the temporary ISO, and removing that DVD are
+not authorized until Leonel supplies an exact approval. No third VMBus attempt
+is allowed.
+
+**ISO transfer success — 2026-07-22:** The ADODB-based attempt first rolled
+back cleanly before ISO/DVD creation. Leonel then directly approved the
+reviewed in-memory IStream retry. Claude produced and host-validated the
+1,179,648-byte one-file ISO, called `Add-VMDvdDrive` exactly once, and proved
+Q012 remained Running/disconnected/Untagged/GSI-disabled/checkpoint-free with
+one DVD at controller 0/location 1. Q011 remained Off on its approved
+LAN/VLAN with zero checkpoints. One early empty literal-`$GUID` directory was
+deleted before staging. Guest execution and later DVD/ISO cleanup remain with
+the Linux-owned Q012 workflow.
+
+**Phase 4 completion — 2026-07-22:** Leonel passed the guest baseline, unmounted
+the seed, and Claude removed the exact DVD and ISO operation directory. Before
+temporary networking, Q012 replaced its cloned machine ID and SSH host keys
+and removed only its local Red Hat subscription identity. Claude attached the
+identity-sanitized VM to Access VLAN 70 after fresh checks; the heartbeat
+survived reboot and SSH remained enabled by Leonel's revision. Leonel then
+powered Q012 off. Claude isolated the adapter and created exactly one Standard
+checkpoint named `Q012-CLEAN-BEFORE-FAULT`, then restored the Running/VLAN 70
+SSH-ready state. Q011 remains Off and checkpoint-free; Q012 has GSI disabled,
+zero DVDs, and exactly the one clean checkpoint. No fault was injected. The
+separate Linux-owned Phase 5–6 window still requires exact approval.
+
+**Phase 5–6 and final platform completion — 2026-07-22:** Fresh host checks
+proved the exact one-checkpoint pre-fault state. After Leonel diagnosed and
+repaired the approved Linux custom-unit fault across reboot, Claude isolated
+Q012 and restored only `Q012-CLEAN-BEFORE-FAULT`. Leonel proved the restored
+guest healthy and fault-free. Claude then isolated Q012, removed only that
+checkpoint, observed the merge finish with zero `.avhdx`, and returned the
+final host proof: Q011 Off on its approved Access VLAN 70 attachment with zero
+checkpoints; Q012 Off/disconnected/Untagged/GSI-disabled/DVD-free/checkpoint-
+free. No manual disk-file operation occurred. The Linux owner has closed Q012.
+
 ### 🟢 RESOLVED — Item Q012-01: Reconcile owner and prepare isolated design
 
 **Owner:** Codex queue recovery and repository design; Claude bounded read-only

@@ -1,6 +1,6 @@
 # Project 08 — Hyper-V Operations
 
-**Status:** ⬜ Full P08 planned (requires Projects 06 and 07 complete); ✅ Q011 platform proof complete and migrated to the Linux portfolio; 🟡 Q012 uses this Hyper-V boundary but is owned by the Linux portfolio
+**Status:** ⬜ Full P08 planned (requires Projects 06 and 07 complete); ✅ Q011 platform proof and Q012 platform execution complete in the Linux portfolio
 **Skill:** `/winserver-p08` — written when this project starts
 
 ## Early Master-Queue Execution Proof
@@ -37,12 +37,15 @@ complete; the broader P08 scope remains planned.
 
 [Q012 — RHEL systemd Break-Fix Lab](https://github.com/vushueh/enterprise-linux-administration-labs/tree/main/projects/q012-systemd-breakfix-lab)
 is Q011's immediate queue successor and is owned by the private-staging Linux
-portfolio. Its
-design uses a hash-verified offline copy of Q011's VHDX, a disconnected clone,
-and one disposable custom service. This repository owns only the Hyper-V
-platform boundary. Q011 remains off, disconnected, checkpoint-free, and
-unmodified. Q012 live work has not started: clone/baseline creation and later
-fault/repair/revert are separate exact approval gates.
+portfolio. It completed on 2026-07-22 using a hash-verified offline copy of
+Q011's VHDX, a disconnected clone with unique identities, and one disposable
+custom service. The deterministic `203/EXEC` diagnosis, exact repair across
+reboot, independent clean-checkpoint restore, checkpoint merge, and final
+isolation all passed. This repository owns only the Hyper-V platform boundary.
+Q011 is Off on `vSwitch-LAN`/Access VLAN 70 with zero checkpoints; Q012 is Off,
+disconnected, Untagged/VLAN 0, GSI-disabled, DVD-free, checkpoint-free, and
+merged to one base VHDX. SSH remains enabled inside Q012 by Leonel's decision
+but is unreachable in that retained state.
 
 The Q011 read-only discovery on 2026-07-19 found 20 host-level VM identity rows,
 superseding the older 13-VM planning estimate for Q011 capacity/collision
