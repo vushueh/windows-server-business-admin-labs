@@ -4,6 +4,141 @@ Codex writes here after every session. Claude reads this to stay in sync.
 
 ---
 
+## Session — 2026-07-22 — Q012 final platform closeout
+
+### Verified result
+
+- Claude proved the exact pre-fault Hyper-V state and preserved Q011 Off and
+  unchanged throughout the Linux guest fault/repair work.
+- After Leonel's repaired reboot proof, Claude isolated Q012 and restored only
+  the clean Standard checkpoint; Leonel independently proved the restored
+  guest healthy.
+- Claude isolated Q012 again, removed only the named checkpoint, and observed
+  the merge complete with zero checkpoints and zero `.avhdx` files.
+- Final platform state: Q011 Off on `vSwitch-LAN`/Access VLAN 70 with zero
+  checkpoints; Q012 Off/disconnected/Untagged/GSI-disabled/DVD-free/
+  checkpoint-free with one merged base VHDX.
+
+### Gate
+
+- The Linux owner has closed Q012 and canonical state advances to Q013.
+- No commit or push occurred.
+
+## Session — 2026-07-22 — Q012 Phase 4 platform completion
+
+### Verified result
+
+- Q012's copied disk, unique guest identity, healthy reboot proof, and exact
+  temporary-media cleanup passed under the Linux owner.
+- Claude used the Windows-owned Hyper-V boundary to attach Q012 only after
+  identity sanitation, then later isolated the powered-off VM and created the
+  single Standard checkpoint `Q012-CLEAN-BEFORE-FAULT`.
+- Leonel kept SSH enabled for continued work. Claude restored Q012 Running on
+  `vSwitch-LAN`/Access VLAN 70 with a valid DHCP lease.
+- Q011 remains Off on its approved Access VLAN 70 attachment and has zero
+  checkpoints. Q012 has GSI disabled, zero DVDs, and exactly one checkpoint.
+
+### Gate
+
+- No systemd fault has been injected.
+- The Linux-owned Phase 5–6 window requires separate exact approval and must
+  isolate Q012 before checkpoint restore and final cleanup.
+- No commit or push occurred.
+
+## Session — 2026-07-22 — Q012 source-isolation preflight and restoration
+
+### What I did
+
+- Used the Windows-owned Hyper-V boundary for a read-only Q012 Phase 4
+  preflight.
+- Verified Q011 is Off, automatic checkpoints are disabled, and it has one
+  adapter and zero checkpoints; Q012 and its target path do not exist.
+- Found Q011 attached to `vSwitch-LAN` on access VLAN 70 instead of its
+  completed disconnected, Untagged retention state.
+- Stopped without mutation and recorded the exact platform-owner blocker.
+
+### Approved restoration result
+
+- Leonel approved restoring only Q011's adapter isolation and explicitly
+  excluded Q012 creation.
+- Exact prechecks matched. Q011's single adapter was disconnected and set
+  Untagged/VLAN 0.
+- Immediate verification and a separate fresh preflight proved Q011 remained
+  Off with one adapter and zero checkpoints; Q012 and its target path remained
+  absent.
+- `Q011IsolationRestorePass=True` and `FreshPhase4PreflightPass=True` returned.
+- The cause of the drift remains unknown.
+
+### Safety boundary
+
+- Only Q011's adapter connection and VLAN mode changed within the exact
+  approval. No VM was started; no VHDX, checkpoint, guest, credential, Q012 VM,
+  or Q012 target path changed or was created.
+- Leonel later clarified that the future post-copy attachment applies to Q011,
+  not Q012. The revised plan returns Q011 to `vSwitch-LAN`/Access VLAN 70 only
+  after the offline copy hash matches, keeps Q011 Off and checkpoint-free, and
+  keeps Q012 disconnected.
+- This clarification changed repository plans only. It did not authorize or
+  perform the clone, source reattachment, or another live action.
+
+### Approved Phase 4 host stage
+
+- Leonel approved the exact revised Phase 4 window on 2026-07-22.
+- Claude executed the first host block with exit code 0. The offline VHDX
+  hashes matched, Q011 returned Off to `vSwitch-LAN`/Access VLAN 70 with zero
+  checkpoints, and Q012 was created Off with the planned Generation 2
+  hardware, Secure Boot, one disconnected Untagged adapter, and zero
+  checkpoints.
+- A separate readback and second full hash comparison passed. Claude stopped
+  before Q012 start, guest access, reboot, or checkpoint creation and removed
+  both temporary helper scripts.
+- Leonel's credentialed Q012 console baseline is next; no fault is authorized.
+
+### Approved disconnected transfer attempts
+
+- Q012 was started manually and remained disconnected/Untagged with zero
+  checkpoints. Leonel could not enter the multiline baseline through VMConnect.
+- One approved Guest Service Interface copy stopped with `0x800710DF` while the
+  guest FCOPY daemon was inactive. After a console check and separate approval,
+  Leonel started the existing disabled daemon and reported it active.
+- Claude made the single permitted hash-verified retry. `Copy-VMFile` returned
+  `0x80004005`; no second retry occurred. The failure branch disabled Guest
+  Service Interface, removed host staging, and preserved Q012 isolation.
+- Guest evidence showed FCOPY `pread` I/O errors. Leonel stopped the daemon and
+  proved it inactive/disabled. No third VMBus attempt is authorized.
+- Read-only fallback inspection found Q012 has no DVD drive and the host lacks
+  `oscdimg`. A clarification directly proved IMAPI2FS and ADODB COM objects are
+  available, so a no-install temporary ISO/DVD fallback is viable but awaits
+  Leonel's exact approval.
+- Leonel then supplied the exact ISO/DVD approval. The first executor stopped
+  before host prechecks or mutation because the Linux source exists only on the
+  workstation. No staging directory, ISO, or DVD was created. Fresh Claude CLI
+  contexts rejected Codex-relayed approval for SCP staging, so direct
+  Claude-addressed confirmation is now required.
+- Leonel subsequently addressed Claude directly. The root Tier 3 rule required
+  a formal plan, so the Linux owner now carries the approved ISO/DVD change
+  window and rollback using the current `winserver` alias. Claude's mechanics
+  review corrections—one-time executor assignment, case-normalized hashes, and
+  GUID staging—are applied. No live artifact exists yet.
+- Claude executed the approved ADODB-based ISO window through `winserver`.
+  Every source and VM precheck passed, but the host exposed the IMAPI result as
+  an IUnknown-only stream that ADODB could not write. No ISO/mount/DVD existed;
+  GUID staging was removed and final containment passed.
+- The Linux owner now carries a reviewed in-memory C# IStream/FileStream retry.
+  Claude's required Seek removal and compiler-temp-file wording corrections are
+  applied; the retry awaits a new exact approval.
+- Leonel approved the corrected IStream retry. Claude created and host-mounted
+  the 1,179,648-byte ISO, proved the one root script and pinned hash, dismounted
+  host validation, and added exactly one Q012 DVD at controller 0/location 1.
+- Final platform proof preserved Q011 Off on its approved LAN/VLAN and Q012
+  Running/disconnected/Untagged/GSI-disabled/checkpoint-free. One empty
+  literal-`$GUID` directory was cleaned before staging. Claude stopped before
+  guest execution; the temporary ISO/DVD remains for Leonel's console step.
+- Leonel passed the console baseline and unmounted the media. Under a separate
+  exact approval Claude removed only the verified DVD and ISO/GUID directory.
+  Q012 is Running/disconnected/GSI-disabled/checkpoint-free with zero DVDs;
+  Q011 is unchanged. Reboot proof is next.
+
 ## Session — 2026-07-22 — Q012 owner reconciliation and repository design
 
 ### What I did
