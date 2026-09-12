@@ -82,7 +82,7 @@ projects/project-NN-name/
 | Troubleshooting logic + root cause | Codex |
 | Write CODEX-LOG.md | Codex |
 | Review before any AD/GPO/NPS change | Claude |
-| Authorized GitHub publishing (either operating agent) | Claude |
+| Authorized GitHub publishing | Either operating agent |
 | Cross-family design decisions | Claude |
 | Write CLAUDE-REVIEW.md | Claude |
 | Skills authoring | Claude |
