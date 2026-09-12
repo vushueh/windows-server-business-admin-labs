@@ -1,3 +1,16 @@
+## Shared workflow
+
+Read `E:/Homelab-Repos/family-projects/AGENTS.md` once per session
+(`/mnt/e/Homelab-Repos/family-projects/AGENTS.md` in WSL). If working outside
+this workspace, fetch the shared contract from
+`vushueh/family-projects-ai-playbook` before homelab operations.
+It owns task-scoped reads and publication authority; this repo owns technical
+constraints. For a named file task, read target files and related OPEN items.
+For project selection/status/resume, use the shared goal skill and freshness
+checks; preserve the active item, dependencies, queue order and WIP limits.
+Either operating agent may publish the authorized package. Use explicit paths
+and relevant checks, preserve dirty work and intentionally unpublished overlays.
+
 # AGENTS.md — Codex Standing Orders
 ## Windows Server Business Admin Labs
 
@@ -16,30 +29,20 @@ and integrate it as the identity backbone for all other homelab families.
 It is not a fresh server — see `projects/project-01-server-baseline-hardening/README.md`
 for the complete live audit findings.
 
-## Your Role (Codex)
+## Agent role
 
-You are a **co-architect, troubleshooter, command planner, and documentation builder**.
-You design the AD structure, plan PowerShell scripts, review configurations before they're applied,
-and explain WHY things work the way they do. You do NOT push to GitHub (Claude does that)
-and do NOT execute live server commands (Leonel or Claude does that).
-
-| Codex owns | Claude owns | Leonel owns |
-|------------|------------|-------------|
-| AD OU design + GPO structure design | Final approval before any live AD/GPO change | All commands typed on Windows Server |
-| PowerShell script drafts (provisioning, reports) | All GitHub pushes | All Server Manager GUI actions |
-| Architecture review + failure mode analysis | Review before scripts run | Final say on domain name and design |
-| Troubleshooting logic + root cause explanations | CLAUDE-REVIEW.md | |
-| Runbooks, phase guides, documentation | Live remote execution if needed | |
-| CODEX-LOG.md updates | Skills authoring | |
+Design, troubleshoot, document and verify the approved task. Either agent may
+publish authorized work. Live execution restrictions and production review
+requirements in this repo continue to apply.
 
 ## Before Starting Any Task
 
-1. Read `CLAUDE-REVIEW.md` — resolve all OPEN items before new work
+1. Search relevant OPEN items in `CLAUDE-REVIEW.md`; respect related blockers and claims
 2. Read the relevant project README.md and current phase skill file
-3. Read `docs/identity-design.md` for AD architecture reference
-4. Read `docs/naming-standards.md` for naming conventions
+3. For AD architecture changes, read `docs/identity-design.md`
+4. For naming changes, read `docs/naming-standards.md`
 5. For documentation work, read `skills/winserver-evidence-documentation/SKILL.md`
-6. Read `skills/project-01-server-baseline-hardening.md` for P01 current phase details
+6. For P01 work, read `skills/project-01-server-baseline-hardening.md`
 
 ## Edit Tier Rules
 
@@ -51,12 +54,12 @@ Local path (Windows): `E:\Homelab-Repos\family-projects\windows-server-business-
 Local path (WSL):      `/mnt/e/Homelab-Repos/family-projects/windows-server-business-admin-labs/`
 - Codex writes here directly (open this folder as the Codex workspace/project).
 - Claude reads and edits files here directly.
-- Session start: `git pull` — session end: `git add -A && git commit && git push`.
+- Start with scoped Git status; commit explicit reviewed paths and publish only when authorized.
 
 ### Tier 2 — GitHub API (exception only)
 Use for: bridge file quick patches (CLAUDE-REVIEW.md, CODEX-LOG.md) between sessions when no local checkout is open.
 Never: phase content, skill files, configs, or any file over ~5KB.
-Who pushes: Claude by default. Codex may push bridge files only when Leonel explicitly asks.
+Either agent may publish the user-authorized package using available Git/GitHub tools.
 
 ### Tier 3 — Live infrastructure (approval required)
 Use for: SSH to WIN-PRQD8TJG04M, AD/GPO changes, DHCP/DNS edits, NPS config.
@@ -76,7 +79,7 @@ Never: Codex does not execute live server commands.
 - **NEVER run `gpupdate /force` affecting all users** without staging and approval
 - **NEVER change NPS/RADIUS policy** without approval — it controls auth for all network devices
 - **ALWAYS recommend system state backup before Domain Controller changes**
-- **NEVER push to GitHub** — write files locally, Claude pushes
+- **Publish only the authorized scope** using the shared Git/GitHub rule
 - All scripts must be reviewed by Claude before running in production AD
 
 ## Actual Environment (Discovered 2026-06-05)
@@ -118,14 +121,6 @@ After every session, append to `CODEX-LOG.md`:
 
 ```
 
-## Master Program Selection
-
-Before selecting or advancing work, invoke the local `/goal` wrapper or read
-`../docs/homelab-goals.yaml`. Resume the active primary item or take exactly
-the lowest-sequence ready item; never offer a project menu. Reconcile this
-repo's README/project state and `CLAUDE-REVIEW.md` lock first. A blocker must
-be repaired, safely rescoped, or closed Deferred with a precise trigger before
-advancing. Windows live-change and identity safety gates remain unchanged.
 ## Session — YYYY-MM-DD
 ### What I did
 - bullet list
@@ -138,3 +133,12 @@ advancing. Windows live-change and identity safety gates remain unchanged.
 ### Open questions for Claude
 - list
 ```
+
+## Master Program Selection
+
+Before selecting or advancing work, invoke the local `/goal` wrapper or read
+`../docs/homelab-goals.yaml`. Resume the active primary item or take exactly
+the lowest-sequence ready item; never offer a project menu. Reconcile this
+repo's README/project state and `CLAUDE-REVIEW.md` lock first. A blocker must
+be repaired, safely rescoped, or closed Deferred with a precise trigger before
+advancing. Windows live-change and identity safety gates remain unchanged.

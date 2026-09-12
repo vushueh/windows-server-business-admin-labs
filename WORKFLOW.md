@@ -1,3 +1,7 @@
+> Shared AGENTS and its Git/GitHub rule supersede legacy agent-only push
+> roles and automatic commit examples below. Publish the authorized scope with
+> either operating agent; live execution restrictions remain unchanged.
+
 # WORKFLOW.md — How This Family Works
 
 ## Trigger Phrases
@@ -11,7 +15,7 @@
 | `start project 01` through `start project 13` | Begin that specific project |
 | `check what Codex did` | Claude reads CODEX-LOG.md and summarises |
 | `check open items` | Claude lists OPEN items in CLAUDE-REVIEW.md |
-| `push to github` | Claude compiles work and pushes |
+| `push to github` | The operating agent publishes the authorized package |
 | `relay request` | Codex writes relay request for Claude to execute |
 
 ---
@@ -27,7 +31,7 @@ Every project follows this 7-phase cycle:
 4. Security hardening     (least privilege, audit policy, firewall)
 5. Verify                 (test users, commands, expected behaviour)
 6. Break/Fix              (deliberate fault → diagnose → restore)
-7. Document + Push        (configs, screenshots, runbooks → GitHub via Claude)
+7. Document + Push        (configs, screenshots, runbooks → GitHub via the authorized operating agent)
 ```
 
 ---
@@ -78,7 +82,7 @@ projects/project-NN-name/
 | Troubleshooting logic + root cause | Codex |
 | Write CODEX-LOG.md | Codex |
 | Review before any AD/GPO/NPS change | Claude |
-| All GitHub pushes | Claude |
+| Authorized GitHub publishing | Either operating agent |
 | Cross-family design decisions | Claude |
 | Write CLAUDE-REVIEW.md | Claude |
 | Skills authoring | Claude |
